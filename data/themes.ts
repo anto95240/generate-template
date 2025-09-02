@@ -1,0 +1,130 @@
+import { Theme } from '@/types';
+
+export const themes: Theme[] = [
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk',
+    colors: {
+      primary: '#00D4FF',
+      secondary: '#B537F7',
+      accent: '#00FF94',
+      background: '#0A0A0F',
+      surface: '#1A1A2E',
+      text: '#FFFFFF',
+      textSecondary: '#B0B0B0',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: false,
+      neon: true,
+    },
+  },
+  {
+    id: 'neon-glass',
+    name: 'Neon Glass',
+    colors: {
+      primary: '#FF0080',
+      secondary: '#8000FF',
+      accent: '#00FFFF',
+      background: '#050014',
+      surface: 'rgba(255, 255, 255, 0.1)',
+      text: '#FFFFFF',
+      textSecondary: '#CCCCCC',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: true,
+      neon: true,
+    },
+  },
+  {
+    id: 'matrix',
+    name: 'Matrix',
+    colors: {
+      primary: '#00FF00',
+      secondary: '#008F00',
+      accent: '#FFFF00',
+      background: '#000000',
+      surface: '#001100',
+      text: '#00FF00',
+      textSecondary: '#009900',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: false,
+      neon: false,
+    },
+  },
+  {
+    id: 'hologram',
+    name: 'Hologram',
+    colors: {
+      primary: '#00BFFF',
+      secondary: '#9932CC',
+      accent: '#FFD700',
+      background: '#0C0C1A',
+      surface: 'rgba(0, 191, 255, 0.15)',
+      text: '#E0E0E0',
+      textSecondary: '#A0A0A0',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: true,
+      neon: false,
+    },
+  },
+  {
+    id: 'synthwave',
+    name: 'Synthwave',
+    colors: {
+      primary: '#FF0080',
+      secondary: '#FF8000',
+      accent: '#FFFF00',
+      background: '#1A0033',
+      surface: 'rgba(255, 0, 128, 0.1)',
+      text: '#FFFFFF',
+      textSecondary: '#FFCCFF',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: true,
+      neon: true,
+    },
+  },
+  {
+    id: 'dark-minimal',
+    name: 'Dark Minimal',
+    colors: {
+      primary: '#6366F1',
+      secondary: '#8B5CF6',
+      accent: '#06B6D4',
+      background: '#111827',
+      surface: '#1F2937',
+      text: '#F9FAFB',
+      textSecondary: '#D1D5DB',
+    },
+    effects: {
+      glow: false,
+      glassmorphism: false,
+      neon: false,
+    },
+  },
+  {
+    id: 'ocean-depth',
+    name: 'Ocean Depth',
+    colors: {
+      primary: '#0EA5E9',
+      secondary: '#0284C7',
+      accent: '#06B6D4',
+      background: '#0C1426',
+      surface: 'rgba(14, 165, 233, 0.1)',
+      text: '#F0F9FF',
+      textSecondary: '#BAE6FD',
+    },
+    effects: {
+      glow: true,
+      glassmorphism: true,
+      neon: false,
+    },
+  },
+];
