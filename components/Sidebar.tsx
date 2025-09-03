@@ -4,18 +4,7 @@ import { themes } from '@/data/themes';
 import { templates, getTemplatesByCategory, getRandomTemplate } from '@/data/templates';
 import { FrameworkSelector } from './FrameworkSelector';
 import { Framework, Template } from '@/types';
-import { 
-  Palette, 
-  Code, 
-  Wand2,
-  Download,
-  Settings,
-  Layers,
-  Shuffle,
-  FileTemplate,
-  ChevronDown,
-  Search
-} from 'lucide-react';
+import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search } from 'lucide-react';
 
 interface SidebarProps {
   selectedFramework: Framework;
