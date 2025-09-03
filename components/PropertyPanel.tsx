@@ -1,6 +1,6 @@
-import React from 'react';
-import { Component, ComponentType } from '@/types';
-import { Edit3, Trash2, Copy } from 'lucide-react';
+import React, { useState } from 'react';
+import { Component } from '@/types';
+import { Edit3, Trash2, Copy, Palette, Move, Zap, Eye } from 'lucide-react';
 
 interface PropertyPanelProps {
   selectedComponent: Component | null;
@@ -15,6 +15,8 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   onComponentDelete,
   onComponentDuplicate,
 }) => {
+  const [activeTab, setActiveTab] = useState<'props' | 'style' | 'animations'>('props');
+
   if (!selectedComponent) {
     return (
       <div className="w-80 bg-gradient-to-b from-gray-900 to-black border-l border-cyan-500/30 h-full">
@@ -43,6 +45,20 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
     });
   };
 
+  const addAnimation = (animation: any) => {
+    const currentAnimations = selectedComponent.animations || [];
+    onComponentUpdate(selectedComponent.id, {
+      animations: [...currentAnimations, animation],
+    });
+  };
+
+  const removeAnimation = (index: number) => {
+    const currentAnimations = selectedComponent.animations || [];
+    onComponentUpdate(selectedComponent.id, {
+      animations: currentAnimations.filter((_, i) => i !== index),
+    });
+  };
+
   const renderPropertyInputs = () => {
     switch (selectedComponent.type) {
       case 'button':
@@ -68,6 +84,26 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 <option value="secondary">Secondaire</option>
                 <option value="ghost">Fantôme</option>
                 <option value="neon">Néon</option>
+                <option value="gradient">Gradient</option>
+                <option value="glass">Glassmorphism</option>
+                <option value="minimal">Minimal</option>
+                <option value="rounded">Arrondi</option>
+                <option value="large">Large</option>
+                <option value="icon">Icône</option>
+                <option value="floating">Flottant</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Taille</label>
+              <select
+                value={selectedComponent.props.size || 'medium'}
+                onChange={(e) => updateProp('size', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="small">Petit</option>
+                <option value="medium">Moyen</option>
+                <option value="large">Grand</option>
+                <option value="xl">Très grand</option>
               </select>
             </div>
           </>
@@ -95,6 +131,100 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 onChange={(e) => updateProp('items', e.target.value.split(', ').filter(Boolean))}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
               />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Position</label>
+              <select
+                value={selectedComponent.props.position || 'top'}
+                onChange={(e) => updateProp('position', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="top">Haut</option>
+                <option value="bottom">Bas</option>
+                <option value="fixed">Fixe</option>
+                <option value="sticky">Collant</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'aside':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
+              <input
+                type="text"
+                value={selectedComponent.props.title || ''}
+                onChange={(e) => updateProp('title', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Éléments (séparés par des virgules)
+              </label>
+              <textarea
+                value={(selectedComponent.props.items || []).join(', ')}
+                onChange={(e) => updateProp('items', e.target.value.split(', ').filter(Boolean))}
+                rows={3}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Position</label>
+              <select
+                value={selectedComponent.props.position || 'left'}
+                onChange={(e) => updateProp('position', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="left">Gauche</option>
+                <option value="right">Droite</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'hero':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Titre principal</label>
+              <input
+                type="text"
+                value={selectedComponent.props.title || ''}
+                onChange={(e) => updateProp('title', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Sous-titre</label>
+              <textarea
+                value={selectedComponent.props.subtitle || ''}
+                onChange={(e) => updateProp('subtitle', e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Texte du bouton</label>
+              <input
+                type="text"
+                value={selectedComponent.props.buttonText || ''}
+                onChange={(e) => updateProp('buttonText', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedComponent.props.hasButton || false}
+                  onChange={(e) => updateProp('hasButton', e.target.checked)}
+                  className="w-4 h-4 text-cyan-500 bg-gray-800 border-gray-600 rounded focus:ring-cyan-500"
+                />
+                <span className="text-sm text-gray-300">Afficher le bouton</span>
+              </label>
             </div>
           </>
         );
@@ -166,6 +296,56 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 <option value="email">Email</option>
                 <option value="password">Mot de passe</option>
                 <option value="number">Nombre</option>
+                <option value="search">Recherche</option>
+                <option value="tel">Téléphone</option>
+                <option value="url">URL</option>
+                <option value="date">Date</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'text':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
+              <textarea
+                value={selectedComponent.props.content || ''}
+                onChange={(e) => updateProp('content', e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Taille</label>
+              <select
+                value={selectedComponent.props.size || 'base'}
+                onChange={(e) => updateProp('size', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="xs">Très petit</option>
+                <option value="sm">Petit</option>
+                <option value="base">Normal</option>
+                <option value="lg">Grand</option>
+                <option value="xl">Très grand</option>
+                <option value="2xl">Énorme</option>
+                <option value="3xl">Gigantesque</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Poids</label>
+              <select
+                value={selectedComponent.props.weight || 'normal'}
+                onChange={(e) => updateProp('weight', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="light">Léger</option>
+                <option value="normal">Normal</option>
+                <option value="medium">Moyen</option>
+                <option value="semibold">Semi-gras</option>
+                <option value="bold">Gras</option>
+                <option value="extrabold">Très gras</option>
               </select>
             </div>
           </>
@@ -270,9 +450,272 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
         );
 
       default:
-        return null;
+        return (
+          <div className="text-gray-500 text-sm">
+            Propriétés non disponibles pour ce type de composant.
+          </div>
+        );
     }
   };
+
+  const renderStyleInputs = () => (
+    <div className="space-y-4">
+      {/* Colors */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Couleurs</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Arrière-plan</label>
+            <input
+              type="color"
+              value={selectedComponent.style.backgroundColor || '#000000'}
+              onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Texte</label>
+            <input
+              type="color"
+              value={selectedComponent.style.color || '#ffffff'}
+              onChange={(e) => updateStyle('color', e.target.value)}
+              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Spacing */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Espacement</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Padding</label>
+            <input
+              type="text"
+              value={selectedComponent.style.padding || ''}
+              onChange={(e) => updateStyle('padding', e.target.value)}
+              placeholder="16px"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Margin</label>
+            <input
+              type="text"
+              value={selectedComponent.style.margin || ''}
+              onChange={(e) => updateStyle('margin', e.target.value)}
+              placeholder="8px"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Border */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Bordures</h4>
+        <div className="space-y-2">
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Largeur</label>
+              <input
+                type="text"
+                value={selectedComponent.style.borderWidth || ''}
+                onChange={(e) => updateStyle('borderWidth', e.target.value)}
+                placeholder="1px"
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Style</label>
+              <select
+                value={selectedComponent.style.borderStyle || 'solid'}
+                onChange={(e) => updateStyle('borderStyle', e.target.value)}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="solid">Solide</option>
+                <option value="dashed">Tirets</option>
+                <option value="dotted">Points</option>
+                <option value="double">Double</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Couleur</label>
+              <input
+                type="color"
+                value={selectedComponent.style.borderColor || '#ffffff'}
+                onChange={(e) => updateStyle('borderColor', e.target.value)}
+                className="w-full h-7 bg-gray-800 border border-gray-600 rounded"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Border Radius</label>
+            <input
+              type="text"
+              value={selectedComponent.style.borderRadius || ''}
+              onChange={(e) => updateStyle('borderRadius', e.target.value)}
+              placeholder="8px"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Shadow */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Ombres</h4>
+        <div className="space-y-2">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Box Shadow</label>
+            <input
+              type="text"
+              value={selectedComponent.style.boxShadow || ''}
+              onChange={(e) => updateStyle('boxShadow', e.target.value)}
+              placeholder="0 4px 8px rgba(0, 0, 0, 0.1)"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Text Shadow</label>
+            <input
+              type="text"
+              value={selectedComponent.style.textShadow || ''}
+              onChange={(e) => updateStyle('textShadow', e.target.value)}
+              placeholder="0 0 10px currentColor"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Effects */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Effets</h4>
+        <div className="space-y-2">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Opacité</label>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={selectedComponent.style.opacity || 1}
+              onChange={(e) => updateStyle('opacity', e.target.value)}
+              className="w-full"
+            />
+            <span className="text-xs text-gray-500">{selectedComponent.style.opacity || 1}</span>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Transform</label>
+            <input
+              type="text"
+              value={selectedComponent.style.transform || ''}
+              onChange={(e) => updateStyle('transform', e.target.value)}
+              placeholder="rotate(45deg) scale(1.1)"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Filter</label>
+            <input
+              type="text"
+              value={selectedComponent.style.filter || ''}
+              onChange={(e) => updateStyle('filter', e.target.value)}
+              placeholder="blur(5px) brightness(1.2)"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Backdrop Filter</label>
+            <input
+              type="text"
+              value={selectedComponent.style.backdropFilter || ''}
+              onChange={(e) => updateStyle('backdropFilter', e.target.value)}
+              placeholder="blur(20px)"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderAnimationInputs = () => (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-medium text-gray-300">Animations</h4>
+        <button
+          onClick={() => addAnimation({
+            name: 'fadeIn',
+            duration: '0.3s',
+            timing: 'ease-in-out',
+          })}
+          className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs rounded transition-colors"
+        >
+          Ajouter
+        </button>
+      </div>
+
+      {(selectedComponent.animations || []).map((animation, index) => (
+        <div key={index} className="p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-300">Animation {index + 1}</span>
+            <button
+              onClick={() => removeAnimation(index)}
+              className="text-red-400 hover:text-red-300 text-xs"
+            >
+              Supprimer
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Nom</label>
+              <select
+                value={animation.name}
+                onChange={(e) => {
+                  const newAnimations = [...(selectedComponent.animations || [])];
+                  newAnimations[index] = { ...animation, name: e.target.value };
+                  onComponentUpdate(selectedComponent.id, { animations: newAnimations });
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="fadeIn">Fade In</option>
+                <option value="slideIn">Slide In</option>
+                <option value="bounce">Bounce</option>
+                <option value="pulse">Pulse</option>
+                <option value="shake">Shake</option>
+                <option value="rotate">Rotate</option>
+                <option value="scale">Scale</option>
+                <option value="glow">Glow</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Durée</label>
+              <input
+                type="text"
+                value={animation.duration}
+                onChange={(e) => {
+                  const newAnimations = [...(selectedComponent.animations || [])];
+                  newAnimations[index] = { ...animation, duration: e.target.value };
+                  onComponentUpdate(selectedComponent.id, { animations: newAnimations });
+                }}
+                placeholder="0.3s"
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {(!selectedComponent.animations || selectedComponent.animations.length === 0) && (
+        <div className="text-center py-6 text-gray-500 text-sm">
+          Aucune animation. Cliquez sur "Ajouter" pour en créer une.
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="w-80 bg-gradient-to-b from-gray-900 to-black border-l border-cyan-500/30 h-full overflow-y-auto">
@@ -297,6 +740,43 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex mb-6 bg-gray-800/30 rounded-lg p-1">
+          <button
+            onClick={() => setActiveTab('props')}
+            className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              activeTab === 'props' 
+                ? 'bg-cyan-500 text-white' 
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+          >
+            <Edit3 className="w-4 h-4" />
+            Props
+          </button>
+          <button
+            onClick={() => setActiveTab('style')}
+            className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              activeTab === 'style' 
+                ? 'bg-cyan-500 text-white' 
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+          >
+            <Palette className="w-4 h-4" />
+            Style
+          </button>
+          <button
+            onClick={() => setActiveTab('animations')}
+            className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              activeTab === 'animations' 
+                ? 'bg-cyan-500 text-white' 
+                : 'text-gray-400 hover:text-gray-300'
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            Anim
+          </button>
+        </div>
+
         <div className="space-y-6">
           {/* Component Type */}
           <div>
@@ -306,11 +786,27 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
             </div>
           </div>
 
-          {/* Component Properties */}
-          <div>
-            <h3 className="text-sm font-medium text-gray-300 mb-4">Propriétés</h3>
-            {renderPropertyInputs()}
-          </div>
+          {/* Tab Content */}
+          {activeTab === 'props' && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-300 mb-4">Propriétés</h3>
+              {renderPropertyInputs()}
+            </div>
+          )}
+
+          {activeTab === 'style' && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-300 mb-4">Styles</h3>
+              {renderStyleInputs()}
+            </div>
+          )}
+
+          {activeTab === 'animations' && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-300 mb-4">Animations</h3>
+              {renderAnimationInputs()}
+            </div>
+          )}
 
           {/* Position & Size */}
           <div>
@@ -357,33 +853,6 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                   onChange={(e) => onComponentUpdate(selectedComponent.id, {
                     position: { ...selectedComponent.position, height: parseInt(e.target.value) || 40 }
                   })}
-                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Custom Styles */}
-          <div>
-            <h3 className="text-sm font-medium text-gray-300 mb-4">Styles personnalisés</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Border Radius</label>
-                <input
-                  type="text"
-                  value={selectedComponent.style.borderRadius || ''}
-                  onChange={(e) => updateStyle('borderRadius', e.target.value)}
-                  placeholder="8px"
-                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Padding</label>
-                <input
-                  type="text"
-                  value={selectedComponent.style.padding || ''}
-                  onChange={(e) => updateStyle('padding', e.target.value)}
-                  placeholder="16px"
                   className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
                 />
               </div>

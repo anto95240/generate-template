@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Framework } from '@/types';
 import { frameworks, getFrameworksByCategory } from '@/data/frameworks';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search, AlertCircle } from 'lucide-react';
 
 interface FrameworkSelectorProps {
   selectedFramework: Framework;
@@ -56,6 +56,11 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     }
   };
 
+  const isBackendFramework = (frameworkId: Framework) => {
+    const framework = frameworks.find(f => f.id === frameworkId);
+    return framework?.category === 'backend';
+  };
+
   return (
     <div className="space-y-4">
       {/* Search */}
@@ -69,6 +74,19 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
           className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-cyan-500 focus:outline-none"
         />
       </div>
+
+      {/* Backend Warning */}
+      {isBackendFramework(selectedFramework) && (
+        <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded-lg">
+          <div className="flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+            <div className="text-xs text-yellow-200">
+              <p className="font-medium mb-1">Framework Backend</p>
+              <p>Les frameworks backend génèrent des templates HTML. Certaines fonctionnalités interactives peuvent être limitées.</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Framework Categories */}
       <div className="space-y-3">
@@ -100,7 +118,13 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
             {expandedCategories.includes(category) && (
               <div className="mt-2 space-y-1 pl-2">
                 {categoryFrameworks.map((framework) => {
-                  const IconComponent = require('lucide-react')[framework.icon];
+                  let IconComponent;
+                  try {
+                    IconComponent = require('lucide-react')[framework.icon];
+                  } catch {
+                    IconComponent = require('lucide-react')['Code'];
+                  }
+                  
                   return (
                     <button
                       key={framework.id}

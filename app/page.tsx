@@ -5,15 +5,18 @@ import { Sidebar } from '@/components/Sidebar';
 import { Canvas } from '@/components/Canvas';
 import { PropertyPanel } from '@/components/PropertyPanel';
 import { AIModal } from '@/components/AIModal';
+import { ExportModal } from '@/components/ExportModal';
 import { useComponents } from '@/hooks/useComponents';
 import { themes } from '@/data/themes';
-import { Framework, ComponentType } from '@/types';
+import { Framework, ComponentType, Template, ExportOptions } from '@/types';
 import { exportProject } from '@/utils/exportUtils';
+import { AIService } from '@/services/aiService';
 
 function Home() {
   const [selectedFramework, setSelectedFramework] = useState<Framework>('react');
   const [selectedThemeId, setSelectedThemeId] = useState('cyberpunk');
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   const {
     components,
@@ -25,6 +28,7 @@ function Home() {
     duplicateComponent,
     clearCanvas,
     setSelectedComponentId,
+    loadTemplate,
   } = useComponents(selectedFramework);
 
   const selectedTheme = themes.find(t => t.id === selectedThemeId) || themes[0];
@@ -33,18 +37,76 @@ function Home() {
     addComponent(type);
   };
 
-  const handleAIGenerate = async (prompt: string) => {
-    // Simulation de génération IA
-    console.log('Génération IA avec prompt:', prompt);
-    
-    // Pour l'instant, on ajoute un composant aléatoire
-    const types: ComponentType[] = ['button', 'card', 'input'];
-    const randomType = types[Math.floor(Math.random() * types.length)];
-    addComponent(randomType);
+  const handleAIGenerate = async (prompt: string, generateFullCanvas?: boolean) => {
+    try {
+      if (generateFullCanvas) {
+        const result = await AIService.generateFullCanvas(prompt);
+        if (result.components) {
+          // Effacer le canvas et ajouter tous les composants
+          clearCanvas();
+          result.components.forEach((comp, index) => {
+            setTimeout(() => {
+              const component = {
+                id: `${comp.type}-${Date.now()}-${index}`,
+                type: comp.type,
+                name: comp.type.charAt(0).toUpperCase() + comp.type.slice(1),
+                props: comp.props,
+                style: comp.style,
+                position: comp.position,
+                framework: selectedFramework,
+              };
+              addComponent(component.type, component);
+            }, index * 100); // Délai pour l'effet visuel
+          });
+        }
+      } else {
+        const result = await AIService.generateComponent(prompt);
+        const component = {
+          id: `${result.componentType}-${Date.now()}`,
+          type: result.componentType,
+          name: result.componentType.charAt(0).toUpperCase() + result.componentType.slice(1),
+          props: result.props,
+          style: result.style,
+          position: {
+            x: Math.random() * 300 + 50,
+            y: Math.random() * 200 + 50,
+            width: result.componentType === 'navbar' ? 600 : 
+                   result.componentType === 'hero' ? 800 :
+                   result.componentType === 'card' ? 300 : 200,
+            height: result.componentType === 'navbar' ? 60 : 
+                    result.componentType === 'hero' ? 400 :
+                    result.componentType === 'card' ? 200 : 40,
+          },
+          framework: selectedFramework,
+        };
+        addComponent(component.type, component);
+      }
+    } catch (error) {
+      console.error('Erreur génération IA:', error);
+      alert('Erreur lors de la génération IA: ' + (error as Error).message);
+    }
   };
 
-  const handleExport = () => {
-    exportProject(components, selectedFramework, selectedTheme);
+  const handleLoadTemplate = (template: Template) => {
+    clearCanvas();
+    setSelectedFramework(template.framework);
+    setSelectedThemeId(template.theme);
+    
+    // Charger les composants du template
+    template.components.forEach((comp, index) => {
+      setTimeout(() => {
+        const component = {
+          ...comp,
+          id: `${comp.type}-${Date.now()}-${index}`,
+          framework: template.framework,
+        };
+        addComponent(component.type, component);
+      }, index * 100);
+    });
+  };
+
+  const handleExport = (options: ExportOptions) => {
+    exportProject(components, selectedFramework, selectedTheme, options);
   };
 
   return (
@@ -57,7 +119,8 @@ function Home() {
         onThemeChange={setSelectedThemeId}
         onAddComponent={handleAddComponent}
         onAIGenerate={() => setIsAIModalOpen(true)}
-        onExport={handleExport}
+        onExport={() => setIsExportModalOpen(true)}
+        onLoadTemplate={handleLoadTemplate}
       />
 
       {/* Main Canvas */}
@@ -82,6 +145,13 @@ function Home() {
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
         onGenerate={handleAIGenerate}
+      />
+
+      {/* Export Modal */}
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        onExport={handleExport}
       />
 
       {/* Floating Action Button for Clear */}

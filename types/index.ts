@@ -6,6 +6,7 @@ export interface Component {
   style: ComponentStyle;
   position: Position;
   framework?: Framework;
+  animations?: ComponentAnimation[];
 }
 
 export interface Position {
@@ -24,8 +25,29 @@ export interface ComponentStyle {
   fontSize?: string;
   fontWeight?: string;
   border?: string;
+  borderWidth?: string;
+  borderStyle?: string;
+  borderColor?: string;
   boxShadow?: string;
   gradient?: string;
+  opacity?: string;
+  transform?: string;
+  filter?: string;
+  backdropFilter?: string;
+  textShadow?: string;
+  outline?: string;
+  cursor?: string;
+  overflow?: string;
+  zIndex?: string;
+}
+
+export interface ComponentAnimation {
+  name: string;
+  duration: string;
+  timing: string;
+  delay?: string;
+  iteration?: string;
+  direction?: string;
 }
 
 export type ComponentType = 
@@ -38,11 +60,27 @@ export type ComponentType =
   | 'image' 
   | 'container'
   | 'sidebar'
+  | 'aside'
   | 'footer'
   | 'modal'
   | 'form'
   | 'table'
-  | 'grid';
+  | 'grid'
+  | 'hero'
+  | 'testimonial'
+  | 'pricing'
+  | 'feature'
+  | 'gallery'
+  | 'timeline'
+  | 'accordion'
+  | 'tabs'
+  | 'breadcrumb'
+  | 'pagination'
+  | 'progress'
+  | 'badge'
+  | 'alert'
+  | 'tooltip'
+  | 'dropdown';
 
 export type Framework = 
   | 'react' 
@@ -70,18 +108,62 @@ export interface Theme {
     surface: string;
     text: string;
     textSecondary: string;
+    success?: string;
+    warning?: string;
+    error?: string;
+    info?: string;
   };
   effects: {
     glow: boolean;
     glassmorphism: boolean;
     neon: boolean;
+    shadows: boolean;
+    gradients: boolean;
+    animations: boolean;
+  };
+  typography: {
+    fontFamily: string;
+    headingFont?: string;
+    fontSize: {
+      xs: string;
+      sm: string;
+      base: string;
+      lg: string;
+      xl: string;
+      '2xl': string;
+      '3xl': string;
+    };
+  };
+  spacing: {
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
   };
 }
 
 export interface Template {
   id: string;
   name: string;
+  description: string;
+  category: 'landing' | 'dashboard' | 'ecommerce' | 'blog' | 'portfolio' | 'app';
   components: Component[];
   theme: string;
   framework: Framework;
+  preview?: string;
+}
+
+export interface AIToken {
+  remaining: number;
+  total: number;
+  resetTime: Date;
+  model: string;
+}
+
+export interface ExportOptions {
+  fileName: string;
+  includeAssets: boolean;
+  minify: boolean;
+  format: 'single' | 'modular';
 }
