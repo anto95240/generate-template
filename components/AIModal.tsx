@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Send, Zap, RefreshCw } from 'lucide-react';
+import { X, Sparkles, Send, Zap, RefreshCw, Edit3, Layers } from 'lucide-react';
 import { AIToken } from '@/types';
 
 interface AIModalProps {

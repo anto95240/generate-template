@@ -1,6 +1,7 @@
 import { Component, Framework, Theme } from '@/types';
 
 export class CodeGenerator {
+
   static generateCode(components: Component[], framework: Framework, theme: Theme): string {
     switch (framework) {
       case 'react':

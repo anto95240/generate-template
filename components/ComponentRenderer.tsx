@@ -1,4 +1,5 @@
 import React from 'react';
+import { X, ChevronDown, Search, Grid3X3, MousePointer, Menu, Square, Type, FileText, Table, SidebarOpen, Zap, Minus, Tag, AlertTriangle, BarChart3, Table as Tabs } from 'lucide-react';
 import { Component, Theme } from '@/types';
 
 interface ComponentRendererProps {

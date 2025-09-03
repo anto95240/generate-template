@@ -172,12 +172,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-8">
             <div className="grid grid-cols-2 gap-2">
               {componentTemplates.map((template) => {
-                let IconComponent;
-                try {
-                  IconComponent = require('lucide-react')[template.icon];
-                } catch {
-                  IconComponent = require('lucide-react')['Square'];
-                }
+                const iconName = template.icon;
+                const IconComponent = iconName === 'MousePointer' ? Code :
+                                    iconName === 'Menu' ? Code :
+                                    iconName === 'Square' ? Code :
+                                    iconName === 'Type' ? Code :
+                                    iconName === 'FileText' ? Code :
+                                    iconName === 'Table' ? Code :
+                                    iconName === 'Grid3X3' ? Code :
+                                    iconName === 'SidebarOpen' ? Code :
+                                    iconName === 'Zap' ? Code :
+                                    iconName === 'Minus' ? Code :
+                                    iconName === 'Tag' ? Code :
+                                    iconName === 'AlertTriangle' ? Code :
+                                    iconName === 'BarChart3' ? Code :
+                                    iconName === 'Tabs' ? Code :
+                                    iconName === 'ChevronDown' ? Code :
+                                    Code;
                 return (
                   <button
                     key={template.type}
