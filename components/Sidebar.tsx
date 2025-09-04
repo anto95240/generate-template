@@ -190,18 +190,39 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     iconName === 'ChevronDown' ? Code :
                                     Code;
                 return (
-                  <button
-                    key={template.type}
-                    onClick={() => onAddComponent(template.type)}
-                    className="p-4 bg-gray-800/30 hover:bg-gray-700/50 rounded-lg border border-gray-700 hover:border-cyan-500/50 transition-all duration-200 group"
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
-                      <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
-                        {template.name}
-                      </span>
+                  <div key={template.type} className="relative group">
+                    <button
+                      onClick={() => onAddComponent(template.type)}
+                      className="w-full p-4 bg-gray-800/30 hover:bg-gray-700/50 rounded-lg border border-gray-700 hover:border-cyan-500/50 transition-all duration-200"
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <IconComponent className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+                        <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                          {template.name}
+                        </span>
+                        <span className="text-xs text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {template.presets.length} variantes
+                        </span>
+                      </div>
+                    </button>
+                    
+                    {/* Tooltip avec variantes */}
+                    <div className="absolute left-full top-0 ml-2 w-64 bg-gray-900 border border-gray-700 rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none">
+                      <h4 className="text-sm font-medium text-white mb-2">{template.name}</h4>
+                      <div className="space-y-1">
+                        {template.presets.slice(0, 5).map((preset, idx) => (
+                          <div key={idx} className="text-xs text-gray-400">
+                            • {preset.name}
+                          </div>
+                        ))}
+                        {template.presets.length > 5 && (
+                          <div className="text-xs text-cyan-400">
+                            +{template.presets.length - 5} autres...
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>

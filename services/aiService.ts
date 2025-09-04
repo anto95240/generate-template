@@ -170,7 +170,7 @@ Utilise des valeurs réalistes et cohérentes.`;
   }
 
   private static mockAIGeneration(prompt: string, isFullCanvas: boolean): AIResponse {
-    // Simulation basée sur des mots-clés dans le prompt
+    // Simulation améliorée basée sur des mots-clés dans le prompt
     const lowerPrompt = prompt.toLowerCase();
 
     if (isFullCanvas) {
@@ -223,8 +223,21 @@ Utilise des valeurs réalistes et cohérentes.`;
       }
     }
 
-    // Génération de composant unique basée sur les mots-clés
-    if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
+    // Génération de composant unique basée sur les mots-clés - CORRIGÉE
+    if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
+      return {
+        componentType: 'footer',
+        props: { 
+          title: 'Mon Site',
+          links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
+          copyright: '© 2025 Mon Site. Tous droits réservés.',
+        },
+        style: { 
+          padding: '40px 32px', 
+          textAlign: 'center',
+        },
+      };
+    } else if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
       return {
         componentType: 'navbar',
         props: { 
@@ -278,17 +291,45 @@ Utilise des valeurs réalistes et cohérentes.`;
           borderRadius: '16px',
         },
       };
-    } else if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
+    } else if (lowerPrompt.includes('tableau') || lowerPrompt.includes('table')) {
       return {
-        componentType: 'footer',
+        componentType: 'table',
         props: { 
-          title: 'Mon Site',
-          links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
-          copyright: '© 2025 Mon Site. Tous droits réservés.',
+          headers: ['Nom', 'Email', 'Statut'],
+          rows: [['John Doe', 'john@test.com', 'Actif'], ['Jane Smith', 'jane@test.com', 'Inactif']],
         },
         style: { 
-          padding: '40px 32px', 
+          borderRadius: '12px',
+          overflow: 'hidden',
+        },
+      };
+    } else if (lowerPrompt.includes('hero') || lowerPrompt.includes('bannière')) {
+      return {
+        componentType: 'hero',
+        props: { 
+          title: 'Titre Principal',
+          subtitle: 'Sous-titre descriptif',
+          buttonText: 'Action',
+          hasButton: true,
+        },
+        style: { 
+          padding: '80px 40px',
           textAlign: 'center',
+          minHeight: '400px',
+        },
+      };
+    } else if (lowerPrompt.includes('sidebar') || lowerPrompt.includes('aside') || lowerPrompt.includes('menu latéral')) {
+      return {
+        componentType: 'aside',
+        props: { 
+          title: 'Menu',
+          items: ['Dashboard', 'Profil', 'Paramètres'],
+          position: 'left',
+        },
+        style: { 
+          padding: '24px',
+          width: '250px',
+          height: '100vh',
         },
       };
     }

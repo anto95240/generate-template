@@ -50,8 +50,8 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
   const getCategoryDescription = (category: string) => {
     switch (category) {
       case 'frontend': return 'Interfaces utilisateur';
-      case 'fullstack': return 'Applications complètes';
       case 'backend': return 'Serveurs et APIs';
+      case 'mobile': return 'Applications mobiles';
       default: return '';
     }
   };
@@ -101,7 +101,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
                 <div className="text-left">
                   <div className="text-sm font-medium text-gray-300 capitalize">
                     {category === 'frontend' ? 'Frontend' : 
-                     category === 'fullstack' ? 'Full-Stack' : 'Backend'}
+                     category === 'backend' ? 'Backend' : 'Mobile'}
                   </div>
                   <div className="text-xs text-gray-500">
                     {getCategoryDescription(category)}

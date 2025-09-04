@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Component } from '@/types';
-import { Edit3, Trash2, Copy, Palette, Move, Zap, Eye } from 'lucide-react';
+import { Edit3, Trash2, Copy, Palette, Move, Zap, Eye, Sliders } from 'lucide-react';
 
 interface PropertyPanelProps {
   selectedComponent: Component | null;
@@ -91,6 +91,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 <option value="large">Large</option>
                 <option value="icon">Icône</option>
                 <option value="floating">Flottant</option>
+                <option value="outline">Outline</option>
               </select>
             </div>
             <div className="mb-4">
@@ -449,6 +450,170 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
           </>
         );
 
+      case 'footer':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
+              <input
+                type="text"
+                value={selectedComponent.props.title || ''}
+                onChange={(e) => updateProp('title', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Liens (séparés par des virgules)
+              </label>
+              <input
+                type="text"
+                value={(selectedComponent.props.links || []).join(', ')}
+                onChange={(e) => updateProp('links', e.target.value.split(', ').filter(Boolean))}
+                placeholder="Accueil, À propos, Contact"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Copyright</label>
+              <input
+                type="text"
+                value={selectedComponent.props.copyright || ''}
+                onChange={(e) => updateProp('copyright', e.target.value)}
+                placeholder="© 2025 Mon Site"
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+          </>
+        );
+
+      case 'badge':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Texte</label>
+              <input
+                type="text"
+                value={selectedComponent.props.text || ''}
+                onChange={(e) => updateProp('text', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Variante</label>
+              <select
+                value={selectedComponent.props.variant || 'primary'}
+                onChange={(e) => updateProp('variant', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="primary">Primaire</option>
+                <option value="secondary">Secondaire</option>
+                <option value="success">Succès</option>
+                <option value="warning">Attention</option>
+                <option value="error">Erreur</option>
+                <option value="info">Information</option>
+                <option value="accent">Accent</option>
+                <option value="gradient">Gradient</option>
+              </select>
+            </div>
+          </>
+        );
+
+      case 'alert':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
+              <input
+                type="text"
+                value={selectedComponent.props.title || ''}
+                onChange={(e) => updateProp('title', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
+              <textarea
+                value={selectedComponent.props.message || ''}
+                onChange={(e) => updateProp('message', e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+              <select
+                value={selectedComponent.props.type || 'info'}
+                onChange={(e) => updateProp('type', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="success">Succès</option>
+                <option value="warning">Attention</option>
+                <option value="error">Erreur</option>
+                <option value="info">Information</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedComponent.props.dismissible || false}
+                  onChange={(e) => updateProp('dismissible', e.target.checked)}
+                  className="w-4 h-4 text-cyan-500 bg-gray-800 border-gray-600 rounded focus:ring-cyan-500"
+                />
+                <span className="text-sm text-gray-300">Peut être fermé</span>
+              </label>
+            </div>
+          </>
+        );
+
+      case 'progress':
+        return (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Valeur</label>
+              <input
+                type="number"
+                min="0"
+                max={selectedComponent.props.max || 100}
+                value={selectedComponent.props.value || 0}
+                onChange={(e) => updateProp('value', parseInt(e.target.value))}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Maximum</label>
+              <input
+                type="number"
+                min="1"
+                value={selectedComponent.props.max || 100}
+                onChange={(e) => updateProp('max', parseInt(e.target.value))}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Label</label>
+              <input
+                type="text"
+                value={selectedComponent.props.label || ''}
+                onChange={(e) => updateProp('label', e.target.value)}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedComponent.props.showPercentage || false}
+                  onChange={(e) => updateProp('showPercentage', e.target.checked)}
+                  className="w-4 h-4 text-cyan-500 bg-gray-800 border-gray-600 rounded focus:ring-cyan-500"
+                />
+                <span className="text-sm text-gray-300">Afficher le pourcentage</span>
+              </label>
+            </div>
+          </>
+        );
+
       default:
         return (
           <div className="text-gray-500 text-sm">
@@ -459,10 +624,13 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   };
 
   const renderStyleInputs = () => (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Colors */}
       <div>
-        <h4 className="text-sm font-medium text-gray-300 mb-3">Couleurs</h4>
+        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center gap-2">
+          <Palette className="w-4 h-4" />
+          Couleurs
+        </h4>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-400 mb-1">Arrière-plan</label>
@@ -470,7 +638,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="color"
               value={selectedComponent.style.backgroundColor || '#000000'}
               onChange={(e) => updateStyle('backgroundColor', e.target.value)}
-              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+              className="w-full h-10 bg-gray-800 border border-gray-600 rounded cursor-pointer"
             />
           </div>
           <div>
@@ -479,7 +647,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="color"
               value={selectedComponent.style.color || '#ffffff'}
               onChange={(e) => updateStyle('color', e.target.value)}
-              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+              className="w-full h-10 bg-gray-800 border border-gray-600 rounded cursor-pointer"
             />
           </div>
         </div>
@@ -487,27 +655,116 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
 
       {/* Spacing */}
       <div>
-        <h4 className="text-sm font-medium text-gray-300 mb-3">Espacement</h4>
-        <div className="grid grid-cols-2 gap-3">
+        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center gap-2">
+          <Move className="w-4 h-4" />
+          Espacement
+        </h4>
+        <div className="space-y-3">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Padding</label>
-            <input
-              type="text"
-              value={selectedComponent.style.padding || ''}
-              onChange={(e) => updateStyle('padding', e.target.value)}
-              placeholder="16px"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <label className="block text-xs text-gray-400 mb-2">Padding</label>
+            <div className="grid grid-cols-4 gap-2">
+              <input
+                type="number"
+                placeholder="Haut"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.padding || '0px';
+                  const parts = current.split(' ');
+                  parts[0] = value ? `${value}px` : '0px';
+                  updateStyle('padding', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Droite"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.padding || '0px 0px';
+                  const parts = current.split(' ');
+                  parts[1] = value ? `${value}px` : '0px';
+                  updateStyle('padding', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Bas"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.padding || '0px 0px 0px';
+                  const parts = current.split(' ');
+                  parts[2] = value ? `${value}px` : '0px';
+                  updateStyle('padding', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Gauche"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.padding || '0px 0px 0px 0px';
+                  const parts = current.split(' ');
+                  parts[3] = value ? `${value}px` : '0px';
+                  updateStyle('padding', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Margin</label>
-            <input
-              type="text"
-              value={selectedComponent.style.margin || ''}
-              onChange={(e) => updateStyle('margin', e.target.value)}
-              placeholder="8px"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <label className="block text-xs text-gray-400 mb-2">Margin</label>
+            <div className="grid grid-cols-4 gap-2">
+              <input
+                type="number"
+                placeholder="Haut"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.margin || '0px';
+                  const parts = current.split(' ');
+                  parts[0] = value ? `${value}px` : '0px';
+                  updateStyle('margin', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Droite"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.margin || '0px 0px';
+                  const parts = current.split(' ');
+                  parts[1] = value ? `${value}px` : '0px';
+                  updateStyle('margin', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Bas"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.margin || '0px 0px 0px';
+                  const parts = current.split(' ');
+                  parts[2] = value ? `${value}px` : '0px';
+                  updateStyle('margin', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+              <input
+                type="number"
+                placeholder="Gauche"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const current = selectedComponent.style.margin || '0px 0px 0px 0px';
+                  const parts = current.split(' ');
+                  parts[3] = value ? `${value}px` : '0px';
+                  updateStyle('margin', parts.join(' '));
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -515,48 +772,49 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
       {/* Border */}
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Bordures</h4>
-        <div className="space-y-2">
-          <div className="grid grid-cols-3 gap-2">
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Largeur</label>
-              <input
-                type="text"
-                value={selectedComponent.style.borderWidth || ''}
-                onChange={(e) => updateStyle('borderWidth', e.target.value)}
-                placeholder="1px"
-                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Style</label>
-              <select
-                value={selectedComponent.style.borderStyle || 'solid'}
-                onChange={(e) => updateStyle('borderStyle', e.target.value)}
-                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-              >
-                <option value="solid">Solide</option>
-                <option value="dashed">Tirets</option>
-                <option value="dotted">Points</option>
-                <option value="double">Double</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 mb-1">Couleur</label>
-              <input
-                type="color"
-                value={selectedComponent.style.borderColor || '#ffffff'}
-                onChange={(e) => updateStyle('borderColor', e.target.value)}
-                className="w-full h-7 bg-gray-800 border border-gray-600 rounded"
-              />
-            </div>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Largeur (px)</label>
+            <input
+              type="number"
+              min="0"
+              max="20"
+              value={parseInt(selectedComponent.style.borderWidth) || 0}
+              onChange={(e) => updateStyle('borderWidth', `${e.target.value}px`)}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Border Radius</label>
+            <label className="block text-xs text-gray-400 mb-2">Style</label>
+            <select
+              value={selectedComponent.style.borderStyle || 'solid'}
+              onChange={(e) => updateStyle('borderStyle', e.target.value)}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            >
+              <option value="solid">Solide</option>
+              <option value="dashed">Tirets</option>
+              <option value="dotted">Points</option>
+              <option value="double">Double</option>
+              <option value="none">Aucune</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Couleur</label>
             <input
-              type="text"
-              value={selectedComponent.style.borderRadius || ''}
-              onChange={(e) => updateStyle('borderRadius', e.target.value)}
-              placeholder="8px"
+              type="color"
+              value={selectedComponent.style.borderColor || '#ffffff'}
+              onChange={(e) => updateStyle('borderColor', e.target.value)}
+              className="w-full h-10 bg-gray-800 border border-gray-600 rounded cursor-pointer"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Border Radius (px)</label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={parseInt(selectedComponent.style.borderRadius) || 0}
+              onChange={(e) => updateStyle('borderRadius', `${e.target.value}px`)}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
           </div>
@@ -566,76 +824,260 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
       {/* Shadow */}
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Ombres</h4>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Box Shadow</label>
-            <input
-              type="text"
-              value={selectedComponent.style.boxShadow || ''}
-              onChange={(e) => updateStyle('boxShadow', e.target.value)}
-              placeholder="0 4px 8px rgba(0, 0, 0, 0.1)"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <label className="block text-xs text-gray-400 mb-2">Box Shadow</label>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">X (px)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => {
+                    const x = e.target.value || '0';
+                    const current = selectedComponent.style.boxShadow || '0 0 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[0] = `${x}px`;
+                    updateStyle('boxShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Y (px)</label>
+                <input
+                  type="number"
+                  placeholder="4"
+                  onChange={(e) => {
+                    const y = e.target.value || '4';
+                    const current = selectedComponent.style.boxShadow || '0 0 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[1] = `${y}px`;
+                    updateStyle('boxShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Blur (px)</label>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="8"
+                  onChange={(e) => {
+                    const blur = e.target.value || '8';
+                    const current = selectedComponent.style.boxShadow || '0 4px 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[2] = `${blur}px`;
+                    updateStyle('boxShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Couleur</label>
+                <input
+                  type="color"
+                  onChange={(e) => {
+                    const color = e.target.value;
+                    const rgb = parseInt(color.slice(1), 16);
+                    const r = (rgb >> 16) & 255;
+                    const g = (rgb >> 8) & 255;
+                    const b = rgb & 255;
+                    const current = selectedComponent.style.boxShadow || '0 4px 8px rgba(0,0,0,0.1)';
+                    const parts = current.split(' ');
+                    parts[3] = `rgba(${r},${g},${b},0.2)`;
+                    updateStyle('boxShadow', parts.join(' '));
+                  }}
+                  className="w-full h-8 bg-gray-800 border border-gray-600 rounded cursor-pointer"
+                />
+              </div>
+            </div>
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Text Shadow</label>
-            <input
-              type="text"
-              value={selectedComponent.style.textShadow || ''}
-              onChange={(e) => updateStyle('textShadow', e.target.value)}
-              placeholder="0 0 10px currentColor"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <label className="block text-xs text-gray-400 mb-2">Text Shadow</label>
+            <div className="grid grid-cols-3 gap-2">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">X (px)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => {
+                    const x = e.target.value || '0';
+                    const current = selectedComponent.style.textShadow || '0 0 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[0] = `${x}px`;
+                    updateStyle('textShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Y (px)</label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  onChange={(e) => {
+                    const y = e.target.value || '0';
+                    const current = selectedComponent.style.textShadow || '0 0 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[1] = `${y}px`;
+                    updateStyle('textShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Blur (px)</label>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="10"
+                  onChange={(e) => {
+                    const blur = e.target.value || '10';
+                    const current = selectedComponent.style.textShadow || '0 0 0 rgba(0,0,0,0)';
+                    const parts = current.split(' ');
+                    parts[2] = `${blur}px`;
+                    updateStyle('textShadow', parts.join(' '));
+                  }}
+                  className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Effects */}
       <div>
-        <h4 className="text-sm font-medium text-gray-300 mb-3">Effets</h4>
-        <div className="space-y-2">
+        <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center gap-2">
+          <Zap className="w-4 h-4" />
+          Effets
+        </h4>
+        <div className="space-y-3">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Opacité</label>
+            <label className="block text-xs text-gray-400 mb-2">Opacité</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={selectedComponent.style.opacity || 1}
+                onChange={(e) => updateStyle('opacity', e.target.value)}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-500 w-8">{selectedComponent.style.opacity || 1}</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Blur (px)</label>
             <input
-              type="range"
+              type="number"
               min="0"
-              max="1"
-              step="0.1"
-              value={selectedComponent.style.opacity || 1}
-              onChange={(e) => updateStyle('opacity', e.target.value)}
-              className="w-full"
-            />
-            <span className="text-xs text-gray-500">{selectedComponent.style.opacity || 1}</span>
-          </div>
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">Transform</label>
-            <input
-              type="text"
-              value={selectedComponent.style.transform || ''}
-              onChange={(e) => updateStyle('transform', e.target.value)}
-              placeholder="rotate(45deg) scale(1.1)"
+              max="50"
+              value={parseInt(selectedComponent.style.filter?.match(/blur\((\d+)px\)/)?.[1]) || 0}
+              onChange={(e) => {
+                const blur = e.target.value;
+                if (blur && blur !== '0') {
+                  updateStyle('filter', `blur(${blur}px)`);
+                } else {
+                  updateStyle('filter', '');
+                }
+              }}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Filter</label>
+            <label className="block text-xs text-gray-400 mb-2">Backdrop Blur (px)</label>
             <input
-              type="text"
-              value={selectedComponent.style.filter || ''}
-              onChange={(e) => updateStyle('filter', e.target.value)}
-              placeholder="blur(5px) brightness(1.2)"
+              type="number"
+              min="0"
+              max="50"
+              value={parseInt(selectedComponent.style.backdropFilter?.match(/blur\((\d+)px\)/)?.[1]) || 0}
+              onChange={(e) => {
+                const blur = e.target.value;
+                if (blur && blur !== '0') {
+                  updateStyle('backdropFilter', `blur(${blur}px)`);
+                } else {
+                  updateStyle('backdropFilter', '');
+                }
+              }}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Backdrop Filter</label>
+            <label className="block text-xs text-gray-400 mb-2">Rotation (degrés)</label>
             <input
-              type="text"
-              value={selectedComponent.style.backdropFilter || ''}
-              onChange={(e) => updateStyle('backdropFilter', e.target.value)}
-              placeholder="blur(20px)"
+              type="number"
+              min="-360"
+              max="360"
+              value={parseInt(selectedComponent.style.transform?.match(/rotate\((-?\d+)deg\)/)?.[1]) || 0}
+              onChange={(e) => {
+                const rotation = e.target.value;
+                if (rotation && rotation !== '0') {
+                  updateStyle('transform', `rotate(${rotation}deg)`);
+                } else {
+                  updateStyle('transform', '');
+                }
+              }}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Scale</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min="0.5"
+                max="2"
+                step="0.1"
+                value={parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1]) || 1}
+                onChange={(e) => {
+                  const scale = e.target.value;
+                  if (scale !== '1') {
+                    updateStyle('transform', `scale(${scale})`);
+                  } else {
+                    updateStyle('transform', '');
+                  }
+                }}
+                className="flex-1"
+              />
+              <span className="text-xs text-gray-500 w-8">{parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1]) || 1}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Typography */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Typographie</h4>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Taille de police (px)</label>
+            <input
+              type="number"
+              min="8"
+              max="72"
+              value={parseInt(selectedComponent.style.fontSize) || 16}
+              onChange={(e) => updateStyle('fontSize', `${e.target.value}px`)}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-2">Poids de police</label>
+            <select
+              value={selectedComponent.style.fontWeight || '400'}
+              onChange={(e) => updateStyle('fontWeight', e.target.value)}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            >
+              <option value="300">Léger (300)</option>
+              <option value="400">Normal (400)</option>
+              <option value="500">Moyen (500)</option>
+              <option value="600">Semi-gras (600)</option>
+              <option value="700">Gras (700)</option>
+              <option value="800">Très gras (800)</option>
+            </select>
           </div>
         </div>
       </div>
@@ -761,7 +1203,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 : 'text-gray-400 hover:text-gray-300'
             }`}
           >
-            <Palette className="w-4 h-4" />
+            <Sliders className="w-4 h-4" />
             Style
           </button>
           <button
