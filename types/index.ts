@@ -16,7 +16,7 @@ export interface Position {
   height: number;
 }
 
-export interface ComponentStyle {
+export interface ComponentStyle extends React.CSSProperties {
   backgroundColor?: string;
   color?: string;
   borderRadius?: string;

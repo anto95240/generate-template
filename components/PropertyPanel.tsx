@@ -779,7 +779,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="0"
               max="20"
-              value={parseInt(selectedComponent.style.borderWidth) || 0}
+              value={parseInt(selectedComponent.style.borderWidth ?? '') || 0}
               onChange={(e) => updateStyle('borderWidth', `${e.target.value}px`)}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
@@ -813,7 +813,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="0"
               max="50"
-              value={parseInt(selectedComponent.style.borderRadius) || 0}
+              value={parseInt(selectedComponent.style.borderRadius ?? '') || 0}
               onChange={(e) => updateStyle('borderRadius', `${e.target.value}px`)}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
@@ -976,7 +976,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="0"
               max="50"
-              value={parseInt(selectedComponent.style.filter?.match(/blur\((\d+)px\)/)?.[1]) || 0}
+              value={parseInt(selectedComponent.style.filter?.match(/blur\((\d+)px\)/)?.[1] ?? '') || 0}
               onChange={(e) => {
                 const blur = e.target.value;
                 if (blur && blur !== '0') {
@@ -994,7 +994,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="0"
               max="50"
-              value={parseInt(selectedComponent.style.backdropFilter?.match(/blur\((\d+)px\)/)?.[1]) || 0}
+              value={parseInt(selectedComponent.style.backdropFilter?.match(/blur\((\d+)px\)/)?.[1] ?? '') || 0}
               onChange={(e) => {
                 const blur = e.target.value;
                 if (blur && blur !== '0') {
@@ -1012,7 +1012,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="-360"
               max="360"
-              value={parseInt(selectedComponent.style.transform?.match(/rotate\((-?\d+)deg\)/)?.[1]) || 0}
+              value={parseInt(selectedComponent.style.transform?.match(/rotate\((-?\d+)deg\)/)?.[1] ?? '') || 0}
               onChange={(e) => {
                 const rotation = e.target.value;
                 if (rotation && rotation !== '0') {
@@ -1032,7 +1032,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 min="0.5"
                 max="2"
                 step="0.1"
-                value={parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1]) || 1}
+                value={parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] ?? '') || 1}
                 onChange={(e) => {
                   const scale = e.target.value;
                   if (scale !== '1') {
@@ -1043,7 +1043,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 }}
                 className="flex-1"
               />
-              <span className="text-xs text-gray-500 w-8">{parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1]) || 1}</span>
+              <span className="text-xs text-gray-500 w-8">{parseFloat(selectedComponent.style.transform?.match(/scale\(([\d.]+)\)/)?.[1] ?? '') || 1}</span>
             </div>
           </div>
         </div>
@@ -1059,7 +1059,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               type="number"
               min="8"
               max="72"
-              value={parseInt(selectedComponent.style.fontSize) || 16}
+              value={parseInt(selectedComponent.style.fontSize ?? '') || 16}
               onChange={(e) => updateStyle('fontSize', `${e.target.value}px`)}
               className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
             />
