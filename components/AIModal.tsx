@@ -63,14 +63,14 @@ export const AIModal: React.FC<AIModalProps> = ({ isOpen, onClose, onGenerate })
   ];
 
   const canvasPrompts = [
-    "Créer une landing page complète avec hero, features et footer",
-    "Générer un dashboard admin avec sidebar, tableaux et cartes",
-    "Faire une page de profil utilisateur avec informations et actions",
-    "Créer une interface e-commerce avec produits et panier",
-    "Générer un blog avec articles, sidebar et navigation",
-    "Faire une page de contact avec formulaire et informations",
-    "Créer un portfolio avec galerie de projets et présentation",
-    "Générer une app mobile avec navigation et contenu",
+    "Dashboard admin complet avec sidebar navigation, tableaux de données, graphiques, cartes statistiques et gestion utilisateurs dans un style moderne épuré",
+    "Landing page SaaS avec hero section impactante, section features avec icônes, pricing table, testimonials et footer complet",
+    "Interface e-commerce moderne avec header navigation, grille de produits, filtres latéraux, panier et checkout",
+    "Application de gestion de projet avec sidebar, kanban board, calendrier, notifications et profil utilisateur",
+    "Blog moderne avec header, articles en grille, sidebar avec catégories, pagination et footer avec liens sociaux",
+    "Portfolio créatif avec navigation fixe, galerie projets en masonry, section about, contact form et animations",
+    "Dashboard analytics avec métriques en temps réel, graphiques interactifs, tableaux de données et exports",
+    "Application mobile banking avec navigation bottom, cartes de comptes, historique transactions et paramètres",
   ];
 
   const currentPrompts = generateFullCanvas ? canvasPrompts : componentPrompts;

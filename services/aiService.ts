@@ -170,37 +170,11 @@ Utilise des valeurs réalistes et cohérentes.`;
   }
 
   private static mockAIGeneration(prompt: string, isFullCanvas: boolean): AIResponse {
-    // Simulation améliorée basée sur des mots-clés dans le prompt
+    // Simulation basée sur des mots-clés dans le prompt
     const lowerPrompt = prompt.toLowerCase();
 
     if (isFullCanvas) {
-      if (lowerPrompt.includes('landing') || lowerPrompt.includes('accueil')) {
-        return {
-          componentType: 'container' as ComponentType,
-          props: {},
-          style: {},
-          components: [
-            {
-              type: 'navbar',
-              props: { title: 'Mon Site', items: ['Accueil', 'Services', 'Contact'] },
-              style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
-              position: { x: 0, y: 0, width: 800, height: 60 },
-            },
-            {
-              type: 'hero',
-              props: { title: 'Bienvenue', subtitle: 'Découvrez notre solution', buttonText: 'Commencer', hasButton: true },
-              style: { padding: '80px 40px', textAlign: 'center' },
-              position: { x: 0, y: 80, width: 800, height: 400 },
-            },
-            {
-              type: 'footer',
-              props: { title: 'Mon Site', links: ['Mentions légales', 'Contact'], copyright: '© 2025' },
-              style: { padding: '40px 32px', textAlign: 'center' },
-              position: { x: 0, y: 500, width: 800, height: 120 },
-            },
-          ],
-        };
-      } else if (lowerPrompt.includes('dashboard') || lowerPrompt.includes('admin')) {
+      if (lowerPrompt.includes('dashboard') && lowerPrompt.includes('admin')) {
         return {
           componentType: 'container' as ComponentType,
           props: {},
@@ -208,36 +182,128 @@ Utilise des valeurs réalistes et cohérentes.`;
           components: [
             {
               type: 'aside',
-              props: { title: 'Admin', items: ['Dashboard', 'Utilisateurs', 'Analytics'], position: 'left' },
-              style: { padding: '24px', width: '250px', height: '100vh' },
-              position: { x: 0, y: 0, width: 250, height: 600 },
+              props: { 
+                title: 'Admin Panel', 
+                items: ['Dashboard', 'Utilisateurs', 'Commandes', 'Produits', 'Analytics', 'Paramètres', 'Déconnexion'],
+                position: 'left' 
+              },
+              style: { padding: '24px', width: '280px', height: '100vh', background: 'rgba(255, 255, 255, 0.05)' },
+              position: { x: 0, y: 0, width: 280, height: 600 },
+            },
+            {
+              type: 'navbar',
+              props: { title: 'Admin Dashboard', items: ['Notifications', 'Profil'] },
+              style: { padding: '16px 32px', backdropFilter: 'blur(20px)', marginLeft: '280px' },
+              position: { x: 280, y: 0, width: 520, height: 60 },
+            },
+            {
+              type: 'grid',
+              props: { 
+                columns: 3, 
+                items: ['1,234 Utilisateurs', '567 Commandes', '89,012€ CA', '45 Nouveaux', '23 En attente', '98% Satisfaction'] 
+              },
+              style: { gap: '20px', padding: '20px', marginLeft: '280px' },
+              position: { x: 300, y: 80, width: 480, height: 200 },
             },
             {
               type: 'table',
-              props: { headers: ['Nom', 'Email', 'Statut'], rows: [['John', 'john@test.com', 'Actif']] },
-              style: { borderRadius: '12px' },
-              position: { x: 270, y: 20, width: 500, height: 200 },
+              props: { 
+                headers: ['Utilisateur', 'Email', 'Rôle', 'Dernière connexion', 'Statut'], 
+                rows: [
+                  ['John Doe', 'john@example.com', 'Admin', '15/01/2025', 'Actif'],
+                  ['Jane Smith', 'jane@example.com', 'User', '14/01/2025', 'Actif'],
+                  ['Bob Wilson', 'bob@example.com', 'Moderator', '13/01/2025', 'Inactif'],
+                ]
+              },
+              style: { borderRadius: '12px', marginLeft: '280px' },
+              position: { x: 300, y: 300, width: 480, height: 250 },
+            },
+          ],
+        };
+      } else if (lowerPrompt.includes('landing') || lowerPrompt.includes('saas')) {
+        return {
+          componentType: 'container' as ComponentType,
+          props: {},
+          style: {},
+          components: [
+            {
+              type: 'navbar',
+              props: { title: 'SaaS Platform', items: ['Features', 'Pricing', 'About', 'Contact', 'Login'] },
+              style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
+              position: { x: 0, y: 0, width: 800, height: 60 },
+            },
+            {
+              type: 'hero',
+              props: { 
+                title: 'Révolutionnez votre workflow', 
+                subtitle: 'La plateforme SaaS qui transforme votre productivité avec des outils IA avancés', 
+                buttonText: 'Essai gratuit 14 jours', 
+                hasButton: true 
+              },
+              style: { padding: '100px 40px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(181, 55, 247, 0.1))' },
+              position: { x: 0, y: 80, width: 800, height: 400 },
+            },
+            {
+              type: 'grid',
+              props: { 
+                columns: 3, 
+                items: ['🚀 Performance', '🔒 Sécurité', '📊 Analytics', '🤖 IA Intégrée', '☁️ Cloud', '📱 Mobile'] 
+              },
+              style: { gap: '24px', padding: '40px' },
+              position: { x: 50, y: 500, width: 700, height: 200 },
+            },
+            {
+              type: 'footer',
+              props: { 
+                title: 'SaaS Platform', 
+                links: ['Privacy', 'Terms', 'Support', 'API', 'Status'], 
+                copyright: '© 2025 SaaS Platform. All rights reserved.' 
+              },
+              style: { padding: '40px 32px', textAlign: 'center' },
+              position: { x: 0, y: 720, width: 800, height: 120 },
+            },
+          ],
+        };
+      } else if (lowerPrompt.includes('ecommerce') || lowerPrompt.includes('shop')) {
+        return {
+          componentType: 'container' as ComponentType,
+          props: {},
+          style: {},
+          components: [
+            {
+              type: 'navbar',
+              props: { title: 'ShopFuture', items: ['Produits', 'Catégories', 'Offres', 'Panier', 'Compte'] },
+              style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
+              position: { x: 0, y: 0, width: 800, height: 60 },
+            },
+            {
+              type: 'aside',
+              props: { title: 'Filtres', items: ['Prix', 'Marque', 'Catégorie', 'Note', 'Disponibilité'], position: 'left' },
+              style: { padding: '20px', width: '220px' },
+              position: { x: 0, y: 60, width: 220, height: 500 },
+            },
+            {
+              type: 'grid',
+              props: { 
+                columns: 3, 
+                items: ['Produit 1 - 299€', 'Produit 2 - 199€', 'Produit 3 - 399€', 'Produit 4 - 149€', 'Produit 5 - 249€', 'Produit 6 - 179€'] 
+              },
+              style: { gap: '20px', padding: '20px', marginLeft: '220px' },
+              position: { x: 240, y: 80, width: 540, height: 400 },
+            },
+            {
+              type: 'footer',
+              props: { title: 'ShopFuture', links: ['Support', 'Livraison', 'Retours', 'CGV'], copyright: '© 2025 ShopFuture' },
+              style: { padding: '40px 32px', textAlign: 'center' },
+              position: { x: 0, y: 500, width: 800, height: 120 },
             },
           ],
         };
       }
     }
 
-    // Génération de composant unique basée sur les mots-clés - CORRIGÉE
-    if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
-      return {
-        componentType: 'footer',
-        props: { 
-          title: 'Mon Site',
-          links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
-          copyright: '© 2025 Mon Site. Tous droits réservés.',
-        },
-        style: { 
-          padding: '40px 32px', 
-          textAlign: 'center',
-        },
-      };
-    } else if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
+    // Génération de composant unique basée sur les mots-clés
+    if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
       return {
         componentType: 'navbar',
         props: { 
@@ -291,45 +357,17 @@ Utilise des valeurs réalistes et cohérentes.`;
           borderRadius: '16px',
         },
       };
-    } else if (lowerPrompt.includes('tableau') || lowerPrompt.includes('table')) {
+    } else if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
       return {
-        componentType: 'table',
+        componentType: 'footer',
         props: { 
-          headers: ['Nom', 'Email', 'Statut'],
-          rows: [['John Doe', 'john@test.com', 'Actif'], ['Jane Smith', 'jane@test.com', 'Inactif']],
+          title: 'Mon Site',
+          links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
+          copyright: '© 2025 Mon Site. Tous droits réservés.',
         },
         style: { 
-          borderRadius: '12px',
-          overflow: 'hidden',
-        },
-      };
-    } else if (lowerPrompt.includes('hero') || lowerPrompt.includes('bannière')) {
-      return {
-        componentType: 'hero',
-        props: { 
-          title: 'Titre Principal',
-          subtitle: 'Sous-titre descriptif',
-          buttonText: 'Action',
-          hasButton: true,
-        },
-        style: { 
-          padding: '80px 40px',
+          padding: '40px 32px', 
           textAlign: 'center',
-          minHeight: '400px',
-        },
-      };
-    } else if (lowerPrompt.includes('sidebar') || lowerPrompt.includes('aside') || lowerPrompt.includes('menu latéral')) {
-      return {
-        componentType: 'aside',
-        props: { 
-          title: 'Menu',
-          items: ['Dashboard', 'Profil', 'Paramètres'],
-          position: 'left',
-        },
-        style: { 
-          padding: '24px',
-          width: '250px',
-          height: '100vh',
         },
       };
     }

@@ -54,6 +54,7 @@ function Home() {
                 style: comp.style,
                 position: comp.position,
                 framework: selectedFramework,
+                animations: [],
               };
               addComponent(component.type, component);
             }, index * 100); // Délai pour l'effet visuel
@@ -78,6 +79,7 @@ function Home() {
                     result.componentType === 'card' ? 200 : 40,
           },
           framework: selectedFramework,
+          animations: [],
         };
         addComponent(component.type, component);
       }
