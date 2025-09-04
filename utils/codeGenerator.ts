@@ -4,9 +4,9 @@ export class CodeGenerator {
   static generateCode(components: Component[], framework: Framework, theme: Theme): string {
     switch (framework) {
       case 'react':
-        return this.generateReactCode(components, theme);
+        return this.generateReactComponent(components, theme);
       case 'vue':
-        return this.generateVueCode(components, theme);
+        return this.generateVueComponent(components, theme);
       case 'angular':
         return this.generateAngularCode(components, theme);
       case 'svelte':
@@ -32,7 +32,7 @@ export class CodeGenerator {
       case 'html':
         return this.generateHTMLCode(components, theme);
       default:
-        return this.generateReactCode(components, theme);
+        return this.generateReactComponent(components, theme);
     }
   }
 

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { componentTemplates } from '@/data/componentTemplates';
 import { themes } from '@/data/themes';
-import { templates, getTemplatesByCategory, getRandomTemplate } from '@/data/templates';
+import { getTemplatesByCategory, getRandomTemplate } from '@/data/templates';
 import { FrameworkSelector } from './FrameworkSelector';
 import { ComponentVariantSelector } from './ComponentVariantSelector';
 import { FileImporter } from './FileImporter';
 import { Framework, Template } from '@/types';
+import * as LucideIcons from 'lucide-react';
+import { LucideProps } from 'lucide-react';
 import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Upload } from 'lucide-react';
 
 interface SidebarProps {
@@ -71,11 +73,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleVariantSelect = (variant: any) => {
     if (selectedComponentType) {
-      onAddComponent(selectedComponentType.type, {
-        props: variant.props,
-        style: variant.style,
-        animations: variant.animations || [],
-      });
+      onAddComponent({
+      type: selectedComponentType.type,
+      props: variant.props,
+      style: variant.style,
+      animations: variant.animations || [],
+    });
     }
   };
 
@@ -194,12 +197,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-8">
             <div className="grid grid-cols-2 gap-2">
               {componentTemplates.map((template) => {
-                let IconComponent;
-                try {
-                  IconComponent = require('lucide-react')[template.icon];
-                } catch {
-                  IconComponent = require('lucide-react')['Square'];
-                }
+                // Force TypeScript à considérer IconComponent comme un composant JSX valide
+                const IconComponent = (LucideIcons[template.icon as keyof typeof LucideIcons] || LucideIcons.Square) as React.ComponentType<LucideProps>;
+
                 return (
                   <button
                     key={template.type}

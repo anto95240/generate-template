@@ -3,6 +3,7 @@
 import React from 'react';
 import { ComponentTemplate } from '@/data/componentTemplates';
 import { ComponentType } from '@/types';
+import { X } from 'lucide-react';
 
 interface ComponentVariantSelectorProps {
   componentType: ComponentType;

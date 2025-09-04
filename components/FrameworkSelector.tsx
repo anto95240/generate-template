@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Framework } from '@/types';
 import { frameworks, getFrameworksByCategory } from '@/data/frameworks';
 import { ChevronDown, Search, AlertCircle, Code } from 'lucide-react';
+import * as Icons from "lucide-react";
 
 interface FrameworkSelectorProps {
   selectedFramework: Framework;
@@ -118,22 +119,8 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
             {expandedCategories.includes(category) && (
               <div className="mt-2 space-y-1 pl-2">
                 {categoryFrameworks.map((framework) => {
-                  const iconName = framework.icon;
-                  const IconComponent = iconName === 'Atom' ? Code :
-                                      iconName === 'Triangle' ? Code :
-                                      iconName === 'Zap' ? Code :
-                                      iconName === 'Flame' ? Code :
-                                      iconName === 'ArrowRight' ? Code :
-                                      iconName === 'Mountain' ? Code :
-                                      iconName === 'Code2' ? Code :
-                                      iconName === 'Gem' ? Code :
-                                      iconName === 'Snake' ? Code :
-                                      iconName === 'Ruby' ? Code :
-                                      iconName === 'Server' ? Code :
-                                      iconName === 'Rocket' ? Code :
-                                      iconName === 'Globe' ? Code :
-                                      Code;
-                  
+                  const IconComponent = (Icons as any)[framework.icon] || Icons.Code;
+
                   return (
                     <button
                       key={framework.id}
