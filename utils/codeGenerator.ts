@@ -4,40 +4,26 @@ export class CodeGenerator {
   static generateCode(components: Component[], framework: Framework, theme: Theme): string {
     switch (framework) {
       case 'react':
-        return this.generateReactComponent(components, theme);
+        return this.generateReactCode(components, theme);
       case 'vue':
-        return this.generateVueComponent(components, theme);
+        return this.generateVueCode(components, theme);
       case 'angular':
         return this.generateAngularCode(components, theme);
       case 'svelte':
         return this.generateSvelteCode(components, theme);
-      case 'flutter':
-        return this.generateFlutterCode(components, theme);
       case 'nextjs':
         return this.generateNextJSCode(components, theme);
       case 'nuxtjs':
         return this.generateNuxtCode(components, theme);
-      case 'symfony':
-        return this.generateSymfonyCode(components, theme);
-      case 'laravel':
-        return this.generateLaravelCode(components, theme);
-      case 'django':
-        return this.generateDjangoCode(components, theme);
-      case 'rails':
-        return this.generateRailsCode(components, theme);
-      case 'express':
-        return this.generateExpressCode(components, theme);
-      case 'fastapi':
-        return this.generateFastAPICode(components, theme);
       case 'html':
         return this.generateHTMLCode(components, theme);
       default:
-        return this.generateReactComponent(components, theme);
+        return this.generateReactCode(components, theme);
     }
   }
 
   static generateReactComponent(components: Component[], theme: Theme): string {
-    const componentJSX = this.generateReactJSX(components, theme);
+    const componentJSX = this.generateComponentsJSX(components, 'react');
     
     return `import React from 'react';
 import './App.css';
@@ -54,7 +40,7 @@ export default App;`;
   }
 
   static generateVueComponent(components: Component[], theme: Theme): string {
-    const template = this.generateVueTemplate(components, theme);
+    const template = this.generateComponentsJSX(components, 'vue');
 
     return `<template>
   <div class="app" :style="{ background: '${theme.colors.background}' }">
@@ -71,950 +57,6 @@ import { ref } from 'vue';
 <style scoped>
 ${this.generateCSS(theme)}
 </style>`;
-  }
-
-  static generateFlutterCode(components: Component[], theme: Theme): string {
-    const widgets = this.generateFlutterWidgets(components, theme);
-    
-    return `import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FutureUI App',
-      theme: ThemeData(
-        primarySwatch: MaterialColor(${this.hexToInt(theme.colors.primary)}, {
-          50: Color(0xFF${theme.colors.primary.substring(1)}),
-          100: Color(0xFF${theme.colors.primary.substring(1)}),
-          200: Color(0xFF${theme.colors.primary.substring(1)}),
-          300: Color(0xFF${theme.colors.primary.substring(1)}),
-          400: Color(0xFF${theme.colors.primary.substring(1)}),
-          500: Color(0xFF${theme.colors.primary.substring(1)}),
-          600: Color(0xFF${theme.colors.primary.substring(1)}),
-          700: Color(0xFF${theme.colors.primary.substring(1)}),
-          800: Color(0xFF${theme.colors.primary.substring(1)}),
-          900: Color(0xFF${theme.colors.primary.substring(1)}),
-        }),
-        scaffoldBackgroundColor: Color(0xFF${theme.colors.background.substring(1)}),
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(color: Color(0xFF${theme.colors.text.substring(1)})),
-          bodyMedium: TextStyle(color: Color(0xFF${theme.colors.textSecondary.substring(1)})),
-        ),
-      ),
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF${theme.colors.background.substring(1)}),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-${widgets}
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}`;
-  }
-
-  private static generateFlutterWidgets(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      switch (component.type) {
-        case 'button':
-          return `              Container(
-                margin: EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    print('${component.props.text || 'Button'} pressed');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF${theme.colors.primary.substring(1)}),
-                    foregroundColor: Color(0xFF${theme.colors.background.substring(1)}),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    elevation: ${theme.effects.shadows ? '8' : '2'},
-                  ),
-                  child: Text(
-                    '${component.props.text || 'Button'}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),`;
-
-        case 'navbar':
-          return `              AppBar(
-                backgroundColor: Color(0xFF${theme.colors.surface.substring(1)}),
-                title: Text(
-                  '${component.props.title || 'App'}',
-                  style: TextStyle(
-                    color: Color(0xFF${theme.colors.primary.substring(1)}),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                actions: [
-${(component.props.items || []).map((item: string) => `                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      '${item}',
-                      style: TextStyle(color: Color(0xFF${theme.colors.text.substring(1)})),
-                    ),
-                  ),`).join('\n')}
-                ],
-              ),`;
-
-        case 'card':
-          return `              Container(
-                margin: EdgeInsets.all(16.0),
-                child: Card(
-                  color: Color(0xFF${theme.colors.surface.substring(1)}),
-                  elevation: ${theme.effects.shadows ? '8' : '2'},
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(
-                      color: Color(0xFF${theme.colors.primary.substring(1)}).withOpacity(0.3),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${component.props.title || 'Card Title'}',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF${theme.colors.text.substring(1)}),
-                          ),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          '${component.props.content || 'Card content...'}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF${theme.colors.textSecondary.substring(1)}),
-                          ),
-                        ),
-                        ${component.props.hasButton ? `SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {},
-                          child: Text('Action'),
-                        ),` : ''}
-                      ],
-                    ),
-                  ),
-                ),
-              ),`;
-
-        case 'input':
-          return `              Container(
-                margin: EdgeInsets.all(16.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: '${component.props.label || 'Input'}',
-                    hintText: '${component.props.placeholder || 'Enter text...'}',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: Color(0xFF${theme.colors.primary.substring(1)}).withOpacity(0.3),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: Color(0xFF${theme.colors.primary.substring(1)}),
-                        width: 2,
-                      ),
-                    ),
-                    fillColor: Color(0xFF${theme.colors.surface.substring(1)}),
-                    filled: true,
-                  ),
-                  style: TextStyle(
-                    color: Color(0xFF${theme.colors.text.substring(1)}),
-                  ),
-                ),
-              ),`;
-
-        case 'text':
-          return `              Container(
-                margin: EdgeInsets.all(8.0),
-                child: Text(
-                  '${component.props.content || 'Sample Text'}',
-                  style: TextStyle(
-                    fontSize: ${this.getFlutterFontSize(component.props.size)},
-                    fontWeight: ${this.getFlutterFontWeight(component.props.weight)},
-                    color: Color(0xFF${theme.colors.text.substring(1)}),
-                  ),
-                ),
-              ),`;
-
-        default:
-          return `              Container(
-                margin: EdgeInsets.all(8.0),
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Color(0xFF${theme.colors.surface.substring(1)}),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Color(0xFF${theme.colors.primary.substring(1)}).withOpacity(0.3),
-                  ),
-                ),
-                child: Text(
-                  '${component.type} Widget',
-                  style: TextStyle(
-                    color: Color(0xFF${theme.colors.text.substring(1)}),
-                  ),
-                ),
-              ),`;
-      }
-    }).join('\n');
-  }
-
-  private static generateReactJSX(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToReactStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `      <button 
-        className="btn btn-${component.props.variant || 'primary'}"
-        style={${JSON.stringify(style)}}
-        onClick={() => console.log('Button clicked')}
-      >
-        ${component.props.text || 'Button'}
-      </button>`;
-
-        case 'navbar':
-          return `      <nav className="navbar" style={${JSON.stringify(style)}}>
-        <div className="navbar-brand">${component.props.title || 'Logo'}</div>
-        <div className="navbar-menu">
-${(component.props.items || []).map((item: string) => `          <a href="#" className="navbar-item">${item}</a>`).join('\n')}
-        </div>
-      </nav>`;
-
-        case 'card':
-          return `      <div className="card" style={${JSON.stringify(style)}}>
-        <h3 className="card-title">${component.props.title || 'Card Title'}</h3>
-        <p className="card-content">${component.props.content || 'Card content...'}</p>
-        ${component.props.hasButton ? `<button className="btn btn-primary">Action</button>` : ''}
-      </div>`;
-
-        case 'input':
-          return `      <div className="form-group" style={${JSON.stringify(style)}}>
-        ${component.props.label ? `<label className="form-label">${component.props.label}</label>` : ''}
-        <input 
-          type="${component.props.type || 'text'}"
-          placeholder="${component.props.placeholder || 'Enter text...'}"
-          className="form-input"
-        />
-      </div>`;
-
-        case 'text':
-          return `      <div style={${JSON.stringify(style)}}>
-        ${component.props.content || 'Sample Text'}
-      </div>`;
-
-        case 'form':
-          const fields = (component.props.fields || []).map((field: string) => {
-            const inputType = field === 'email' ? 'email' : field === 'password' ? 'password' : 'text';
-            if (field === 'message') {
-              return `        <div className="form-group">
-          <label className="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
-          <textarea className="form-textarea" rows={4}></textarea>
-        </div>`;
-            }
-            return `        <div className="form-group">
-          <label className="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
-          <input type="${inputType}" className="form-input" />
-        </div>`;
-          }).join('\n');
-
-          return `      <form className="form" style={${JSON.stringify(style)}}>
-        <h2 className="form-title">${component.props.title || 'Form'}</h2>
-${fields}
-        <button type="submit" className="btn btn-primary">
-          ${component.props.submitText || 'Submit'}
-        </button>
-      </form>`;
-
-        default:
-          return `      <div style={${JSON.stringify(style)}}>
-        {/* ${component.type} component */}
-      </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateVueTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToVueStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `    <button 
-      class="btn btn-${component.props.variant || 'primary'}"
-      :style="${JSON.stringify(style)}"
-      @click="handleClick"
-    >
-      ${component.props.text || 'Button'}
-    </button>`;
-
-        case 'navbar':
-          return `    <nav class="navbar" :style="${JSON.stringify(style)}">
-      <div class="navbar-brand">${component.props.title || 'Logo'}</div>
-      <div class="navbar-menu">
-${(component.props.items || []).map((item: string) => `        <a href="#" class="navbar-item">${item}</a>`).join('\n')}
-      </div>
-    </nav>`;
-
-        case 'card':
-          return `    <div class="card" :style="${JSON.stringify(style)}">
-      <h3 class="card-title">${component.props.title || 'Card Title'}</h3>
-      <p class="card-content">${component.props.content || 'Card content...'}</p>
-      ${component.props.hasButton ? `<button class="btn btn-primary">Action</button>` : ''}
-    </div>`;
-
-        default:
-          return `    <div :style="${JSON.stringify(style)}">
-      <!-- ${component.type} component -->
-    </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateAngularCode(components: Component[], theme: Theme): string {
-    const template = this.generateAngularTemplate(components, theme);
-
-    return `import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  template: \`
-    <div class="app" [style.background]="'${theme.colors.background}'">
-${template}
-    </div>
-  \`,
-  styles: [\`
-${this.generateCSS(theme)}
-  \`]
-})
-export class AppComponent {
-  title = 'futuristic-ui';
-  
-  handleClick() {
-    console.log('Button clicked');
-  }
-}`;
-  }
-
-  private static generateAngularTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToAngularStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `      <button 
-        class="btn btn-${component.props.variant || 'primary'}"
-        [ngStyle]="${JSON.stringify(style)}"
-        (click)="handleClick()"
-      >
-        ${component.props.text || 'Button'}
-      </button>`;
-
-        case 'navbar':
-          return `      <nav class="navbar" [ngStyle]="${JSON.stringify(style)}">
-        <div class="navbar-brand">${component.props.title || 'Logo'}</div>
-        <div class="navbar-menu">
-${(component.props.items || []).map((item: string) => `          <a href="#" class="navbar-item">${item}</a>`).join('\n')}
-        </div>
-      </nav>`;
-
-        default:
-          return `      <div [ngStyle]="${JSON.stringify(style)}">
-        <!-- ${component.type} component -->
-      </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateSvelteCode(components: Component[], theme: Theme): string {
-    const template = this.generateSvelteTemplate(components, theme);
-
-    return `<script>
-  function handleClick() {
-    console.log('Button clicked');
-  }
-</script>
-
-<div class="app" style="background: ${theme.colors.background}">
-${template}
-</div>
-
-<style>
-${this.generateCSS(theme)}
-</style>`;
-  }
-
-  private static generateSvelteTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToSvelteStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `  <button 
-    class="btn btn-${component.props.variant || 'primary'}"
-    style="${style}"
-    on:click={handleClick}
-  >
-    ${component.props.text || 'Button'}
-  </button>`;
-
-        case 'navbar':
-          return `  <nav class="navbar" style="${style}">
-    <div class="navbar-brand">${component.props.title || 'Logo'}</div>
-    <div class="navbar-menu">
-${(component.props.items || []).map((item: string) => `      <a href="#" class="navbar-item">${item}</a>`).join('\n')}
-    </div>
-  </nav>`;
-
-        default:
-          return `  <div style="${style}">
-    <!-- ${component.type} component -->
-  </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateNextJSCode(components: Component[], theme: Theme): string {
-    const componentJSX = this.generateReactJSX(components, theme);
-
-    return `import Head from 'next/head';
-import { useState } from 'react';
-
-export default function Home() {
-  const [activeTab, setActiveTab] = useState(0);
-
-  return (
-    <>
-      <Head>
-        <title>Interface Futuriste</title>
-        <meta name="description" content="Interface générée avec FutureUI" />
-      </Head>
-      
-      <div className="app" style={{ background: '${theme.colors.background}' }}>
-${componentJSX}
-      </div>
-    </>
-  );
-}`;
-  }
-
-  private static generateNuxtCode(components: Component[], theme: Theme): string {
-    const template = this.generateVueTemplate(components, theme);
-
-    return `<template>
-  <div>
-    <Head>
-      <Title>Interface Futuriste</Title>
-      <Meta name="description" content="Interface générée avec FutureUI" />
-    </Head>
-    
-    <div class="app" :style="{ background: '${theme.colors.background}' }">
-${template}
-    </div>
-  </div>
-</template>
-
-<script setup>
-const activeTab = ref(0);
-
-const handleClick = () => {
-  console.log('Button clicked');
-};
-</script>
-
-<style scoped>
-${this.generateCSS(theme)}
-</style>`;
-  }
-
-  private static generateSymfonyCode(components: Component[], theme: Theme): string {
-    const template = this.generateTwigTemplate(components, theme);
-
-    return `{# templates/base.html.twig #}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Interface Futuriste{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-        {% block body %}
-${template}
-        {% endblock %}
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Symfony template loaded');
-        });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateTwigTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-{{ variant|default('primary') }}" style="${style}">
-          {{ text|default('Button') }}
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand">{{ title|default('Logo') }}</div>
-          <div class="navbar-menu">
-            {% for item in items %}
-              <a href="#" class="navbar-item">{{ item }}</a>
-            {% endfor %}
-          </div>
-        </nav>`;
-
-        default:
-          return `        <div style="${style}">
-          {# ${component.type} component #}
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateLaravelCode(components: Component[], theme: Theme): string {
-    const template = this.generateBladeTemplate(components, theme);
-
-    return `{{-- resources/views/welcome.blade.php --}}
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-${template}
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Laravel template loaded');
-        });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateBladeTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-{{ $variant ?? 'primary' }}" style="${style}">
-          {{ $text ?? 'Button' }}
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand">{{ $title ?? 'Logo' }}</div>
-          <div class="navbar-menu">
-            @foreach($items ?? [] as $item)
-              <a href="#" class="navbar-item">{{ $item }}</a>
-            @endforeach
-          </div>
-        </nav>`;
-
-        default:
-          return `        <div style="${style}">
-          {{-- ${component.type} component --}}
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateDjangoCode(components: Component[], theme: Theme): string {
-    const template = this.generateDjangoTemplate(components, theme);
-
-    return `<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-${template}
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Django template loaded');
-        });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateDjangoTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-{{ variant|default:'primary' }}" style="${style}">
-          {{ text|default:'Button' }}
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand">{{ title|default:'Logo' }}</div>
-          <div class="navbar-menu">
-            {% for item in items %}
-              <a href="#" class="navbar-item">{{ item }}</a>
-            {% endfor %}
-          </div>
-        </nav>`;
-
-        default:
-          return `        <div style="${style}">
-          {# ${component.type} component #}
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateRailsCode(components: Component[], theme: Theme): string {
-    const template = this.generateERBTemplate(components, theme);
-
-    return `<!-- app/views/layouts/application.html.erb -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Interface Futuriste</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    
-    <style>
-${this.generateCSS(theme)}
-    </style>
-  </head>
-
-  <body>
-    <div class="app" style="background: ${theme.colors.background}">
-${template}
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Rails template loaded');
-      });
-    </script>
-  </body>
-</html>`;
-  }
-
-  private static generateERBTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `      <button class="btn btn-<%= variant || 'primary' %>" style="${style}">
-        <%= text || 'Button' %>
-      </button>`;
-
-        case 'navbar':
-          return `      <nav class="navbar" style="${style}">
-        <div class="navbar-brand"><%= title || 'Logo' %></div>
-        <div class="navbar-menu">
-          <% (items || []).each do |item| %>
-            <a href="#" class="navbar-item"><%= item %></a>
-          <% end %>
-        </div>
-      </nav>`;
-
-        default:
-          return `      <div style="${style}">
-        <%# ${component.type} component %>
-      </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateExpressCode(components: Component[], theme: Theme): string {
-    const template = this.generateEJSTemplate(components, theme);
-
-    return `<!-- views/index.ejs -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-${template}
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('Express template loaded');
-      });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateEJSTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-<%= variant || 'primary' %>" style="${style}">
-          <%= text || 'Button' %>
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand"><%= title || 'Logo' %></div>
-          <div class="navbar-menu">
-            <% (items || []).forEach(function(item) { %>
-              <a href="#" class="navbar-item"><%= item %></a>
-            <% }); %>
-          </div>
-        </nav>`;
-
-        default:
-          return `        <div style="${style}">
-          <%# ${component.type} component %>
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateFastAPICode(components: Component[], theme: Theme): string {
-    const template = this.generateJinjaTemplate(components, theme);
-
-    return `<!-- templates/index.html -->
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-${template}
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('FastAPI template loaded');
-      });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateJinjaTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-{{ variant or 'primary' }}" style="${style}">
-          {{ text or 'Button' }}
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand">{{ title or 'Logo' }}</div>
-          <div class="navbar-menu">
-            {% for item in items %}
-              <a href="#" class="navbar-item">{{ item }}</a>
-            {% endfor %}
-          </div>
-        </nav>`;
-
-        default:
-          return `        <div style="${style}">
-          {# ${component.type} component #}
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  private static generateHTMLCode(components: Component[], theme: Theme): string {
-    const body = this.generateHTMLTemplate(components, theme);
-
-    return `<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
-</head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
-${body}
-    </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('HTML template loaded');
-        
-        const buttons = document.querySelectorAll('.btn');
-        buttons.forEach(button => {
-          button.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Button clicked:', this.textContent);
-          });
-        });
-      });
-    </script>
-</body>
-</html>`;
-  }
-
-  private static generateHTMLTemplate(components: Component[], theme: Theme): string {
-    return components.map(component => {
-      const style = this.convertToHTMLStyle(component.style, component.position);
-      
-      switch (component.type) {
-        case 'button':
-          return `        <button class="btn btn-${component.props.variant || 'primary'}" style="${style}">
-          ${component.props.text || 'Button'}
-        </button>`;
-
-        case 'navbar':
-          return `        <nav class="navbar" style="${style}">
-          <div class="navbar-brand">${component.props.title || 'Logo'}</div>
-          <div class="navbar-menu">
-${(component.props.items || []).map((item: string) => `            <a href="#" class="navbar-item">${item}</a>`).join('\n')}
-          </div>
-        </nav>`;
-
-        case 'card':
-          return `        <div class="card" style="${style}">
-          <h3 class="card-title">${component.props.title || 'Card Title'}</h3>
-          <p class="card-content">${component.props.content || 'Card content...'}</p>
-          ${component.props.hasButton ? `<button class="btn btn-primary">Action</button>` : ''}
-        </div>`;
-
-        default:
-          return `        <div style="${style}">
-          <!-- ${component.type} component -->
-        </div>`;
-      }
-    }).join('\n\n');
-  }
-
-  // Utilitaires de conversion de styles
-  private static convertToReactStyle(style: any, position: any): any {
-    return {
-      position: 'absolute',
-      left: `${position.x}px`,
-      top: `${position.y}px`,
-      width: `${position.width}px`,
-      height: position.height === 'auto' ? 'auto' : `${position.height}px`,
-      ...style,
-    };
-  }
-
-  private static convertToVueStyle(style: any, position: any): any {
-    return this.convertToReactStyle(style, position);
-  }
-
-  private static convertToAngularStyle(style: any, position: any): any {
-    return this.convertToReactStyle(style, position);
-  }
-
-  private static convertToSvelteStyle(style: any, position: any): string {
-    const styleObj = this.convertToReactStyle(style, position);
-    return Object.entries(styleObj).map(([key, value]) => `${key}: ${value}`).join('; ');
-  }
-
-  private static convertToHTMLStyle(style: any, position: any): string {
-    const styleObj = this.convertToReactStyle(style, position);
-    return Object.entries(styleObj).map(([key, value]) => `${key}: ${value}`).join('; ');
-  }
-
-  // Utilitaires Flutter
-  private static hexToInt(hex: string): number {
-    return parseInt(hex.replace('#', ''), 16);
-  }
-
-  private static getFlutterFontSize(size?: string): number {
-    switch (size) {
-      case 'xs': return 12;
-      case 'sm': return 14;
-      case 'lg': return 20;
-      case 'xl': return 24;
-      case '2xl': return 32;
-      case '3xl': return 48;
-      default: return 16;
-    }
-  }
-
-  private static getFlutterFontWeight(weight?: string): string {
-    switch (weight) {
-      case 'light': return 'FontWeight.w300';
-      case 'medium': return 'FontWeight.w500';
-      case 'semibold': return 'FontWeight.w600';
-      case 'bold': return 'FontWeight.w700';
-      case 'extrabold': return 'FontWeight.w800';
-      default: return 'FontWeight.w400';
-    }
   }
 
   static generateCSS(theme: Theme): string {
@@ -1050,6 +92,11 @@ h1 { font-size: ${theme.typography.fontSize['3xl']}; }
 h2 { font-size: ${theme.typography.fontSize['2xl']}; }
 h3 { font-size: ${theme.typography.fontSize.xl}; }
 h4 { font-size: ${theme.typography.fontSize.lg}; }
+
+p {
+  margin-bottom: ${theme.spacing.md};
+  line-height: 1.6;
+}
 
 /* Buttons */
 .btn {
@@ -1103,6 +150,12 @@ h4 { font-size: ${theme.typography.fontSize.lg}; }
   ${theme.effects.neon ? `box-shadow: 0 0 20px ${theme.colors.accent}60; animation: pulse 2s infinite;` : ''}
 }
 
+.btn-gradient {
+  background: linear-gradient(45deg, ${theme.colors.primary}, ${theme.colors.secondary});
+  color: ${theme.colors.background};
+  border: none;
+}
+
 /* Navigation */
 .navbar {
   width: 100%;
@@ -1126,23 +179,77 @@ h4 { font-size: ${theme.typography.fontSize.lg}; }
 
 .navbar-menu {
   display: flex;
-  gap: ${theme.spacing.lg};
-  align-items: center;
-}
-
-.navbar-item {
-  color: ${theme.colors.text};
-  text-decoration: none;
-  transition: all 0.3s ease;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: 6px;
-  font-size: ${theme.typography.fontSize.sm};
-}
 
 .navbar-item:hover {
   color: ${theme.colors.primary};
   background: ${theme.colors.primary}20;
   ${theme.effects.glow ? `box-shadow: 0 0 10px ${theme.colors.primary}30;` : ''}
+}
+
+/* Sidebar/Aside */
+.aside {
+  background: ${theme.colors.surface};
+  ${theme.effects.glassmorphism ? 'backdrop-filter: blur(20px);' : ''}
+  border-right: 1px solid ${theme.colors.primary}30;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.aside-header {
+  padding: ${theme.spacing.lg};
+  border-bottom: 1px solid ${theme.colors.primary}20;
+}
+
+.aside-nav {
+  padding: ${theme.spacing.md};
+}
+
+.aside-nav ul {
+  list-style: none;
+}
+
+.aside-nav li {
+  margin-bottom: ${theme.spacing.xs};
+}
+
+.aside-nav a {
+  display: block;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  color: ${theme.colors.textSecondary};
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: ${theme.typography.fontSize.sm};
+}
+
+.aside-nav a:hover {
+  background: ${theme.colors.primary}20;
+  color: ${theme.colors.text};
+}
+
+/* Hero Section */
+.hero {
+  padding: ${theme.spacing.xl} ${theme.spacing.lg};
+  text-align: center;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: ${theme.typography.fontSize['3xl']};
+  font-weight: 700;
+  margin-bottom: ${theme.spacing.lg};
+  ${theme.effects.neon ? `text-shadow: 0 0 20px ${theme.colors.primary};` : ''}
+}
+
+.hero p {
+  font-size: ${theme.typography.fontSize.lg};
+  color: ${theme.colors.textSecondary};
+  max-width: 600px;
+  margin-bottom: ${theme.spacing.xl};
 }
 
 /* Cards */
@@ -1224,6 +331,244 @@ h4 { font-size: ${theme.typography.fontSize.lg}; }
   ${theme.effects.glow ? `box-shadow: 0 0 15px ${theme.colors.primary}30;` : ''}
 }
 
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: ${theme.colors.surface};
+  border-radius: 12px;
+  overflow: hidden;
+  ${theme.effects.glassmorphism ? 'backdrop-filter: blur(20px);' : ''}
+  ${theme.effects.shadows ? `box-shadow: 0 4px 20px ${theme.colors.background}40;` : ''}
+}
+
+.table th {
+  background: ${theme.colors.primary}20;
+  color: ${theme.colors.text};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid ${theme.colors.primary}40;
+  font-size: ${theme.typography.fontSize.sm};
+}
+
+.table td {
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  color: ${theme.colors.textSecondary};
+  border-bottom: 1px solid ${theme.colors.primary}20;
+  font-size: ${theme.typography.fontSize.sm};
+}
+
+.table tr:hover {
+  background: ${theme.colors.primary}10;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: ${theme.spacing.lg};
+  padding: ${theme.spacing.lg};
+}
+
+.grid-item {
+  background: ${theme.colors.surface};
+  padding: ${theme.spacing.lg};
+  border-radius: 12px;
+  border: 1px solid ${theme.colors.primary}30;
+  text-align: center;
+  transition: all 0.3s ease;
+  ${theme.effects.shadows ? `box-shadow: 0 4px 15px ${theme.colors.background}30;` : ''}
+}
+
+.grid-item:hover {
+  transform: translateY(-3px);
+  border-color: ${theme.colors.primary}60;
+  ${theme.effects.glow ? `box-shadow: 0 8px 25px ${theme.colors.primary}20;` : ''}
+}
+
+/* Footer */
+.footer {
+  background: ${theme.colors.surface};
+  border-top: 1px solid ${theme.colors.primary}30;
+  padding: ${theme.spacing.xl} ${theme.spacing.lg};
+  text-align: center;
+}
+
+.footer-brand {
+  font-size: ${theme.typography.fontSize.lg};
+  font-weight: bold;
+  color: ${theme.colors.primary};
+  margin-bottom: ${theme.spacing.md};
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: ${theme.spacing.lg};
+  margin-bottom: ${theme.spacing.md};
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  color: ${theme.colors.textSecondary};
+  text-decoration: none;
+  font-size: ${theme.typography.fontSize.sm};
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: ${theme.colors.primary};
+}
+
+.footer-copyright {
+  color: ${theme.colors.textSecondary};
+  font-size: ${theme.typography.fontSize.xs};
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: ${theme.spacing.xs} ${theme.spacing.sm};
+  border-radius: 50px;
+  font-size: ${theme.typography.fontSize.xs};
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-primary { background: ${theme.colors.primary}; color: ${theme.colors.background}; }
+.badge-success { background: ${theme.colors.success}; color: ${theme.colors.background}; }
+.badge-warning { background: ${theme.colors.warning}; color: ${theme.colors.background}; }
+.badge-error { background: ${theme.colors.error}; color: ${theme.colors.background}; }
+.badge-info { background: ${theme.colors.info}; color: ${theme.colors.background}; }
+
+/* Alerts */
+.alert {
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border-radius: 8px;
+  border: 1px solid;
+  margin-bottom: ${theme.spacing.md};
+  display: flex;
+  align-items: flex-start;
+  gap: ${theme.spacing.sm};
+}
+
+.alert-success {
+  background: ${theme.colors.success}20;
+  border-color: ${theme.colors.success};
+  color: ${theme.colors.success};
+}
+
+.alert-warning {
+  background: ${theme.colors.warning}20;
+  border-color: ${theme.colors.warning};
+  color: ${theme.colors.warning};
+}
+
+.alert-error {
+  background: ${theme.colors.error}20;
+  border-color: ${theme.colors.error};
+  color: ${theme.colors.error};
+}
+
+.alert-info {
+  background: ${theme.colors.info}20;
+  border-color: ${theme.colors.info};
+  color: ${theme.colors.info};
+}
+
+/* Progress */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: ${theme.colors.surface};
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: ${theme.effects.gradients ? `linear-gradient(90deg, ${theme.colors.primary}, ${theme.colors.secondary})` : theme.colors.primary};
+  transition: width 0.3s ease;
+  ${theme.effects.glow ? `box-shadow: 0 0 10px ${theme.colors.primary};` : ''}
+}
+
+/* Tabs */
+.tabs {
+  border-bottom: 1px solid ${theme.colors.primary}30;
+}
+
+.tab-list {
+  display: flex;
+  gap: 0;
+}
+
+.tab-button {
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: none;
+  border: none;
+  color: ${theme.colors.textSecondary};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+  font-size: ${theme.typography.fontSize.sm};
+}
+
+.tab-button.active {
+  color: ${theme.colors.primary};
+  border-bottom-color: ${theme.colors.primary};
+}
+
+.tab-button:hover {
+  color: ${theme.colors.text};
+  background: ${theme.colors.primary}10;
+}
+
+.tab-content {
+  padding: ${theme.spacing.lg};
+}
+
+/* Accordion */
+.accordion-item {
+  border: 1px solid ${theme.colors.primary}30;
+  border-radius: 8px;
+  margin-bottom: ${theme.spacing.sm};
+  overflow: hidden;
+}
+
+.accordion-header {
+  width: 100%;
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: ${theme.colors.surface};
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s ease;
+  color: ${theme.colors.text};
+  font-size: ${theme.typography.fontSize.base};
+}
+
+.accordion-header:hover {
+  background: ${theme.colors.primary}10;
+}
+
+.accordion-content {
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: ${theme.colors.background}50;
+  border-top: 1px solid ${theme.colors.primary}20;
+  color: ${theme.colors.textSecondary};
+  font-size: ${theme.typography.fontSize.sm};
+}
+
 /* Animations */
 ${theme.effects.animations ? `
 @keyframes pulse {
@@ -1292,7 +637,680 @@ ${theme.effects.animations ? `
     width: 100%;
     text-align: center;
   }
+  
+  .hero {
+    padding: ${theme.spacing.lg};
+  }
+  
+  .hero h1 {
+    font-size: ${theme.typography.fontSize['2xl']};
+  }
+  
+  .form {
+    padding: ${theme.spacing.lg};
+  }
+  
+  .table {
+    font-size: ${theme.typography.fontSize.xs};
+  }
+  
+  .table th,
+  .table td {
+    padding: ${theme.spacing.sm};
+  }
+  
+  .aside {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing.md};
+  }
 }
+
+@media (max-width: 480px) {
+  .btn {
+    width: 100%;
+    margin-bottom: ${theme.spacing.sm};
+  }
+  
+  .card {
+    padding: ${theme.spacing.md};
+  }
+  
+  .hero h1 {
+    font-size: ${theme.typography.fontSize.xl};
+  }
+  
+  .navbar-menu {
+    gap: ${theme.spacing.sm};
+  }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.mb-2 { margin-bottom: ${theme.spacing.sm}; }
+.mb-4 { margin-bottom: ${theme.spacing.md}; }
+.mb-6 { margin-bottom: ${theme.spacing.lg}; }
+.mb-8 { margin-bottom: ${theme.spacing.xl}; }
+
+.p-2 { padding: ${theme.spacing.sm}; }
+.p-4 { padding: ${theme.spacing.md}; }
+.p-6 { padding: ${theme.spacing.lg}; }
+.p-8 { padding: ${theme.spacing.xl}; }
+
+.rounded { border-radius: 4px; }
+.rounded-lg { border-radius: 8px; }
+.rounded-xl { border-radius: 12px; }
+.rounded-2xl { border-radius: 16px; }
+.rounded-full { border-radius: 50%; }
+
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
 `;
+  }
+
+  private static generateReactCode(components: Component[], theme: Theme): string {
+    const imports = `import React from 'react';
+import './App.css';`;
+
+    const componentJSX = this.generateComponentsJSX(components, 'react');
+    const css = this.generateCSS(theme);
+
+    return `${imports}
+
+function App() {
+  return (
+    <div className="app" style={{ background: '${theme.colors.background}' }}>
+${componentJSX}
+    </div>
+  );
+}
+
+export default App;
+
+/* CSS Styles */
+${css}`;
+  }
+
+  private static generateVueCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsJSX(components, 'vue');
+
+    return `<template>
+  <div class="app" :style="{ background: '${theme.colors.background}' }">
+${template}
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+// Component logic here
+</script>
+
+<style scoped>
+${this.generateCSS(theme)}
+</style>`;
+  }
+
+  private static generateAngularCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsJSX(components, 'angular');
+
+    return `import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: \`
+    <div class="app" [style.background]="'${theme.colors.background}'">
+${template}
+    </div>
+  \`,
+  styles: [\`
+${this.generateCSS(theme)}
+  \`]
+})
+export class AppComponent {
+  title = 'futuristic-ui';
+}`;
+  }
+
+  private static generateSvelteCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsJSX(components, 'svelte');
+
+    return `<script>
+  // Component logic here
+</script>
+
+<div class="app" style="background: ${theme.colors.background}">
+${template}
+</div>
+
+<style>
+${this.generateCSS(theme)}
+</style>`;
+  }
+
+  private static generateNextJSCode(components: Component[], theme: Theme): string {
+    const componentJSX = this.generateComponentsJSX(components, 'react');
+
+    return `import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+
+export default function Home() {
+  return (
+    <>
+      <Head>
+        <title>Interface Futuriste</title>
+        <meta name="description" content="Interface générée avec FutureUI" />
+      </Head>
+      
+      <div className={styles.app} style={{ background: '${theme.colors.background}' }}>
+${componentJSX}
+      </div>
+    </>
+  );
+}
+
+/* Styles CSS à placer dans styles/Home.module.css */
+${this.generateCSS(theme)}`;
+  }
+
+  private static generateNuxtCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsJSX(components, 'vue');
+
+    return `<template>
+  <div>
+    <Head>
+      <Title>Interface Futuriste</Title>
+      <Meta name="description" content="Interface générée avec FutureUI" />
+    </Head>
+    
+    <div class="app" :style="{ background: '${theme.colors.background}' }">
+${template}
+    </div>
+  </div>
+</template>
+
+<script setup>
+// Component logic here
+</script>
+
+<style scoped>
+${this.generateCSS(theme)}
+</style>`;
+  }
+
+  private static generateSymfonyCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'twig');
+
+    return `{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Interface Futuriste{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block stylesheets %}
+        <style>
+${this.generateCSS(theme)}
+        </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+        {% block body %}
+${template}
+        {% endblock %}
+    </div>
+    
+    {% block javascripts %}
+        <script>
+            // JavaScript interactions
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Symfony template loaded');
+            });
+        </script>
+    {% endblock %}
+</body>
+</html>`;
+  }
+
+  private static generateLaravelCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'blade');
+
+    return `{{-- resources/views/welcome.blade.php --}}
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interface Futuriste</title>
+    <style>
+${this.generateCSS(theme)}
+    </style>
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+${template}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Laravel template loaded');
+        });
+    </script>
+</body>
+</html>`;
+  }
+
+  private static generateDjangoCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'django');
+
+    return `<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Interface Futuriste{% endblock %}</title>
+    <style>
+${this.generateCSS(theme)}
+    </style>
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+        {% block content %}
+${template}
+        {% endblock %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Django template loaded');
+        });
+    </script>
+</body>
+</html>`;
+  }
+
+  private static generateRailsCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'erb');
+
+    return `<!-- app/views/layouts/application.html.erb -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Interface Futuriste</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <style>
+${this.generateCSS(theme)}
+    </style>
+  </head>
+
+  <body>
+    <div class="app" style="background: ${theme.colors.background}">
+      <%= yield %>
+${template}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Rails template loaded');
+      });
+    </script>
+  </body>
+</html>`;
+  }
+
+  private static generateExpressCode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'ejs');
+
+    return `<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Futuriste</title>
+    <style>
+${this.generateCSS(theme)}
+    </style>
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+${template}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Express template loaded');
+      });
+    </script>
+</body>
+</html>`;
+  }
+
+  private static generateFastAPICode(components: Component[], theme: Theme): string {
+    const template = this.generateComponentsHTML(components, 'jinja');
+
+    return `<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Futuriste</title>
+    <style>
+${this.generateCSS(theme)}
+    </style>
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+${template}
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('FastAPI template loaded');
+      });
+    </script>
+</body>
+</html>`;
+  }
+
+  private static generateHTMLCode(components: Component[], theme: Theme): string {
+    const body = this.generateComponentsHTML(components, 'html');
+
+    return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Futuriste</title>
+    <style>
+${this.generateCSS(theme)}
+    </style>
+</head>
+<body>
+    <div class="app" style="background: ${theme.colors.background}">
+${body}
+    </div>
+    <script>
+      // JavaScript pour interactions
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('HTML template loaded');
+        
+        // Gestion des boutons
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Button clicked:', this.textContent);
+          });
+        });
+      });
+    </script>
+</body>
+</html>`;
+  }
+
+  private static generateComponentsJSX(components: Component[], framework: string): string {
+    return components.map(component => {
+      const style = this.convertToCSS(component.style, component.position);
+      const styleString = JSON.stringify(style);
+      
+      switch (component.type) {
+        case 'button':
+          const buttonClass = `btn btn-${component.props.variant || 'primary'}`;
+          if (framework === 'vue') {
+            return `    <button 
+      class="${buttonClass}"
+      :style='${styleString}'
+    >
+      ${component.props.text || 'Button'}
+    </button>`;
+          } else if (framework === 'angular') {
+            return `      <button 
+        class="${buttonClass}"
+        [ngStyle]='${styleString}'
+      >
+        ${component.props.text || 'Button'}
+      </button>`;
+          } else if (framework === 'svelte') {
+            return `  <button 
+    class="${buttonClass}"
+    style={${styleString}}
+  >
+    ${component.props.text || 'Button'}
+  </button>`;
+          }
+          return `      <button 
+        className="${buttonClass}"
+        style={${styleString}}
+      >
+        ${component.props.text || 'Button'}
+      </button>`;
+
+        case 'navbar':
+          const navItems = (component.props.items || []).map((item: string) => {
+            if (framework === 'vue') return `        <a href="#" class="navbar-item">${item}</a>`;
+            if (framework === 'angular') return `          <a href="#" class="navbar-item">${item}</a>`;
+            if (framework === 'svelte') return `    <a href="#" class="navbar-item">${item}</a>`;
+            return `          <a href="#" className="navbar-item">${item}</a>`;
+          }).join('\n');
+
+          const navClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+          const styleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
+
+          return `      <nav ${navClass}="navbar" ${styleAttr}='${styleString}'>
+        <div ${navClass}="navbar-brand">${component.props.title || 'Logo'}</div>
+        <div ${navClass}="navbar-menu">
+${navItems}
+        </div>
+      </nav>`;
+
+        case 'aside':
+          const asideItems = (component.props.items || []).map((item: string) => {
+            const linkClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+            return `            <li><a href="#" ${linkClass}="aside-nav-item">${item}</a></li>`;
+          }).join('\n');
+
+          const asideClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+          const asideStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
+
+          return `      <aside ${asideClass}="aside" ${asideStyleAttr}='${styleString}'>
+        <div ${asideClass}="aside-header">
+          <h3>${component.props.title || 'Menu'}</h3>
+        </div>
+        <nav ${asideClass}="aside-nav">
+          <ul>
+${asideItems}
+          </ul>
+        </nav>
+      </aside>`;
+
+        case 'hero':
+          const heroClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+          const heroStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
+
+          return `      <section ${heroClass}="hero" ${heroStyleAttr}='${styleString}'>
+        <h1>${component.props.title || 'Titre Principal'}</h1>
+        <p>${component.props.subtitle || 'Sous-titre'}</p>
+        ${component.props.hasButton ? `
+        <button ${heroClass}="btn btn-primary">
+          ${component.props.buttonText || 'Action'}
+        </button>` : ''}
+      </section>`;
+
+        case 'footer':
+          const footerLinks = (component.props.links || []).map((link: string) => {
+            const linkClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+            return `          <a href="#" ${linkClass}="footer-link">${link}</a>`;
+          }).join('\n');
+
+          const footerClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+          const footerStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
+
+          return `      <footer ${footerClass}="footer" ${footerStyleAttr}='${styleString}'>
+        <div ${footerClass}="footer-brand">${component.props.title || 'Brand'}</div>
+        <div ${footerClass}="footer-links">
+${footerLinks}
+        </div>
+        <div ${footerClass}="footer-copyright">${component.props.copyright || '© 2025'}</div>
+      </footer>`;
+
+        // Autres composants (card, form, table, etc.) - logique similaire mais adaptée
+        default:
+          return this.generateGenericComponent(component, framework, styleString);
+      }
+    }).join('\n\n');
+  }
+
+  private static generateComponentsHTML(components: Component[], templateEngine: string): string {
+    return components.map(component => {
+      const style = this.convertToCSS(component.style, component.position);
+      const styleAttr = Object.entries(style).map(([key, value]) => `${key}: ${value}`).join('; ');
+      
+      switch (component.type) {
+        case 'button':
+          return `        <button class="btn btn-${component.props.variant || 'primary'}" style="${styleAttr}">
+          ${component.props.text || 'Button'}
+        </button>`;
+
+        case 'navbar':
+          const navItems = (component.props.items || []).map((item: string) => 
+            `            <a href="#" class="navbar-item">${item}</a>`
+          ).join('\n');
+          
+          return `        <nav class="navbar" style="${styleAttr}">
+          <div class="navbar-brand">${component.props.title || 'Logo'}</div>
+          <div class="navbar-menu">
+${navItems}
+          </div>
+        </nav>`;
+
+        case 'aside':
+          const asideItems = (component.props.items || []).map((item: string) => 
+            `              <li><a href="#" class="aside-nav-item">${item}</a></li>`
+          ).join('\n');
+          
+          return `        <aside class="aside" style="${styleAttr}">
+          <div class="aside-header">
+            <h3>${component.props.title || 'Menu'}</h3>
+          </div>
+          <nav class="aside-nav">
+            <ul>
+${asideItems}
+            </ul>
+          </nav>
+        </aside>`;
+
+        case 'hero':
+          return `        <section class="hero" style="${styleAttr}">
+          <h1>${component.props.title || 'Titre Principal'}</h1>
+          <p>${component.props.subtitle || 'Sous-titre'}</p>
+          ${component.props.hasButton ? `
+          <button class="btn btn-primary">
+            ${component.props.buttonText || 'Action'}
+          </button>` : ''}
+        </section>`;
+
+        case 'footer':
+          const footerLinks = (component.props.links || []).map((link: string) => 
+            `            <a href="#" class="footer-link">${link}</a>`
+          ).join('\n');
+          
+          return `        <footer class="footer" style="${styleAttr}">
+          <div class="footer-brand">${component.props.title || 'Brand'}</div>
+          <div class="footer-links">
+${footerLinks}
+          </div>
+          <div class="footer-copyright">${component.props.copyright || '© 2025'}</div>
+        </footer>`;
+
+        case 'form':
+          const fields = (component.props.fields || []).map((field: string) => {
+            const inputType = field === 'email' ? 'email' : field === 'password' ? 'password' : field === 'message' ? 'textarea' : 'text';
+            
+            if (inputType === 'textarea') {
+              return `          <div class="form-group">
+            <label class="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <textarea class="form-textarea" rows="4"></textarea>
+          </div>`;
+            }
+            
+            return `          <div class="form-group">
+            <label class="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <input type="${inputType}" class="form-input" />
+          </div>`;
+          }).join('\n');
+
+          return `        <form class="form" style="${styleAttr}">
+          <h2 class="form-title">${component.props.title || 'Formulaire'}</h2>
+${fields}
+          <button type="submit" class="btn btn-primary">
+            ${component.props.submitText || 'Envoyer'}
+          </button>
+        </form>`;
+
+        case 'table':
+          const headers = (component.props.headers || []).map((header: string) => 
+            `            <th>${header}</th>`
+          ).join('\n');
+          
+          const rows = (component.props.rows || []).map((row: string[]) => 
+            `          <tr>\n${row.map(cell => `            <td>${cell}</td>`).join('\n')}\n          </tr>`
+          ).join('\n');
+
+          return `        <table class="table" style="${styleAttr}">
+          <thead>
+            <tr>
+${headers}
+            </tr>
+          </thead>
+          <tbody>
+${rows}
+          </tbody>
+        </table>`;
+
+        default:
+          return `        <div style="${styleAttr}">${component.type}</div>`;
+      }
+    }).join('\n\n');
+  }
+
+  private static generateGenericComponent(component: Component, framework: string, styleString: string): string {
+    const classAttr = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
+    const styleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
+    
+    return `      <div ${classAttr}="${component.type}" ${styleAttr}='${styleString}'>
+        ${component.type} component
+      </div>`;
+  }
+
+  private static convertToCSS(style: any, position: any): any {
+    return {
+      position: 'absolute',
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+      width: `${position.width}px`,
+      height: position.height === 'auto' ? 'auto' : `${position.height}px`,
+      ...style,
+    };
   }
 }

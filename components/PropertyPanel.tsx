@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Component } from '@/types';
-import { AnimationPreview } from './AnimationPreview';
-import { Edit3, Trash2, Copy, Palette, Move, Zap, Eye } from 'lucide-react';
+import { shadowPresets, gradientPresets, iconOptions } from '@/data/presets';
+import { Edit3, Trash2, Copy, Palette, Move, Zap, Eye, ChevronDown } from 'lucide-react';
 
 interface PropertyPanelProps {
   selectedComponent: Component | null;
@@ -17,6 +17,9 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   onComponentDuplicate,
 }) => {
   const [activeTab, setActiveTab] = useState<'props' | 'style' | 'animations'>('props');
+  const [showShadowPresets, setShowShadowPresets] = useState(false);
+  const [showGradientPresets, setShowGradientPresets] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
 
   if (!selectedComponent) {
     return (
@@ -60,6 +63,10 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
     });
   };
 
+  const handleIconSelect = (iconName: string) => {
+    updateProp('icon', iconName);
+    setShowIconPicker(false);
+  };
   const renderPropertyInputs = () => {
     switch (selectedComponent.type) {
       case 'button':
@@ -73,6 +80,40 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 onChange={(e) => updateProp('text', e.target.value)}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none"
               />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Icône</label>
+              <div className="relative">
+                <button
+                  onClick={() => setShowIconPicker(!showIconPicker)}
+                  className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none flex items-center justify-between"
+                >
+                  <span>{selectedComponent.props.icon || 'Aucune icône'}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {showIconPicker && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-10 max-h-48 overflow-y-auto">
+                    <div className="p-2">
+                      <button
+                        onClick={() => handleIconSelect('')}
+                        className="w-full p-2 text-left hover:bg-gray-700 rounded text-gray-300"
+                      >
+                        Aucune icône
+                      </button>
+                      {iconOptions.map((icon) => (
+                        <button
+                          key={icon.component}
+                          onClick={() => handleIconSelect(icon.component)}
+                          className="w-full p-2 text-left hover:bg-gray-700 rounded text-gray-300 flex items-center gap-2"
+                        >
+                          <span className="text-xs bg-gray-700 px-2 py-1 rounded">{icon.category}</span>
+                          {icon.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-300 mb-2">Variante</label>
@@ -464,63 +505,61 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
       {/* Colors */}
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Couleurs</h4>
-        <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs text-gray-400 mb-1">Arrière-plan</label>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={selectedComponent.style.backgroundColor || '#000000'}
-                onChange={(e) => updateStyle('backgroundColor', e.target.value)}
-                className="w-12 h-8 bg-gray-800 border border-gray-600 rounded"
-              />
-              <input
-                type="text"
-                value={selectedComponent.style.backgroundColor || ''}
-                onChange={(e) => updateStyle('backgroundColor', e.target.value)}
-                placeholder="#000000"
-                className="flex-1 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
-              />
-            </div>
+            <input
+              type="color"
+              value={selectedComponent.style.backgroundColor || '#000000'}
+              onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+            />
           </div>
           <div>
             <label className="block text-xs text-gray-400 mb-1">Texte</label>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={selectedComponent.style.color || '#ffffff'}
-                onChange={(e) => updateStyle('color', e.target.value)}
-                className="w-12 h-8 bg-gray-800 border border-gray-600 rounded"
-              />
-              <input
-                type="text"
-                value={selectedComponent.style.color || ''}
-                onChange={(e) => updateStyle('color', e.target.value)}
-                placeholder="#ffffff"
-                className="flex-1 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">Dégradé</label>
-            <select
-              value={selectedComponent.style.backgroundImage?.includes('gradient') ? 'gradient' : 'none'}
-              onChange={(e) => {
-                if (e.target.value === 'gradient') {
-                  updateStyle('backgroundImage', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
-                } else {
-                  updateStyle('backgroundImage', '');
-                }
-              }}
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
-            >
-              <option value="none">Aucun</option>
-              <option value="gradient">Dégradé</option>
-            </select>
+            <input
+              type="color"
+              value={selectedComponent.style.color || '#ffffff'}
+              onChange={(e) => updateStyle('color', e.target.value)}
+              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
+            />
           </div>
         </div>
       </div>
 
+      {/* Gradient Background */}
+      <div>
+        <h4 className="text-sm font-medium text-gray-300 mb-3">Dégradé</h4>
+        <div className="relative">
+          <button
+            onClick={() => setShowGradientPresets(!showGradientPresets)}
+            className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-cyan-500 focus:outline-none flex items-center justify-between"
+          >
+            <span>Choisir un dégradé</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+          {showGradientPresets && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-10 max-h-48 overflow-y-auto">
+              {gradientPresets.map((preset) => (
+                <button
+                  key={preset.name}
+                  onClick={() => {
+                    updateStyle('background', preset.value === 'none' ? '' : preset.value);
+                    setShowGradientPresets(false);
+                  }}
+                  className="w-full p-3 text-left hover:bg-gray-700 text-gray-300 flex items-center gap-3"
+                >
+                  <div 
+                    className="w-6 h-6 rounded border border-gray-600"
+                    style={{ background: preset.value === 'none' ? 'transparent' : preset.value }}
+                  />
+                  {preset.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       {/* Spacing */}
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Espacement</h4>
@@ -603,49 +642,51 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Ombres</h4>
         <div className="space-y-2">
-          <div>
-            <label className="block text-xs text-gray-400 mb-1">Ombre</label>
-            <select
-              value={selectedComponent.style.boxShadow ? 'custom' : 'none'}
-              onChange={(e) => {
-                const shadows = {
-                  none: '',
-                  small: '0 1px 3px rgba(0, 0, 0, 0.12)',
-                  medium: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  large: '0 10px 15px rgba(0, 0, 0, 0.1)',
-                  xl: '0 20px 25px rgba(0, 0, 0, 0.1)',
-                  glow: '0 0 20px rgba(59, 130, 246, 0.5)',
-                };
-                updateStyle('boxShadow', shadows[e.target.value as keyof typeof shadows] || e.target.value);
-              }}
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+          <div className="relative">
+            <label className="block text-xs text-gray-400 mb-1">Presets d'ombres</label>
+            <button
+              onClick={() => setShowShadowPresets(!showShadowPresets)}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none flex items-center justify-between"
             >
-              <option value="none">Aucune</option>
-              <option value="small">Petite</option>
-              <option value="medium">Moyenne</option>
-              <option value="large">Grande</option>
-              <option value="xl">Très grande</option>
-              <option value="glow">Lueur</option>
-            </select>
+              <span>Choisir une ombre</span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            {showShadowPresets && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-10 max-h-48 overflow-y-auto">
+                {shadowPresets.map((preset) => (
+                  <button
+                    key={preset.name}
+                    onClick={() => {
+                      updateStyle('boxShadow', preset.value);
+                      setShowShadowPresets(false);
+                    }}
+                    className="w-full p-2 text-left hover:bg-gray-700 text-gray-300 text-sm"
+                  >
+                    {preset.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Box Shadow</label>
+            <input
+              type="text"
+              value={selectedComponent.style.boxShadow || ''}
+              onChange={(e) => updateStyle('boxShadow', e.target.value)}
+              placeholder="0 4px 8px rgba(0, 0, 0, 0.1)"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
           </div>
           <div>
             <label className="block text-xs text-gray-400 mb-1">Text Shadow</label>
-            <select
-              value={selectedComponent.style.textShadow ? 'glow' : 'none'}
-              onChange={(e) => {
-                const textShadows = {
-                  none: '',
-                  glow: '0 0 10px currentColor',
-                  strong: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                };
-                updateStyle('textShadow', textShadows[e.target.value as keyof typeof textShadows] || '');
-              }}
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
-            >
-              <option value="none">Aucune</option>
-              <option value="glow">Lueur</option>
-              <option value="strong">Forte</option>
-            </select>
+            <input
+              type="text"
+              value={selectedComponent.style.textShadow || ''}
+              onChange={(e) => updateStyle('textShadow', e.target.value)}
+              placeholder="0 0 10px currentColor"
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+            />
           </div>
         </div>
       </div>
@@ -703,12 +744,78 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   );
 
   const renderAnimationInputs = () => (
-    <AnimationPreview
-      animations={selectedComponent.animations || []}
-      onAnimationUpdate={(animations) => 
-        onComponentUpdate(selectedComponent.id, { animations })
-      }
-    />
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-medium text-gray-300">Animations</h4>
+        <button
+          onClick={() => addAnimation({
+            name: 'fadeIn',
+            duration: '0.3s',
+            timing: 'ease-in-out',
+          })}
+          className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs rounded transition-colors"
+        >
+          Ajouter
+        </button>
+      </div>
+
+      {(selectedComponent.animations || []).map((animation, index) => (
+        <div key={index} className="p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-300">Animation {index + 1}</span>
+            <button
+              onClick={() => removeAnimation(index)}
+              className="text-red-400 hover:text-red-300 text-xs"
+            >
+              Supprimer
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Nom</label>
+              <select
+                value={animation.name}
+                onChange={(e) => {
+                  const newAnimations = [...(selectedComponent.animations || [])];
+                  newAnimations[index] = { ...animation, name: e.target.value };
+                  onComponentUpdate(selectedComponent.id, { animations: newAnimations });
+                }}
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              >
+                <option value="fadeIn">Fade In</option>
+                <option value="slideIn">Slide In</option>
+                <option value="bounce">Bounce</option>
+                <option value="pulse">Pulse</option>
+                <option value="shake">Shake</option>
+                <option value="rotate">Rotate</option>
+                <option value="scale">Scale</option>
+                <option value="glow">Glow</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Durée</label>
+              <input
+                type="text"
+                value={animation.duration}
+                onChange={(e) => {
+                  const newAnimations = [...(selectedComponent.animations || [])];
+                  newAnimations[index] = { ...animation, duration: e.target.value };
+                  onComponentUpdate(selectedComponent.id, { animations: newAnimations });
+                }}
+                placeholder="0.3s"
+                className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {(!selectedComponent.animations || selectedComponent.animations.length === 0) && (
+        <div className="text-center py-6 text-gray-500 text-sm">
+          Aucune animation. Cliquez sur "Ajouter" pour en créer une.
+        </div>
+      )}
+    </div>
   );
 
   return (

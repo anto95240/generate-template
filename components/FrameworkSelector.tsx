@@ -1,24 +1,28 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Framework } from '@/types';
-import { frameworks, getFrameworksByCategory } from '@/data/frameworks';
-import { ChevronDown, Search, AlertCircle, Code } from 'lucide-react';
-import * as Icons from "lucide-react";
+import { Framework, CSSFramework } from '@/types';
+import { frameworks, getFrameworksByCategory, cssFrameworks } from '@/data/frameworks';
+import { ChevronDown, Search, AlertCircle } from 'lucide-react';
 
 interface FrameworkSelectorProps {
   selectedFramework: Framework;
   onFrameworkChange: (framework: Framework) => void;
+  selectedCSSFramework?: CSSFramework;
+  onCSSFrameworkChange?: (cssFramework: CSSFramework) => void;
 }
 
 export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
   selectedFramework,
   onFrameworkChange,
+  selectedCSSFramework = 'vanilla',
+  onCSSFrameworkChange,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['frontend']);
   
   const frameworkCategories = getFrameworksByCategory();
+  const selectedFrameworkInfo = frameworks.find(f => f.id === selectedFramework);
   
   const filteredFrameworks = Object.entries(frameworkCategories).reduce((acc, [category, categoryFrameworks]) => {
     const filtered = categoryFrameworks.filter(framework =>
@@ -43,7 +47,6 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     switch (category) {
       case 'frontend': return '🎨';
       case 'fullstack': return '⚡';
-      case 'mobile': return '📱';
       default: return '📦';
     }
   };
@@ -52,15 +55,10 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     switch (category) {
       case 'frontend': return 'Interfaces utilisateur';
       case 'fullstack': return 'Applications complètes';
-      case 'mobile': return 'Applications mobiles';
       default: return '';
     }
   };
 
-  const isMobileFramework = (frameworkId: Framework) => {
-    const framework = frameworks.find(f => f.id === frameworkId);
-    return framework?.category === 'mobile';
-  };
 
   return (
     <div className="space-y-4">
@@ -76,18 +74,6 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         />
       </div>
 
-      {/* Mobile Warning */}
-      {isMobileFramework(selectedFramework) && (
-        <div className="p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
-          <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-blue-200">
-              <p className="font-medium mb-1">Framework Mobile</p>
-              <p>Les frameworks mobiles ont des composants spécifiques. L'aperçu peut différer de l'application finale.</p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Framework Categories */}
       <div className="space-y-3">
@@ -101,8 +87,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
                 <span className="text-lg">{getCategoryIcon(category)}</span>
                 <div className="text-left">
                   <div className="text-sm font-medium text-gray-300 capitalize">
-                    {category === 'frontend' ? 'Frontend' : 
-                     category === 'fullstack' ? 'Full-Stack' : 'Mobile'}
+                    {category === 'frontend' ? 'Frontend' : 'Full-Stack'}
                   </div>
                   <div className="text-xs text-gray-500">
                     {getCategoryDescription(category)}
@@ -119,8 +104,13 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
             {expandedCategories.includes(category) && (
               <div className="mt-2 space-y-1 pl-2">
                 {categoryFrameworks.map((framework) => {
-                  const IconComponent = (Icons as any)[framework.icon] || Icons.Code;
-
+                  let IconComponent;
+                  try {
+                    IconComponent = require('lucide-react')[framework.icon];
+                  } catch {
+                    IconComponent = require('lucide-react')['Code'];
+                  }
+                  
                   return (
                     <button
                       key={framework.id}
@@ -150,6 +140,30 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         ))}
       </div>
 
+      {/* CSS Framework Selection */}
+      {selectedFrameworkInfo && onCSSFrameworkChange && (
+        <div className="mt-6">
+          <h4 className="text-sm font-medium text-gray-300 mb-3">Framework CSS</h4>
+          <div className="space-y-2 max-h-48 overflow-y-auto">
+            {cssFrameworks
+              .filter(css => selectedFrameworkInfo.supportedCSSFrameworks.includes(css.id))
+              .map((cssFramework) => (
+                <button
+                  key={cssFramework.id}
+                  onClick={() => onCSSFrameworkChange(cssFramework.id)}
+                  className={`w-full p-3 rounded-lg text-left transition-all duration-200 ${
+                    selectedCSSFramework === cssFramework.id
+                      ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500'
+                      : 'bg-gray-800/30 hover:bg-gray-700/30 border border-gray-700'
+                  }`}
+                >
+                  <div className="text-sm font-medium text-gray-300">{cssFramework.name}</div>
+                  <div className="text-xs text-gray-500 mt-1">{cssFramework.description}</div>
+                </button>
+              ))}
+          </div>
+        </div>
+      )}
       {Object.keys(filteredFrameworks).length === 0 && searchTerm && (
         <div className="text-center py-8">
           <div className="text-gray-500 text-sm">

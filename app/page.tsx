@@ -7,13 +7,14 @@ import { PropertyPanel } from '@/components/PropertyPanel';
 import { AIModal } from '@/components/AIModal';
 import { ExportModal } from '@/components/ExportModal';
 import { useComponents } from '@/hooks/useComponents';
-import { themes } from '@/data/themes';
-import { Framework, ComponentType, Template, ExportOptions } from '@/types';
+import { allThemes } from '@/data/themes';
+import { Framework, ComponentType, Template, ExportOptions, CSSFramework } from '@/types';
 import { exportProject } from '@/utils/exportUtils';
 import { AIService } from '@/services/aiService';
 
 function Home() {
   const [selectedFramework, setSelectedFramework] = useState<Framework>('react');
+  const [selectedCSSFramework, setSelectedCSSFramework] = useState<CSSFramework>('vanilla');
   const [selectedThemeId, setSelectedThemeId] = useState('cyberpunk');
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
@@ -31,7 +32,7 @@ function Home() {
     loadTemplate,
   } = useComponents(selectedFramework);
 
-  const selectedTheme = themes.find(t => t.id === selectedThemeId) || themes[0];
+  const selectedTheme = allThemes.find(t => t.id === selectedThemeId) || allThemes[0];
 
   const handleAddComponent = (type: ComponentType) => {
     addComponent(type);
@@ -54,7 +55,6 @@ function Home() {
                 style: comp.style,
                 position: comp.position,
                 framework: selectedFramework,
-                animations: [],
               };
               addComponent(component.type, component);
             }, index * 100); // Délai pour l'effet visuel
@@ -79,7 +79,6 @@ function Home() {
                     result.componentType === 'card' ? 200 : 40,
           },
           framework: selectedFramework,
-          animations: [],
         };
         addComponent(component.type, component);
       }
@@ -108,7 +107,7 @@ function Home() {
   };
 
   const handleExport = (options: ExportOptions) => {
-    exportProject(components, selectedFramework, selectedTheme, options);
+    exportProject(components, selectedFramework, selectedTheme, { ...options, cssFramework: selectedCSSFramework });
   };
 
   return (
@@ -117,6 +116,8 @@ function Home() {
       <Sidebar
         selectedFramework={selectedFramework}
         onFrameworkChange={setSelectedFramework}
+        selectedCSSFramework={selectedCSSFramework}
+        onCSSFrameworkChange={setSelectedCSSFramework}
         selectedTheme={selectedThemeId}
         onThemeChange={setSelectedThemeId}
         onAddComponent={handleAddComponent}

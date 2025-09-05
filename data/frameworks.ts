@@ -1,14 +1,15 @@
-import { Framework } from '@/types';
+import { Framework, CSSFramework } from '@/types';
 
 export interface FrameworkInfo {
   id: Framework;
   name: string;
-  category: 'frontend' | 'fullstack' | 'backend';
+  category: 'frontend' | 'fullstack';
   language: string;
   description: string;
   icon: string;
   fileExtension: string;
-  templateType: 'component' | 'template' | 'view';
+  templateType: 'component' | 'template';
+  supportedCSSFrameworks: CSSFramework[];
 }
 
 export const frameworks: FrameworkInfo[] = [
@@ -22,6 +23,7 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Atom',
     fileExtension: 'tsx',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'chakra', 'antd', 'mantine', 'vanilla'],
   },
   {
     id: 'vue',
@@ -32,6 +34,7 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Triangle',
     fileExtension: 'vue',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'bulma', 'vanilla'],
   },
   {
     id: 'angular',
@@ -42,6 +45,7 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Zap',
     fileExtension: 'ts',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'materialize', 'vanilla'],
   },
   {
     id: 'svelte',
@@ -52,6 +56,7 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Flame',
     fileExtension: 'svelte',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'bulma', 'vanilla'],
   },
 
   // Fullstack Frameworks
@@ -64,6 +69,7 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'ArrowRight',
     fileExtension: 'tsx',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'chakra', 'antd', 'mantine', 'vanilla'],
   },
   {
     id: 'nuxtjs',
@@ -74,28 +80,8 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Mountain',
     fileExtension: 'vue',
     templateType: 'component',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'bulma', 'vanilla'],
   },
-  {
-    id: 'remix',
-    name: 'Remix',
-    category: 'fullstack',
-    language: 'JavaScript/TypeScript',
-    description: 'Framework full-stack centré sur les standards web',
-    icon: 'Disc',
-    fileExtension: 'tsx',
-    templateType: 'component',
-  },
-  {
-    id: 'astro',
-    name: 'Astro',
-    category: 'frontend',
-    language: 'JavaScript/TypeScript',
-    description: 'Framework moderne pour sites statiques rapides',
-    icon: 'Rocket',
-    fileExtension: 'astro',
-    templateType: 'component',
-  },
-
 
   // Static HTML
   {
@@ -107,35 +93,26 @@ export const frameworks: FrameworkInfo[] = [
     icon: 'Globe',
     fileExtension: 'html',
     templateType: 'template',
+    supportedCSSFrameworks: ['tailwind', 'bootstrap', 'bulma', 'foundation', 'materialize', 'semantic', 'vanilla'],
   },
+];
 
-  // Mobile Frameworks
-  {
-    id: 'flutter',
-    name: 'Flutter',
-    category: 'mobile',
-    language: 'Dart',
-    description: 'Framework UI pour applications mobiles et web',
-    icon: 'Smartphone',
-    fileExtension: 'dart',
-    templateType: 'component',
-  },
-  {
-    id: 'react-native',
-    name: 'React Native',
-    category: 'mobile',
-    language: 'JavaScript/TypeScript',
-    description: 'Framework pour applications mobiles natives',
-    icon: 'Smartphone',
-    fileExtension: 'tsx',
-    templateType: 'component',
-  },
+export const cssFrameworks: { id: CSSFramework; name: string; description: string }[] = [
+  { id: 'tailwind', name: 'Tailwind CSS', description: 'Framework CSS utilitaire' },
+  { id: 'bootstrap', name: 'Bootstrap', description: 'Framework CSS populaire' },
+  { id: 'bulma', name: 'Bulma', description: 'Framework CSS moderne basé sur Flexbox' },
+  { id: 'foundation', name: 'Foundation', description: 'Framework CSS responsive' },
+  { id: 'materialize', name: 'Materialize', description: 'Framework CSS Material Design' },
+  { id: 'semantic', name: 'Semantic UI', description: 'Framework CSS sémantique' },
+  { id: 'chakra', name: 'Chakra UI', description: 'Composants React modulaires' },
+  { id: 'antd', name: 'Ant Design', description: 'Design system pour React' },
+  { id: 'mantine', name: 'Mantine', description: 'Composants React modernes' },
+  { id: 'vanilla', name: 'CSS Vanilla', description: 'CSS personnalisé' },
 ];
 
 export const getFrameworksByCategory = () => {
   return {
     frontend: frameworks.filter(f => f.category === 'frontend'),
     fullstack: frameworks.filter(f => f.category === 'fullstack'),
-    mobile: frameworks.filter(f => f.category === 'mobile'),
   };
 };

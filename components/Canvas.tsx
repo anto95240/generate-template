@@ -100,11 +100,8 @@ export const Canvas: React.FC<CanvasProps> = ({
         {components.map((component) => (
           <div
             key={component.id}
-            data-component-id={component.id}
             className={`absolute cursor-move transition-all duration-200 ${
               selectedComponentId === component.id ? 'ring-2 ring-cyan-400 ring-opacity-60' : ''
-            } ${
-              component.animations?.map(anim => `animate-${anim.name}`).join(' ') || ''
             }`}
             style={{
               left: component.position.x,
@@ -112,10 +109,6 @@ export const Canvas: React.FC<CanvasProps> = ({
               width: component.position.width,
               height: component.position.height,
               zIndex: selectedComponentId === component.id ? 1000 : 1,
-              animationDuration: component.animations?.[0]?.duration || '1s',
-              animationTimingFunction: component.animations?.[0]?.timing || 'ease-in-out',
-              animationDelay: component.animations?.[0]?.delay || '0s',
-              animationIterationCount: component.animations?.[0]?.iteration || '1',
             }}
             onMouseDown={(e) => handleMouseDown(e, component.id)}
           >

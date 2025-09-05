@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { componentTemplates } from '@/data/componentTemplates';
-import { themes } from '@/data/themes';
-import { getTemplatesByCategory, getRandomTemplate } from '@/data/templates';
+import { allThemes } from '@/data/themes';
+import { templates, getTemplatesByCategory, getRandomTemplateByCategory } from '@/data/templates';
 import { FrameworkSelector } from './FrameworkSelector';
-import { ComponentVariantSelector } from './ComponentVariantSelector';
-import { FileImporter } from './FileImporter';
-import { Framework, Template } from '@/types';
-import * as LucideIcons from 'lucide-react';
-import { LucideCrop as LucideProps } from 'lucide-react';
-import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Upload } from 'lucide-react';
+import { Framework, Template, CSSFramework } from '@/types';
+import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Dice6 } from 'lucide-react';
 
 interface SidebarProps {
   selectedFramework: Framework;
   onFrameworkChange: (framework: Framework) => void;
+  selectedCSSFramework?: CSSFramework;
+  onCSSFrameworkChange?: (cssFramework: CSSFramework) => void;
   selectedTheme: string;
   onThemeChange: (themeId: string) => void;
   onAddComponent: (type: any) => void;
@@ -24,6 +22,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   selectedFramework,
   onFrameworkChange,
+  selectedCSSFramework,
+  onCSSFrameworkChange,
   selectedTheme,
   onThemeChange,
   onAddComponent,
@@ -34,8 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [activeSection, setActiveSection] = useState<'components' | 'templates'>('components');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['landing']);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedComponentType, setSelectedComponentType] = useState<any>(null);
-  const [showImporter, setShowImporter] = useState(false);
+  const [showRandomOptions, setShowRandomOptions] = useState(false);
 
   const templateCategories = getTemplatesByCategory();
   
@@ -58,27 +57,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     );
   };
 
-  const handleRandomTemplate = () => {
-    const randomTemplate = getRandomTemplate();
+  const handleRandomTemplate = (category: string = 'all') => {
+    const randomTemplate = getRandomTemplateByCategory(category);
     onLoadTemplate(randomTemplate);
-  };
-
-  const handleComponentClick = (template: any) => {
-    if (template.presets.length > 1) {
-      setSelectedComponentType(template);
-    } else {
-      onAddComponent(template.type);
-    }
-  };
-
-  const handleVariantSelect = (variant: any) => {
-    if (selectedComponentType) {
-      onAddComponent(variant.type, {
-        props: variant.props,
-        style: variant.style,
-        animations: variant.animations || [],
-      });
-    }
+    setShowRandomOptions(false);
   };
 
   const getCategoryIcon = (category: string) => {
@@ -126,6 +108,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <FrameworkSelector
             selectedFramework={selectedFramework}
             onFrameworkChange={onFrameworkChange}
+            selectedCSSFramework={selectedCSSFramework}
+            onCSSFrameworkChange={onCSSFrameworkChange}
           />
         </div>
 
@@ -136,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <h3 className="text-sm font-medium text-gray-300">Thèmes</h3>
           </div>
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            {themes.map((theme) => (
+            {allThemes.map((theme) => (
               <button
                 key={theme.id}
                 onClick={() => onThemeChange(theme.id)}
@@ -196,13 +180,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-8">
             <div className="grid grid-cols-2 gap-2">
               {componentTemplates.map((template) => {
-                // Force TypeScript à considérer IconComponent comme un composant JSX valide
-                const IconComponent = (LucideIcons[template.icon as keyof typeof LucideIcons] || LucideIcons.Square) as React.ComponentType<LucideProps>;
-
+                let IconComponent;
+                try {
+                  IconComponent = require('lucide-react')[template.icon];
+                } catch {
+                  IconComponent = require('lucide-react')['Square'];
+                }
                 return (
                   <button
                     key={template.type}
-                    onClick={() => handleComponentClick(template)}
+                    onClick={() => onAddComponent(template.type)}
                     className="p-4 bg-gray-800/30 hover:bg-gray-700/50 rounded-lg border border-gray-700 hover:border-cyan-500/50 transition-all duration-200 group"
                   >
                     <div className="flex flex-col items-center gap-2">
@@ -210,11 +197,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <span className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
                         {template.name}
                       </span>
-                      {template.presets.length > 1 && (
-                        <span className="text-xs text-cyan-400 opacity-75">
-                          {template.presets.length} variantes
-                        </span>
-                      )}
                     </div>
                   </button>
                 );
@@ -239,13 +221,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Random Template Button */}
-            <button
-              onClick={handleRandomTemplate}
-              className="w-full p-3 mb-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <Shuffle className="w-4 h-4" />
-              Template Aléatoire
-            </button>
+            <div className="mb-4 relative">
+              <button
+                onClick={() => setShowRandomOptions(!showRandomOptions)}
+                className="w-full p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Dice6 className="w-4 h-4" />
+                Template Aléatoire
+                <ChevronDown className={`w-4 h-4 transition-transform ${showRandomOptions ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {showRandomOptions && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-10">
+                  <button
+                    onClick={() => handleRandomTemplate('all')}
+                    className="w-full p-3 text-left hover:bg-gray-700 text-gray-300 hover:text-white transition-colors border-b border-gray-700"
+                  >
+                    🎲 Tous les types
+                  </button>
+                  {Object.entries(templateCategories).map(([category, templates]) => (
+                    <button
+                      key={category}
+                      onClick={() => handleRandomTemplate(category)}
+                      className="w-full p-3 text-left hover:bg-gray-700 text-gray-300 hover:text-white transition-colors flex items-center gap-2"
+                    >
+                      <span>{getCategoryIcon(category)}</span>
+                      {getCategoryName(category)} ({templates.length})
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Template Categories */}
             <div className="space-y-3">
@@ -295,6 +301,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 <span className="text-xs px-2 py-1 bg-gray-700 rounded text-gray-400">
                                   {template.components.length} composants
                                 </span>
+                                {template.variants && template.variants.length > 0 && (
+                                  <span className="text-xs px-2 py-1 bg-purple-700 rounded text-purple-200">
+                                    {template.variants.length} variantes
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -327,17 +338,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
 
-        {/* File Import */}
-        <div className="mb-8">
-          <button
-            onClick={() => setShowImporter(true)}
-            className="w-full p-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25"
-          >
-            <Upload className="w-4 h-4" />
-            Importer Code
-          </button>
-        </div>
-
         {/* Export */}
         <div>
           <button
@@ -349,28 +349,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
         </div>
       </div>
-
-      {/* Component Variant Selector */}
-      {selectedComponentType && (
-        <ComponentVariantSelector
-          componentType={selectedComponentType.type}
-          template={selectedComponentType}
-          onSelectVariant={handleVariantSelect}
-          onClose={() => setSelectedComponentType(null)}
-        />
-      )}
-
-      {/* File Importer */}
-      {showImporter && (
-        <FileImporter
-          onImport={(framework, components) => {
-            onFrameworkChange(framework);
-            // Logique pour charger les composants importés
-            console.log('Imported:', framework, components);
-          }}
-          onClose={() => setShowImporter(false)}
-        />
-      )}
     </div>
   );
 };

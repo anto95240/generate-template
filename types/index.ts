@@ -16,7 +16,7 @@ export interface Position {
   height: number;
 }
 
-export interface ComponentStyle extends React.CSSProperties {
+export interface ComponentStyle {
   backgroundColor?: string;
   color?: string;
   borderRadius?: string;
@@ -89,11 +89,19 @@ export type Framework =
   | 'svelte'
   | 'nextjs'
   | 'nuxtjs'
-  | 'remix'
-  | 'astro'
-  | 'html'
-  | 'flutter'
-  | 'react-native';
+  | 'html';
+
+export type CSSFramework = 
+  | 'tailwind'
+  | 'bootstrap'
+  | 'bulma'
+  | 'foundation'
+  | 'materialize'
+  | 'semantic'
+  | 'chakra'
+  | 'antd'
+  | 'mantine'
+  | 'vanilla';
 
 export interface Theme {
   id: string;
@@ -139,6 +147,11 @@ export interface Theme {
     lg: string;
     xl: string;
   };
+  gradients?: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
 }
 
 export interface Template {
@@ -150,6 +163,7 @@ export interface Template {
   theme: string;
   framework: Framework;
   preview?: string;
+  variants?: Template[];
 }
 
 export interface AIToken {
@@ -164,4 +178,21 @@ export interface ExportOptions {
   includeAssets: boolean;
   minify: boolean;
   format: 'single' | 'modular';
+  cssFramework?: CSSFramework;
+}
+
+export interface ShadowPreset {
+  name: string;
+  value: string;
+}
+
+export interface GradientPreset {
+  name: string;
+  value: string;
+}
+
+export interface IconOption {
+  name: string;
+  component: string;
+  category: 'ui' | 'social' | 'business' | 'arrows' | 'media';
 }

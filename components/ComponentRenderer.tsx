@@ -1,6 +1,6 @@
 import React from 'react';
-import { X, ChevronDown, Search, Grid3X3, MousePointer, Menu, Square, Type, FileText, Table, SidebarOpen, Zap, Minus, Tag, AlertTriangle, BarChart3, Table as Tabs } from 'lucide-react';
 import { Component, Theme } from '@/types';
+import * as LucideIcons from 'lucide-react';
 
 interface ComponentRendererProps {
   component: Component;
@@ -25,6 +25,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
       baseStyles.background = `${theme.colors.surface}80`;
     }
 
+    // Apply gradients from theme
+    if (component.props.variant === 'gradient' && theme.gradients) {
+      baseStyles.background = theme.gradients.primary;
+    }
     // Apply animations
     if (component.animations && component.animations.length > 0) {
       const animationNames = component.animations.map(anim => anim.name).join(', ');
@@ -37,6 +41,14 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
     return baseStyles;
   };
 
+  const renderIcon = (iconName: string) => {
+    if (!iconName) return null;
+    
+    const IconComponent = (LucideIcons as any)[iconName];
+    if (!IconComponent) return null;
+    
+    return <IconComponent className="w-4 h-4" />;
+  };
   const renderComponent = () => {
     const styles = getThemeStyles();
 
@@ -68,6 +80,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
                        component.props.size === 'xl' ? '20px 40px' : '12px 24px',
             }}
           >
+            {component.props.icon && renderIcon(component.props.icon)}
             {component.props.text || 'Button'}
           </button>
         );
@@ -79,6 +92,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
             style={styles}
           >
             <div className="text-lg font-bold" style={{ color: theme.colors.primary }}>
+              {component.props.icon && renderIcon(component.props.icon)}
               {component.props.title || 'Logo'}
             </div>
             <div className="flex gap-6">
@@ -109,6 +123,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
           >
             <div className="p-4 border-b border-gray-700">
               <h3 className="font-semibold text-lg" style={{ color: theme.colors.text }}>
+                {component.props.icon && renderIcon(component.props.icon)}
                 {component.props.title || 'Menu'}
               </h3>
             </div>
@@ -121,6 +136,10 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
                       className="block px-3 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-gray-700/50"
                       style={{ color: theme.colors.textSecondary }}
                     >
+                      {index === 0 && <LucideIcons.Home className="w-4 h-4" />}
+                      {index === 1 && <LucideIcons.User className="w-4 h-4" />}
+                      {index === 2 && <LucideIcons.BarChart3 className="w-4 h-4" />}
+                      {index === 3 && <LucideIcons.Settings className="w-4 h-4" />}
                       {item}
                     </a>
                   </li>
@@ -160,6 +179,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
                   boxShadow: theme.effects.glow ? `0 0 30px ${theme.colors.primary}40` : 'none',
                 }}
               >
+                <LucideIcons.ArrowRight className="w-5 h-5" />
                 {component.props.buttonText || 'Action'}
               </button>
             )}
@@ -178,6 +198,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
           >
             <div className="flex flex-col items-center gap-4">
               <div className="text-lg font-bold" style={{ color: theme.colors.primary }}>
+                {component.props.icon && renderIcon(component.props.icon)}
                 {component.props.title || 'Brand'}
               </div>
               <div className="flex gap-6">
@@ -210,6 +231,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
             }}
           >
             <h3 className="text-lg font-semibold mb-3" style={{ color: theme.colors.text }}>
+              {component.props.icon && renderIcon(component.props.icon)}
               {component.props.title || 'Card Title'}
             </h3>
             <p className="text-sm mb-4" style={{ color: theme.colors.textSecondary }}>
@@ -223,6 +245,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
                   color: theme.colors.background,
                 }}
               >
+                <LucideIcons.ArrowRight className="w-4 h-4" />
                 Action
               </button>
             )}

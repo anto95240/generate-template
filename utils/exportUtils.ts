@@ -106,33 +106,6 @@ const generateProjectStructure = (
       }
       break;
 
-    case 'symfony':
-      files['templates/base.html.twig'] = CodeGenerator.generateCode(components, framework, theme);
-      files['src/Controller/HomeController.php'] = generateSymfonyController();
-      files['config/routes.yaml'] = generateSymfonyRoutes();
-      if (options.includeAssets) {
-        files['README.md'] = generateReadme(framework, options.fileName);
-      }
-      break;
-
-    case 'laravel':
-      files['resources/views/welcome.blade.php'] = CodeGenerator.generateCode(components, framework, theme);
-      files['routes/web.php'] = generateLaravelRoutes();
-      files['app/Http/Controllers/HomeController.php'] = generateLaravelController();
-      if (options.includeAssets) {
-        files['README.md'] = generateReadme(framework, options.fileName);
-      }
-      break;
-
-    case 'django':
-      files['templates/index.html'] = CodeGenerator.generateCode(components, framework, theme);
-      files['views.py'] = generateDjangoViews();
-      files['urls.py'] = generateDjangoUrls();
-      if (options.includeAssets) {
-        files['requirements.txt'] = 'Django>=4.0.0';
-        files['README.md'] = generateReadme(framework, options.fileName);
-      }
-      break;
 
     default:
       files['index.html'] = CodeGenerator.generateCode(components, framework, theme);
@@ -150,10 +123,45 @@ const minifyCode = (code: string): string => {
     .trim();
 };
 
-const generatePackageJson = (framework: Framework, projectName: string): string => {
+const generatePackageJson = (framework: Framework, projectName: string, cssFramework?: string): string => {
   const dependencies: Record<string, string> = {};
   const devDependencies: Record<string, string> = {};
 
+  // Add CSS framework dependencies
+  if (cssFramework) {
+    switch (cssFramework) {
+      case 'tailwind':
+        devDependencies['tailwindcss'] = '^3.4.0';
+        devDependencies['autoprefixer'] = '^10.4.0';
+        devDependencies['postcss'] = '^8.4.0';
+        break;
+      case 'bootstrap':
+        dependencies['bootstrap'] = '^5.3.0';
+        break;
+      case 'bulma':
+        dependencies['bulma'] = '^0.9.4';
+        break;
+      case 'chakra':
+        if (framework === 'react' || framework === 'nextjs') {
+          dependencies['@chakra-ui/react'] = '^2.8.0';
+          dependencies['@emotion/react'] = '^11.11.0';
+          dependencies['@emotion/styled'] = '^11.11.0';
+          dependencies['framer-motion'] = '^10.16.0';
+        }
+        break;
+      case 'antd':
+        if (framework === 'react' || framework === 'nextjs') {
+          dependencies['antd'] = '^5.12.0';
+        }
+        break;
+      case 'mantine':
+        if (framework === 'react' || framework === 'nextjs') {
+          dependencies['@mantine/core'] = '^7.3.0';
+          dependencies['@mantine/hooks'] = '^7.3.0';
+        }
+        break;
+    }
+  }
   switch (framework) {
     case 'react':
       dependencies['react'] = '^18.2.0';
@@ -290,58 +298,3 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });`;
 };
-
-// Fonctions pour les frameworks backend (inchangées mais corrigées)
-const generateSymfonyController = () => `<?php
-
-namespace App\\Controller;
-
-use Symfony\\Bundle\\FrameworkBundle\\Controller\\AbstractController;
-use Symfony\\Component\\HttpFoundation\\Response;
-use Symfony\\Component\\Routing\\Attribute\\Route;
-
-class HomeController extends AbstractController
-{
-    #[Route('/', name: 'app_home')]
-    public function index(): Response
-    {
-        return $this->render('base.html.twig');
-    }
-}`;
-
-const generateSymfonyRoutes = () => `home:
-    path: /
-    controller: App\\Controller\\HomeController::index`;
-
-const generateLaravelController = () => `<?php
-
-namespace App\\Http\\Controllers;
-
-use Illuminate\\Http\\Request;
-
-class HomeController extends Controller
-{
-    public function index()
-    {
-        return view('welcome');
-    }
-}`;
-
-const generateLaravelRoutes = () => `<?php
-
-use Illuminate\\Support\\Facades\\Route;
-use App\\Http\\Controllers\\HomeController;
-
-Route::get('/', [HomeController::class, 'index']);`;
-
-const generateDjangoViews = () => `from django.shortcuts import render
-
-def index(request):
-    return render(request, 'index.html')`;
-
-const generateDjangoUrls = () => `from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('', views.index, name='index'),
-]`;
