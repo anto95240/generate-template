@@ -89,7 +89,14 @@ export type Framework =
   | 'svelte'
   | 'nextjs'
   | 'nuxtjs'
-  | 'html';
+  | 'html'
+  | 'flutter'
+  | 'reactnative'
+  | 'ionic'
+  | 'xamarin'
+  | 'kotlin'
+  | 'swift'
+  | 'nativescript';
 
 export type CSSFramework = 
   | 'tailwind'
@@ -101,6 +108,7 @@ export type CSSFramework =
   | 'chakra'
   | 'antd'
   | 'mantine'
+  | 'ionic'
   | 'vanilla';
 
 export interface Theme {

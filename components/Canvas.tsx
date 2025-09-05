@@ -67,7 +67,7 @@ export const Canvas: React.FC<CanvasProps> = ({
   }, [onComponentSelect]);
 
   return (
-    <div className="flex-1 relative overflow-hidden">
+    <div className="flex-1 relative overflow-auto">
       {/* Canvas Controls */}
       <div className="absolute top-4 right-4 z-10 flex gap-2">
         <button
@@ -85,8 +85,12 @@ export const Canvas: React.FC<CanvasProps> = ({
       {/* Canvas */}
       <div
         ref={canvasRef}
-        className="w-full h-full relative cursor-crosshair"
+        className="relative cursor-crosshair"
         style={{ 
+          width: '2000px',
+          height: '2000px',
+          minWidth: '100%',
+          minHeight: '100vh',
           backgroundColor: theme?.colors.background || '#0A0A0F',
           backgroundImage: showGrid ? 
             `radial-gradient(circle at 1px 1px, rgba(0, 212, 255, 0.1) 1px, transparent 0)` : 'none',

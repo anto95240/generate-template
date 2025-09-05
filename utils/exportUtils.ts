@@ -21,7 +21,7 @@ const exportSingleFile = (
   theme: Theme,
   options: ExportOptions
 ) => {
-  const code = CodeGenerator.generateCode(components, framework, theme);
+  const code = CodeGenerator.generateCode(components, framework, theme, options.cssFramework);
   const frameworkInfo = frameworks.find(f => f.id === framework);
   
   const processedCode = options.minify ? minifyCode(code) : code;

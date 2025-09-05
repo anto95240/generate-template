@@ -3,7 +3,7 @@ import { Framework, CSSFramework } from '@/types';
 export interface FrameworkInfo {
   id: Framework;
   name: string;
-  category: 'frontend' | 'fullstack';
+  category: 'frontend' | 'fullstack' | 'mobile';
   language: string;
   description: string;
   icon: string;
@@ -95,6 +95,85 @@ export const frameworks: FrameworkInfo[] = [
     templateType: 'template',
     supportedCSSFrameworks: ['tailwind', 'bootstrap', 'bulma', 'foundation', 'materialize', 'semantic', 'vanilla'],
   },
+
+  // Mobile Frameworks
+  {
+    id: 'flutter',
+    name: 'Flutter',
+    category: 'mobile',
+    language: 'Dart',
+    description: 'Framework mobile cross-platform de Google',
+    icon: 'Smartphone',
+    fileExtension: 'dart',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
+  {
+    id: 'reactnative',
+    name: 'React Native',
+    category: 'mobile',
+    language: 'JavaScript/TypeScript',
+    description: 'Framework mobile basé sur React',
+    icon: 'Smartphone',
+    fileExtension: 'tsx',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
+  {
+    id: 'ionic',
+    name: 'Ionic',
+    category: 'mobile',
+    language: 'JavaScript/TypeScript',
+    description: 'Framework mobile hybride',
+    icon: 'Zap',
+    fileExtension: 'tsx',
+    templateType: 'component',
+    supportedCSSFrameworks: ['ionic', 'vanilla'],
+  },
+  {
+    id: 'xamarin',
+    name: 'Xamarin',
+    category: 'mobile',
+    language: 'C#',
+    description: 'Framework mobile Microsoft',
+    icon: 'Smartphone',
+    fileExtension: 'cs',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
+  {
+    id: 'kotlin',
+    name: 'Kotlin Native',
+    category: 'mobile',
+    language: 'Kotlin',
+    description: 'Développement Android natif',
+    icon: 'Smartphone',
+    fileExtension: 'kt',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
+  {
+    id: 'swift',
+    name: 'Swift UI',
+    category: 'mobile',
+    language: 'Swift',
+    description: 'Développement iOS natif',
+    icon: 'Smartphone',
+    fileExtension: 'swift',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
+  {
+    id: 'nativescript',
+    name: 'NativeScript',
+    category: 'mobile',
+    language: 'JavaScript/TypeScript',
+    description: 'Framework mobile cross-platform',
+    icon: 'Smartphone',
+    fileExtension: 'ts',
+    templateType: 'component',
+    supportedCSSFrameworks: ['vanilla'],
+  },
 ];
 
 export const cssFrameworks: { id: CSSFramework; name: string; description: string }[] = [
@@ -107,6 +186,7 @@ export const cssFrameworks: { id: CSSFramework; name: string; description: strin
   { id: 'chakra', name: 'Chakra UI', description: 'Composants React modulaires' },
   { id: 'antd', name: 'Ant Design', description: 'Design system pour React' },
   { id: 'mantine', name: 'Mantine', description: 'Composants React modernes' },
+  { id: 'ionic', name: 'Ionic CSS', description: 'Composants CSS Ionic' },
   { id: 'vanilla', name: 'CSS Vanilla', description: 'CSS personnalisé' },
 ];
 
@@ -114,5 +194,6 @@ export const getFrameworksByCategory = () => {
   return {
     frontend: frameworks.filter(f => f.category === 'frontend'),
     fullstack: frameworks.filter(f => f.category === 'fullstack'),
+    mobile: frameworks.filter(f => f.category === 'mobile'),
   };
 };

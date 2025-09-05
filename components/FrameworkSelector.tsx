@@ -48,6 +48,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     switch (category) {
       case 'frontend': return '🎨';
       case 'fullstack': return '⚡';
+      case 'mobile': return '📱';
       default: return '📦';
     }
   };
@@ -56,6 +57,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     switch (category) {
       case 'frontend': return 'Interfaces utilisateur';
       case 'fullstack': return 'Applications complètes';
+      case 'mobile': return 'Applications mobiles';
       default: return '';
     }
   };
@@ -88,7 +90,9 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
                 <span className="text-lg">{getCategoryIcon(category)}</span>
                 <div className="text-left">
                   <div className="text-sm font-medium text-gray-300 capitalize">
-                    {category === 'frontend' ? 'Frontend' : 'Full-Stack'}
+                    {category === 'frontend' ? 'Frontend' : 
+                     category === 'fullstack' ? 'Full-Stack' : 
+                     category === 'mobile' ? 'Mobile' : category}
                   </div>
                   <div className="text-xs text-gray-500">
                     {getCategoryDescription(category)}

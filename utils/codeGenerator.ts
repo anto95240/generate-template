@@ -1,24 +1,25 @@
-import { Component, Framework, Theme } from '@/types';
+import { Component, Framework, Theme, CSSFramework } from '@/types';
+import { generateBootstrapHTML, getBootstrapClass } from './bootstrapMappings';
 
 export class CodeGenerator {
-  static generateCode(components: Component[], framework: Framework, theme: Theme): string {
+  static generateCode(components: Component[], framework: Framework, theme: Theme, cssFramework?: CSSFramework): string {
     switch (framework) {
       case 'react':
-        return this.generateReactCode(components, theme);
+        return this.generateReactCode(components, theme, cssFramework);
       case 'vue':
-        return this.generateVueCode(components, theme);
+        return this.generateVueCode(components, theme, cssFramework);
       case 'angular':
-        return this.generateAngularCode(components, theme);
+        return this.generateAngularCode(components, theme, cssFramework);
       case 'svelte':
-        return this.generateSvelteCode(components, theme);
+        return this.generateSvelteCode(components, theme, cssFramework);
       case 'nextjs':
-        return this.generateNextJSCode(components, theme);
+        return this.generateNextJSCode(components, theme, cssFramework);
       case 'nuxtjs':
-        return this.generateNuxtCode(components, theme);
+        return this.generateNuxtCode(components, theme, cssFramework);
       case 'html':
-        return this.generateHTMLCode(components, theme);
+        return this.generateHTMLCode(components, theme, cssFramework);
       default:
-        return this.generateReactCode(components, theme);
+        return this.generateReactCode(components, theme, cssFramework);
     }
   }
 
@@ -727,7 +728,7 @@ ${theme.effects.animations ? `
 `;
   }
 
-  private static generateReactCode(components: Component[], theme: Theme): string {
+  private static generateReactCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const imports = `import React from 'react';
 import './App.css';`;
 
@@ -750,7 +751,7 @@ export default App;
 ${css}`;
   }
 
-  private static generateVueCode(components: Component[], theme: Theme): string {
+  private static generateVueCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const template = this.generateComponentsJSX(components, 'vue');
 
     return `<template>
@@ -770,7 +771,7 @@ ${this.generateCSS(theme)}
 </style>`;
   }
 
-  private static generateAngularCode(components: Component[], theme: Theme): string {
+  private static generateAngularCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const template = this.generateComponentsJSX(components, 'angular');
 
     return `import { Component } from '@angular/core';
@@ -791,7 +792,7 @@ export class AppComponent {
 }`;
   }
 
-  private static generateSvelteCode(components: Component[], theme: Theme): string {
+  private static generateSvelteCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const template = this.generateComponentsJSX(components, 'svelte');
 
     return `<script>
@@ -807,7 +808,7 @@ ${this.generateCSS(theme)}
 </style>`;
   }
 
-  private static generateNextJSCode(components: Component[], theme: Theme): string {
+  private static generateNextJSCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const componentJSX = this.generateComponentsJSX(components, 'react');
 
     return `import Head from 'next/head';
@@ -832,7 +833,7 @@ ${componentJSX}
 ${this.generateCSS(theme)}`;
   }
 
-  private static generateNuxtCode(components: Component[], theme: Theme): string {
+  private static generateNuxtCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
     const template = this.generateComponentsJSX(components, 'vue');
 
     return `<template>
@@ -1033,8 +1034,18 @@ ${template}
 </html>`;
   }
 
-  private static generateHTMLCode(components: Component[], theme: Theme): string {
-    const body = this.generateComponentsHTML(components, 'html');
+  private static generateHTMLCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
+    const body = cssFramework === 'bootstrap' 
+      ? generateBootstrapHTML(components) 
+      : this.generateComponentsHTML(components, 'html');
+    
+    const stylesheets = cssFramework === 'bootstrap' 
+      ? '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">'
+      : `<style>\n${this.generateCSS(theme)}\n    </style>`;
+
+    const scripts = cssFramework === 'bootstrap' 
+      ? '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>'
+      : '';
 
     return `<!DOCTYPE html>
 <html lang="fr">
@@ -1042,12 +1053,10 @@ ${template}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interface Futuriste</title>
-    <style>
-${this.generateCSS(theme)}
-    </style>
+    ${stylesheets}
 </head>
-<body>
-    <div class="app" style="background: ${theme.colors.background}">
+<body${cssFramework !== 'bootstrap' ? ` style="background: ${theme.colors.background}"` : ''}>
+    <div class="${cssFramework === 'bootstrap' ? 'container-fluid' : 'app'}"${cssFramework !== 'bootstrap' ? ` style="background: ${theme.colors.background}"` : ''}>
 ${body}
     </div>
     <script>
@@ -1065,6 +1074,7 @@ ${body}
         });
       });
     </script>
+    ${scripts}
 </body>
 </html>`;
   }

@@ -1,4 +1,5 @@
 import { ComponentType } from '@/types';
+import { componentVariants, ComponentVariant } from '@/data/componentVariants';
 
 // Configuration pour l'API Google AI (Gemini)
 const GOOGLE_AI_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_AI_API_KEY;
@@ -23,6 +24,7 @@ export class AIService {
   private static tokenCount = 50;
   private static lastReset = Date.now();
   private static readonly RESET_INTERVAL = 3600000; // 1 heure
+  private static generatedVariants: Record<string, ComponentVariant[]> = {};
 
   static async generateComponent(prompt: string): Promise<AIResponse> {
     if (this.tokenCount <= 0 && !this.shouldResetTokens()) {
@@ -170,94 +172,11 @@ Utilise des valeurs réalistes et cohérentes.`;
   }
 
   private static mockAIGeneration(prompt: string, isFullCanvas: boolean): AIResponse {
-    // Simulation basée sur des mots-clés dans le prompt
     const lowerPrompt = prompt.toLowerCase();
 
     if (isFullCanvas) {
       if (lowerPrompt.includes('dashboard') || lowerPrompt.includes('admin')) {
-        // Générer plusieurs variantes de dashboard
-        const dashboardVariants = [
-          {
-            components: [
-              {
-                type: 'aside' as ComponentType,
-                props: { 
-                  title: 'Admin Panel', 
-                  items: ['Dashboard', 'Utilisateurs', 'Commandes', 'Produits', 'Analytics', 'Paramètres', 'Déconnexion'],
-                  position: 'left' 
-                },
-                style: { padding: '24px', width: '280px', height: '100vh', background: 'rgba(255, 255, 255, 0.05)' },
-                position: { x: 0, y: 0, width: 280, height: 600 },
-              },
-              {
-                type: 'navbar' as ComponentType,
-                props: { title: 'Admin Dashboard', items: ['Notifications', 'Profil'] },
-                style: { padding: '16px 32px', backdropFilter: 'blur(20px)', marginLeft: '280px' },
-                position: { x: 280, y: 0, width: 520, height: 60 },
-              },
-              {
-                type: 'grid' as ComponentType,
-                props: { 
-                  columns: 4, 
-                  items: ['1,234 Utilisateurs', '567 Commandes', '89,012€ CA', '45 Nouveaux'] 
-                },
-                style: { gap: '20px', padding: '20px', marginLeft: '280px' },
-                position: { x: 300, y: 80, width: 480, height: 150 },
-              },
-              {
-                type: 'table' as ComponentType,
-                props: { 
-                  headers: ['Utilisateur', 'Email', 'Rôle', 'Statut'], 
-                  rows: [
-                    ['John Doe', 'john@example.com', 'Admin', 'Actif'],
-                    ['Jane Smith', 'jane@example.com', 'User', 'Actif'],
-                  ]
-                },
-                style: { borderRadius: '12px', marginLeft: '280px' },
-                position: { x: 300, y: 250, width: 480, height: 200 },
-              },
-            ]
-          },
-          {
-            components: [
-              {
-                type: 'navbar' as ComponentType,
-                props: { title: 'Analytics Dashboard', items: ['Export', 'Settings', 'Help'] },
-                style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
-                position: { x: 0, y: 0, width: 800, height: 60 },
-              },
-              {
-                type: 'grid' as ComponentType,
-                props: { 
-                  columns: 3, 
-                  items: ['📊 Ventes: 12,345€', '👥 Visiteurs: 8,901', '📈 Conversion: 3.2%', '⭐ Satisfaction: 4.8/5', '📦 Commandes: 234', '🚀 Croissance: +15%'] 
-                },
-                style: { gap: '24px', padding: '32px' },
-                position: { x: 50, y: 80, width: 700, height: 200 },
-              },
-              {
-                type: 'card' as ComponentType,
-                props: { title: 'Graphique des ventes', content: 'Évolution des ventes sur les 30 derniers jours', hasButton: false },
-                style: { padding: '24px', borderRadius: '16px' },
-                position: { x: 50, y: 300, width: 350, height: 250 },
-              },
-              {
-                type: 'card' as ComponentType,
-                props: { title: 'Top Produits', content: 'Les produits les plus vendus ce mois', hasButton: true },
-                style: { padding: '24px', borderRadius: '16px' },
-                position: { x: 420, y: 300, width: 330, height: 250 },
-              },
-            ]
-          }
-        ];
-        
-        const randomVariant = dashboardVariants[Math.floor(Math.random() * dashboardVariants.length)];
-        return {
-          componentType: 'container' as ComponentType,
-          props: {},
-          style: {},
-          components: randomVariant.components,
-        };
+        return this.generateNewDashboard(prompt);
       } else if (lowerPrompt.includes('landing') || lowerPrompt.includes('saas')) {
         return {
           componentType: 'container' as ComponentType,
@@ -274,31 +193,16 @@ Utilise des valeurs réalistes et cohérentes.`;
               type: 'hero' as ComponentType,
               props: { 
                 title: 'Révolutionnez votre workflow', 
-                subtitle: 'La plateforme SaaS qui transforme votre productivité avec des outils IA avancés', 
-                buttonText: 'Essai gratuit 14 jours', 
+                subtitle: 'La plateforme SaaS qui transforme votre productivité', 
+                buttonText: 'Essai gratuit', 
                 hasButton: true 
               },
-              style: { padding: '100px 40px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(181, 55, 247, 0.1))' },
+              style: { 
+                padding: '100px 40px', 
+                textAlign: 'center', 
+                background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(181, 55, 247, 0.1))' 
+              },
               position: { x: 0, y: 80, width: 800, height: 400 },
-            },
-            {
-              type: 'grid' as ComponentType,
-              props: { 
-                columns: 3, 
-                items: ['🚀 Performance', '🔒 Sécurité', '📊 Analytics', '🤖 IA Intégrée', '☁️ Cloud', '📱 Mobile'] 
-              },
-              style: { gap: '24px', padding: '40px' },
-              position: { x: 50, y: 500, width: 700, height: 200 },
-            },
-            {
-              type: 'footer' as ComponentType,
-              props: { 
-                title: 'SaaS Platform', 
-                links: ['Privacy', 'Terms', 'Support', 'API', 'Status'], 
-                copyright: '© 2025 SaaS Platform. All rights reserved.' 
-              },
-              style: { padding: '40px 32px', textAlign: 'center' },
-              position: { x: 0, y: 720, width: 800, height: 120 },
             },
           ],
         };
@@ -310,112 +214,78 @@ Utilise des valeurs réalistes et cohérentes.`;
           components: [
             {
               type: 'navbar' as ComponentType,
-              props: { title: 'ShopFuture', items: ['Produits', 'Catégories', 'Offres', 'Panier', 'Compte'] },
+              props: { title: 'ShopFuture', items: ['Produits', 'Catégories', 'Panier'] },
               style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
               position: { x: 0, y: 0, width: 800, height: 60 },
-            },
-            {
-              type: 'aside' as ComponentType,
-              props: { title: 'Filtres', items: ['Prix', 'Marque', 'Catégorie', 'Note', 'Disponibilité'], position: 'left' },
-              style: { padding: '20px', width: '220px' },
-              position: { x: 0, y: 60, width: 220, height: 500 },
             },
             {
               type: 'grid' as ComponentType,
               props: { 
                 columns: 3, 
-                items: ['Produit 1 - 299€', 'Produit 2 - 199€', 'Produit 3 - 399€', 'Produit 4 - 149€', 'Produit 5 - 249€', 'Produit 6 - 179€'] 
+                items: ['Produit 1 - 299€', 'Produit 2 - 199€', 'Produit 3 - 399€'] 
               },
-              style: { gap: '20px', padding: '20px', marginLeft: '220px' },
-              position: { x: 240, y: 80, width: 540, height: 400 },
-            },
-            {
-              type: 'footer' as ComponentType,
-              props: { title: 'ShopFuture', links: ['Support', 'Livraison', 'Retours', 'CGV'], copyright: '© 2025 ShopFuture' },
-              style: { padding: '40px 32px', textAlign: 'center' },
-              position: { x: 0, y: 500, width: 800, height: 120 },
+              style: { gap: '20px', padding: '20px' },
+              position: { x: 50, y: 80, width: 700, height: 300 },
             },
           ],
         };
+      } else {
+        // Canvas par défaut
+        return {
+          componentType: 'container' as ComponentType,
+          props: {},
+          style: {},
+          components: [
+            {
+              type: 'card' as ComponentType,
+              props: { title: 'Contenu généré', content: 'Interface créée par IA' },
+              style: { padding: '20px', borderRadius: '12px' },
+              position: { x: 50, y: 50, width: 400, height: 200 },
+            }
+          ],
+        };
+      }
+    } else {
+      // Génération d'un composant unique
+      if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation')) {
+        return {
+          componentType: 'navbar' as ComponentType,
+          props: { 
+            title: 'Navigation', 
+            items: ['Accueil', 'Services', 'Contact']
+          },
+          style: { 
+            padding: '16px 32px', 
+            backdropFilter: lowerPrompt.includes('glass') ? 'blur(20px)' : 'none',
+          },
+        };
+      } else if (lowerPrompt.includes('button') || lowerPrompt.includes('bouton')) {
+        return this.generateNewButtonComponent(prompt);
+      } else if (lowerPrompt.includes('card') || lowerPrompt.includes('carte')) {
+        return {
+          componentType: 'card' as ComponentType,
+          props: { title: 'Carte générée', content: 'Contenu IA' },
+          style: { padding: '20px', borderRadius: '12px' },
+        };
+      } else if (lowerPrompt.includes('form') || lowerPrompt.includes('formulaire')) {
+        return {
+          componentType: 'form' as ComponentType,
+          props: { 
+            title: 'Formulaire',
+            fields: ['nom', 'email'],
+            submitText: 'Envoyer',
+          },
+          style: { padding: '32px', borderRadius: '16px' },
+        };
+      } else {
+        // Par défaut, retourner un bouton
+        return {
+          componentType: 'button' as ComponentType,
+          props: { text: 'Généré par IA', variant: 'primary' },
+          style: { padding: '12px 24px', borderRadius: '8px' },
+        };
       }
     }
-
-    // Génération de composant unique basée sur les mots-clés
-    if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
-      return {
-        componentType: 'navbar' as ComponentType,
-        props: { 
-          title: 'Navigation', 
-          items: lowerPrompt.includes('admin') ? ['Dashboard', 'Users', 'Settings'] : ['Accueil', 'Services', 'Contact']
-        },
-        style: { 
-          padding: '16px 32px', 
-          backdropFilter: lowerPrompt.includes('glass') ? 'blur(20px)' : 'none',
-          background: lowerPrompt.includes('glass') ? 'rgba(255, 255, 255, 0.1)' : undefined,
-        },
-      };
-    } else if (lowerPrompt.includes('bouton') || lowerPrompt.includes('button') || lowerPrompt.includes('cta')) {
-      return {
-        componentType: 'button' as ComponentType,
-        props: { 
-          text: lowerPrompt.includes('cta') ? 'Commencer maintenant' : 'Cliquez ici',
-          variant: lowerPrompt.includes('néon') || lowerPrompt.includes('neon') ? 'neon' : 
-                   lowerPrompt.includes('glass') ? 'glass' : 'primary'
-        },
-        style: { 
-          padding: '16px 32px', 
-          borderRadius: '12px',
-          boxShadow: lowerPrompt.includes('néon') || lowerPrompt.includes('neon') ? '0 0 20px currentColor' : undefined,
-        },
-      };
-    } else if (lowerPrompt.includes('carte') || lowerPrompt.includes('card')) {
-      return {
-        componentType: 'card' as ComponentType,
-        props: { 
-          title: lowerPrompt.includes('produit') ? 'Produit Premium' : 'Titre de carte',
-          content: lowerPrompt.includes('produit') ? 'Description du produit avec ses avantages' : 'Contenu de la carte',
-          hasButton: true,
-        },
-        style: { 
-          padding: '24px', 
-          borderRadius: '16px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-        },
-      };
-    } else if (lowerPrompt.includes('formulaire') || lowerPrompt.includes('form')) {
-      return {
-        componentType: 'form' as ComponentType,
-        props: { 
-          title: lowerPrompt.includes('contact') ? 'Contactez-nous' : 'Formulaire',
-          fields: lowerPrompt.includes('contact') ? ['nom', 'email', 'message'] : ['nom', 'email'],
-          submitText: 'Envoyer',
-        },
-        style: { 
-          padding: '32px', 
-          borderRadius: '16px',
-        },
-      };
-    } else if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
-      return {
-        componentType: 'footer' as ComponentType,
-        props: { 
-          title: 'Mon Site',
-          links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
-          copyright: '© 2025 Mon Site. Tous droits réservés.',
-        },
-        style: { 
-          padding: '40px 32px', 
-          textAlign: 'center',
-        },
-      };
-    }
-
-    // Par défaut, retourner un bouton
-    return {
-      componentType: 'button' as ComponentType,
-      props: { text: 'Généré par IA', variant: 'primary' },
-      style: { padding: '12px 24px', borderRadius: '8px' },
-    };
   }
 
   private static shouldResetTokens(): boolean {
@@ -425,6 +295,236 @@ Utilise des valeurs réalistes et cohérentes.`;
   private static resetTokens(): void {
     this.tokenCount = 50;
     this.lastReset = Date.now();
+  }
+
+  // Nouvelles méthodes pour générer des designs créatifs et uniques
+  private static generateNewDashboard(prompt: string): AIResponse {
+    const styles = ['cyberpunk', 'glassmorphism', 'matrix', 'minimal'];
+    const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
+    
+    const colorSchemes = {
+      cyberpunk: { bg: '#0a0a0a', primary: '#ff0080', secondary: '#00ffff', accent: '#ff6b35' },
+      glassmorphism: { bg: 'rgba(0,0,0,0.1)', primary: 'rgba(255,255,255,0.2)', secondary: 'rgba(255,255,255,0.1)', accent: '#00d4ff' },
+      matrix: { bg: '#0d0d0d', primary: '#00ff00', secondary: '#003300', accent: '#00cc00' },
+      minimal: { bg: '#fafafa', primary: '#ffffff', secondary: '#f5f5f5', accent: '#333333' }
+    };
+    
+    const colors = colorSchemes[selectedStyle as keyof typeof colorSchemes];
+    
+    return {
+      componentType: 'container' as ComponentType,
+      props: {},
+      style: {},
+      components: [
+        {
+          type: 'aside' as ComponentType,
+          props: { 
+            title: 'Menu', 
+            items: ['Dashboard', 'Analytics', 'Users', 'Settings'], 
+            position: 'left' 
+          },
+          style: { 
+            backgroundColor: colors.primary, 
+            color: colors.accent,
+            padding: '20px',
+            width: '280px'
+          },
+          position: { x: 0, y: 0, width: 280, height: 600 },
+        },
+        {
+          type: 'navbar' as ComponentType,
+          props: { 
+            title: `${selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1)} Dashboard`, 
+            items: ['Notifications', 'Profil'] 
+          },
+          style: { 
+            backgroundColor: colors.primary, 
+            color: colors.accent,
+            padding: '16px 32px', 
+            backdropFilter: selectedStyle === 'glassmorphism' ? 'blur(20px)' : 'none',
+            marginLeft: '280px'
+          },
+          position: { x: 280, y: 0, width: 520, height: 60 },
+        },
+        {
+          type: 'grid' as ComponentType,
+          props: { 
+            columns: 2, 
+            items: [
+              `${Math.floor(Math.random() * 10000)} Utilisateurs`,
+              `${Math.floor(Math.random() * 1000)} Ventes`,
+              `${Math.floor(Math.random() * 100000)}€ Revenus`,
+              `${Math.floor(Math.random() * 100)}% Croissance`
+            ]
+          },
+          style: { 
+            gap: '20px', 
+            padding: '20px',
+            marginLeft: '280px'
+          },
+          position: { x: 300, y: 80, width: 480, height: 150 },
+        },
+      ],
+    };
+  }
+
+  private static generateNewButtonComponent(prompt: string): AIResponse {
+    const styles = ['neon-pulse', 'holographic', 'liquid', 'morphing'];
+    const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
+    
+    const baseStyles = {
+      'neon-pulse': {
+        backgroundColor: 'transparent',
+        color: '#00ffff',
+        border: '2px solid #00ffff',
+        borderRadius: '0',
+        padding: '12px 24px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        letterSpacing: '2px',
+        boxShadow: '0 0 20px #00ffff'
+      },
+      'holographic': {
+        background: 'linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff)',
+        backgroundSize: '300% 300%',
+        color: 'white',
+        border: 'none',
+        borderRadius: '20px',
+        padding: '12px 24px',
+        fontWeight: 'bold',
+        boxShadow: '0 0 30px rgba(255,0,255,0.5)'
+      },
+      'liquid': {
+        background: 'linear-gradient(45deg, #667eea, #764ba2)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '50px',
+        padding: '15px 30px',
+        transition: 'all 0.3s ease'
+      },
+      'morphing': {
+        backgroundColor: '#ff6b6b',
+        color: 'white',
+        border: 'none',
+        borderRadius: '25px',
+        padding: '12px 24px',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+      }
+    };
+
+    return {
+      componentType: 'button' as ComponentType,
+      props: { 
+        text: this.generateRandomButtonText(prompt),
+        variant: selectedStyle
+      },
+      style: baseStyles[selectedStyle as keyof typeof baseStyles]
+    };
+  }
+
+  private static generateRandomButtonText(prompt: string): string {
+    const texts = [
+      'Activer', 'Lancer', 'Démarrer', 'Exécuter', 'Confirmer', 'Valider', 
+      'Poursuivre', 'Découvrir', 'Explorer', 'Créer'
+    ];
+    
+    if (prompt.includes('login') || prompt.includes('connexion')) {
+      return ['Se connecter', 'Connexion', 'Login'][Math.floor(Math.random() * 3)];
+    }
+    if (prompt.includes('submit') || prompt.includes('envoyer')) {
+      return ['Envoyer', 'Soumettre', 'Valider'][Math.floor(Math.random() * 3)];
+    }
+    
+    return texts[Math.floor(Math.random() * texts.length)];
+  }
+
+  // Méthode pour créer de nouvelles variantes dynamiquement
+  static async generateNewVariant(componentType: ComponentType, stylePrompt: string): Promise<ComponentVariant> {
+    const newVariant: ComponentVariant = {
+      id: `ai-generated-${Date.now()}`,
+      name: this.extractVariantName(stylePrompt),
+      description: `Style généré par IA: ${stylePrompt}`,
+      category: this.determineCategory(stylePrompt),
+      style: this.generateStyleFromPrompt(stylePrompt, componentType)
+    };
+
+    // Sauvegarder la variante générée
+    if (!this.generatedVariants[componentType]) {
+      this.generatedVariants[componentType] = [];
+    }
+    this.generatedVariants[componentType].push(newVariant);
+
+    return newVariant;
+  }
+
+  // Obtenir toutes les variantes (existantes + générées)
+  static getAllVariants(componentType: ComponentType): ComponentVariant[] {
+    const baseVariants = componentVariants[componentType] || [];
+    const generated = this.generatedVariants[componentType] || [];
+    return [...baseVariants, ...generated];
+  }
+
+  private static extractVariantName(prompt: string): string {
+    const lowerPrompt = prompt.toLowerCase();
+    if (lowerPrompt.includes('3d')) return '3D';
+    if (lowerPrompt.includes('hologram')) return 'Hologramme';
+    if (lowerPrompt.includes('crystal')) return 'Cristal';
+    if (lowerPrompt.includes('metal')) return 'Métallique';
+    if (lowerPrompt.includes('plasma')) return 'Plasma';
+    if (lowerPrompt.includes('cyber')) return 'Cyber';
+    return 'Style IA';
+  }
+
+  private static determineCategory(prompt: string): 'style' | 'size' | 'theme' | 'behavior' {
+    const lowerPrompt = prompt.toLowerCase();
+    if (lowerPrompt.includes('petit') || lowerPrompt.includes('grand')) return 'size';
+    if (lowerPrompt.includes('hover') || lowerPrompt.includes('click')) return 'behavior';
+    if (lowerPrompt.includes('theme') || lowerPrompt.includes('cyberpunk')) return 'theme';
+    return 'style';
+  }
+
+  private static generateStyleFromPrompt(prompt: string, componentType: ComponentType): Record<string, any> {
+    const lowerPrompt = prompt.toLowerCase();
+    const baseStyle: Record<string, any> = {};
+
+    // Styles selon le type de composant
+    if (componentType === 'button') {
+      baseStyle.padding = '12px 24px';
+      baseStyle.borderRadius = '8px';
+      baseStyle.cursor = 'pointer';
+      baseStyle.fontWeight = '600';
+      baseStyle.transition = 'all 0.3s ease';
+    }
+
+    // Effets spéciaux basés sur le prompt
+    if (lowerPrompt.includes('3d')) {
+      baseStyle.transform = 'perspective(1000px) rotateX(10deg)';
+      baseStyle.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.3)';
+    }
+
+    if (lowerPrompt.includes('hologram')) {
+      baseStyle.background = 'linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2))';
+      baseStyle.border = '1px solid rgba(255, 255, 255, 0.3)';
+      baseStyle.backdropFilter = 'blur(10px)';
+      baseStyle.boxShadow = '0 0 30px rgba(0, 255, 255, 0.5)';
+    }
+
+    if (lowerPrompt.includes('crystal')) {
+      baseStyle.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1))';
+      baseStyle.border = '1px solid rgba(255, 255, 255, 0.4)';
+      baseStyle.backdropFilter = 'blur(15px)';
+      baseStyle.borderRadius = '20px';
+    }
+
+    if (lowerPrompt.includes('cyber')) {
+      baseStyle.background = 'linear-gradient(45deg, #0a0a0a, #1a1a1a)';
+      baseStyle.border = '2px solid #00ffff';
+      baseStyle.color = '#00ffff';
+      baseStyle.boxShadow = '0 0 20px rgba(0, 255, 255, 0.4)';
+      baseStyle.textShadow = '0 0 8px #00ffff';
+    }
+
+    return baseStyle;
   }
 
   static getTokenStatus() {

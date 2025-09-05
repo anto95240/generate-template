@@ -6,6 +6,9 @@ import { Canvas } from '@/components/Canvas';
 import { PropertyPanel } from '@/components/PropertyPanel';
 import { AIModal } from '@/components/AIModal';
 import { ExportModal } from '@/components/ExportModal';
+import { FileImporter } from '@/components/FileImporter';
+import { VariantSelector } from '@/components/VariantSelector';
+import { IconSelector } from '@/components/IconSelector';
 import { useComponents } from '@/hooks/useComponents';
 import { allThemes } from '@/data/themes';
 import { Framework, ComponentType, Template, ExportOptions, CSSFramework } from '@/types';
@@ -18,6 +21,10 @@ function Home() {
   const [selectedThemeId, setSelectedThemeId] = useState('cyberpunk');
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isFileImporterOpen, setIsFileImporterOpen] = useState(false);
+  const [isVariantSelectorOpen, setIsVariantSelectorOpen] = useState(false);
+  const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
+  const [selectedComponentTypeForVariant, setSelectedComponentTypeForVariant] = useState<ComponentType | null>(null);
 
   const {
     components,
@@ -110,6 +117,24 @@ function Home() {
     exportProject(components, selectedFramework, selectedTheme, { ...options, cssFramework: selectedCSSFramework });
   };
 
+  const handleFileImport = (content: string, fileName: string, fileType: string) => {
+    // Traitement basique de l'importation
+    console.log('Fichier importé:', fileName, fileType, content);
+    // TODO: Analyser le contenu et créer des composants
+  };
+
+  const handleVariantSelect = (variant: any) => {
+    if (selectedComponentId) {
+      updateComponent(selectedComponentId, { style: { ...selectedComponent?.style, ...variant.style } });
+    }
+  };
+
+  const handleIconSelect = (icon: any) => {
+    if (selectedComponentId) {
+      updateComponent(selectedComponentId, { props: { ...selectedComponent?.props, icon: icon.component } });
+    }
+  };
+
   return (
     <div className="h-screen bg-black flex overflow-hidden">
       {/* Sidebar */}
@@ -121,9 +146,26 @@ function Home() {
         selectedTheme={selectedThemeId}
         onThemeChange={setSelectedThemeId}
         onAddComponent={handleAddComponent}
-        onAIGenerate={() => setIsAIModalOpen(true)}
-        onExport={() => setIsExportModalOpen(true)}
+        onAIGenerate={() => {
+          setSelectedComponentId(null);
+          setIsAIModalOpen(true);
+        }}
+        onExport={() => {
+          setSelectedComponentId(null);
+          setIsExportModalOpen(true);
+        }}
         onLoadTemplate={handleLoadTemplate}
+        onFileImport={() => {
+          setSelectedComponentId(null);
+          setIsFileImporterOpen(true);
+        }}
+        onVariantSelect={(componentType) => {
+          setSelectedComponentTypeForVariant(componentType);
+          setIsVariantSelectorOpen(true);
+        }}
+        onIconSelect={() => {
+          setIsIconSelectorOpen(true);
+        }}
       />
 
       {/* Main Canvas */}
@@ -155,6 +197,33 @@ function Home() {
         isOpen={isExportModalOpen}
         onClose={() => setIsExportModalOpen(false)}
         onExport={handleExport}
+      />
+
+      {/* File Importer */}
+      <FileImporter
+        isOpen={isFileImporterOpen}
+        onClose={() => setIsFileImporterOpen(false)}
+        onFileImport={handleFileImport}
+      />
+
+      {/* Variant Selector */}
+      {selectedComponentTypeForVariant && (
+        <VariantSelector
+          componentType={selectedComponentTypeForVariant}
+          isOpen={isVariantSelectorOpen}
+          onClose={() => {
+            setIsVariantSelectorOpen(false);
+            setSelectedComponentTypeForVariant(null);
+          }}
+          onVariantSelect={handleVariantSelect}
+        />
+      )}
+
+      {/* Icon Selector */}
+      <IconSelector
+        isOpen={isIconSelectorOpen}
+        onClose={() => setIsIconSelectorOpen(false)}
+        onIconSelect={handleIconSelect}
       />
 
       {/* Floating Action Button for Clear */}

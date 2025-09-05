@@ -4,7 +4,7 @@ import { allThemes } from '@/data/themes';
 import { templates, getTemplatesByCategory, getRandomTemplateByCategory } from '@/data/templates';
 import { FrameworkSelector } from './FrameworkSelector';
 import { Framework, Template, CSSFramework } from '@/types';
-import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Dice6 } from 'lucide-react';
+import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Dice6, Upload, ImageIcon, Brush } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import { LucideProps } from 'lucide-react';
 
@@ -19,6 +19,9 @@ interface SidebarProps {
   onAIGenerate: () => void;
   onExport: () => void;
   onLoadTemplate: (template: Template) => void;
+  onFileImport: () => void;
+  onVariantSelect: (componentType: any) => void;
+  onIconSelect: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -32,6 +35,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onAIGenerate,
   onExport,
   onLoadTemplate,
+  onFileImport,
+  onVariantSelect,
+  onIconSelect,
 }) => {
   const [activeSection, setActiveSection] = useState<'components' | 'templates'>('components');
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['landing']);
@@ -324,8 +330,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
 
+        {/* Nouvelles fonctionnalités */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <button
+            onClick={onFileImport}
+            className="p-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-1 shadow-lg shadow-blue-500/25"
+            title="Importer des fichiers"
+          >
+            <Upload className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => onVariantSelect('button')}
+            className="p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-1 shadow-lg shadow-orange-500/25"
+            title="Variantes de style"
+          >
+            <Brush className="w-4 h-4" />
+          </button>
+          <button
+            onClick={onIconSelect}
+            className="p-3 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-1 shadow-lg shadow-yellow-500/25"
+            title="Sélectionner des icônes"
+          >
+            <ImageIcon className="w-4 h-4" />
+          </button>
+        </div>
+
         {/* AI Generation */}
-        <div className="mb-8">
+        <div className="mb-4">
           <button
             onClick={onAIGenerate}
             className="w-full p-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25"
