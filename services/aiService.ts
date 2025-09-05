@@ -539,4 +539,36 @@ Utilise des valeurs réalistes et cohérentes.`;
       model: GOOGLE_AI_API_KEY ? 'Gemini Pro' : 'Mock AI (Dev)',
     };
   }
+
+  // Générer plusieurs variantes du même composant
+  static async generateMultipleVariants(prompt: string, count: number = 3): Promise<AIResponse[]> {
+    const variants: AIResponse[] = [];
+    
+    for (let i = 0; i < count; i++) {
+      try {
+        // Modifier légèrement le prompt pour chaque variante
+        const variantPrompt = `${prompt} - Style ${i + 1}: ${this.getVariantStyle(i)}`;
+        const variant = await this.generateComponent(variantPrompt);
+        variants.push(variant);
+        
+        // Petit délai entre les générations
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (error) {
+        console.error(`Erreur génération variante ${i + 1}:`, error);
+      }
+    }
+    
+    return variants;
+  }
+
+  private static getVariantStyle(index: number): string {
+    const styles = [
+      'avec un design moderne et épuré',
+      'avec des effets néon et cyberpunk',
+      'avec un style glassmorphism transparent',
+      'avec des gradients colorés dynamiques',
+      'avec un aspect 3D et des ombres profondes'
+    ];
+    return styles[index % styles.length];
+  }
 }

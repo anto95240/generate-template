@@ -18,6 +18,20 @@ export class CodeGenerator {
         return this.generateNuxtCode(components, theme, cssFramework);
       case 'html':
         return this.generateHTMLCode(components, theme, cssFramework);
+      case 'flutter':
+        return this.generateFlutterCode(components, theme);
+      case 'reactnative':
+        return this.generateReactNativeCode(components, theme);
+      case 'ionic':
+        return this.generateIonicCode(components, theme, cssFramework);
+      case 'xamarin':
+        return this.generateXamarinCode(components, theme);
+      case 'kotlin':
+        return this.generateKotlinCode(components, theme);
+      case 'swift':
+        return this.generateSwiftUICode(components, theme);
+      case 'nativescript':
+        return this.generateNativeScriptCode(components, theme);
       default:
         return this.generateReactCode(components, theme, cssFramework);
     }
@@ -729,17 +743,15 @@ ${theme.effects.animations ? `
   }
 
   private static generateReactCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
-    const imports = `import React from 'react';
-import './App.css';`;
-
-    const componentJSX = this.generateComponentsJSX(components, 'react');
-    const css = this.generateCSS(theme);
+    const imports = this.generateImports('react', cssFramework);
+    const componentJSX = this.generateComponentsJSX(components, 'react', cssFramework);
+    const css = cssFramework === 'vanilla' ? this.generateCSS(theme) : '';
 
     return `${imports}
 
 function App() {
   return (
-    <div className="app" style={{ background: '${theme.colors.background}' }}>
+    <div className="${this.getAppClass(cssFramework)}" style={{ background: '${theme.colors.background}' }}>
 ${componentJSX}
     </div>
   );
@@ -747,8 +759,7 @@ ${componentJSX}
 
 export default App;
 
-/* CSS Styles */
-${css}`;
+${css ? `/* CSS Styles */\n${css}` : ''}`;
   }
 
   private static generateVueCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
@@ -1079,117 +1090,6 @@ ${body}
 </html>`;
   }
 
-  private static generateComponentsJSX(components: Component[], framework: string): string {
-    return components.map(component => {
-      const style = this.convertToCSS(component.style, component.position);
-      const styleString = JSON.stringify(style);
-      
-      switch (component.type) {
-        case 'button':
-          const buttonClass = `btn btn-${component.props.variant || 'primary'}`;
-          if (framework === 'vue') {
-            return `    <button 
-      class="${buttonClass}"
-      :style='${styleString}'
-    >
-      ${component.props.text || 'Button'}
-    </button>`;
-          } else if (framework === 'angular') {
-            return `      <button 
-        class="${buttonClass}"
-        [ngStyle]='${styleString}'
-      >
-        ${component.props.text || 'Button'}
-      </button>`;
-          } else if (framework === 'svelte') {
-            return `  <button 
-    class="${buttonClass}"
-    style={${styleString}}
-  >
-    ${component.props.text || 'Button'}
-  </button>`;
-          }
-          return `      <button 
-        className="${buttonClass}"
-        style={${styleString}}
-      >
-        ${component.props.text || 'Button'}
-      </button>`;
-
-        case 'navbar':
-          const navItems = (component.props.items || []).map((item: string) => {
-            if (framework === 'vue') return `        <a href="#" class="navbar-item">${item}</a>`;
-            if (framework === 'angular') return `          <a href="#" class="navbar-item">${item}</a>`;
-            if (framework === 'svelte') return `    <a href="#" class="navbar-item">${item}</a>`;
-            return `          <a href="#" className="navbar-item">${item}</a>`;
-          }).join('\n');
-
-          const navClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-          const styleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
-
-          return `      <nav ${navClass}="navbar" ${styleAttr}='${styleString}'>
-        <div ${navClass}="navbar-brand">${component.props.title || 'Logo'}</div>
-        <div ${navClass}="navbar-menu">
-${navItems}
-        </div>
-      </nav>`;
-
-        case 'aside':
-          const asideItems = (component.props.items || []).map((item: string) => {
-            const linkClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-            return `            <li><a href="#" ${linkClass}="aside-nav-item">${item}</a></li>`;
-          }).join('\n');
-
-          const asideClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-          const asideStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
-
-          return `      <aside ${asideClass}="aside" ${asideStyleAttr}='${styleString}'>
-        <div ${asideClass}="aside-header">
-          <h3>${component.props.title || 'Menu'}</h3>
-        </div>
-        <nav ${asideClass}="aside-nav">
-          <ul>
-${asideItems}
-          </ul>
-        </nav>
-      </aside>`;
-
-        case 'hero':
-          const heroClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-          const heroStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
-
-          return `      <section ${heroClass}="hero" ${heroStyleAttr}='${styleString}'>
-        <h1>${component.props.title || 'Titre Principal'}</h1>
-        <p>${component.props.subtitle || 'Sous-titre'}</p>
-        ${component.props.hasButton ? `
-        <button ${heroClass}="btn btn-primary">
-          ${component.props.buttonText || 'Action'}
-        </button>` : ''}
-      </section>`;
-
-        case 'footer':
-          const footerLinks = (component.props.links || []).map((link: string) => {
-            const linkClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-            return `          <a href="#" ${linkClass}="footer-link">${link}</a>`;
-          }).join('\n');
-
-          const footerClass = framework === 'vue' || framework === 'angular' || framework === 'svelte' ? 'class' : 'className';
-          const footerStyleAttr = framework === 'vue' ? ':style' : framework === 'angular' ? '[ngStyle]' : 'style';
-
-          return `      <footer ${footerClass}="footer" ${footerStyleAttr}='${styleString}'>
-        <div ${footerClass}="footer-brand">${component.props.title || 'Brand'}</div>
-        <div ${footerClass}="footer-links">
-${footerLinks}
-        </div>
-        <div ${footerClass}="footer-copyright">${component.props.copyright || '© 2025'}</div>
-      </footer>`;
-
-        // Autres composants (card, form, table, etc.) - logique similaire mais adaptée
-        default:
-          return this.generateGenericComponent(component, framework, styleString);
-      }
-    }).join('\n\n');
-  }
 
   private static generateComponentsHTML(components: Component[], templateEngine: string): string {
     return components.map(component => {
@@ -1322,5 +1222,804 @@ ${rows}
       height: position.height === 'auto' ? 'auto' : `${position.height}px`,
       ...style,
     };
+  }
+
+  // Nouvelles méthodes pour supporter les frameworks CSS
+  private static generateImports(framework: Framework, cssFramework?: CSSFramework): string {
+    let imports = `import React from 'react';`;
+    
+    switch (cssFramework) {
+      case 'bootstrap':
+        imports += `\nimport 'bootstrap/dist/css/bootstrap.min.css';`;
+        break;
+      case 'tailwind':
+        // Tailwind est généralement configuré dans tailwind.config.js
+        break;
+      case 'bulma':
+        imports += `\nimport 'bulma/css/bulma.min.css';`;
+        break;
+      case 'chakra':
+        imports += `\nimport { ChakraProvider } from '@chakra-ui/react';`;
+        break;
+      case 'antd':
+        imports += `\nimport 'antd/dist/reset.css';`;
+        break;
+      case 'mantine':
+        imports += `\nimport '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';`;
+        break;
+      default:
+        imports += `\nimport './App.css';`;
+    }
+    
+    return imports;
+  }
+
+  private static getAppClass(cssFramework?: CSSFramework): string {
+    switch (cssFramework) {
+      case 'bootstrap':
+        return 'container-fluid';
+      case 'tailwind':
+        return 'min-h-screen bg-gray-900';
+      case 'bulma':
+        return 'section';
+      default:
+        return 'app';
+    }
+  }
+
+  private static generateComponentsJSX(components: Component[], framework: Framework, cssFramework?: CSSFramework): string {
+    return components.map(component => {
+      const style = this.convertToCSS(component.style, component.position);
+      const styleString = Object.entries(style).map(([key, value]) => `${key}: '${value}'`).join(', ');
+      
+      switch (component.type) {
+        case 'button':
+          return this.generateButtonJSX(component, framework, styleString, cssFramework);
+        case 'navbar':
+          return this.generateNavbarJSX(component, framework, styleString, cssFramework);
+        case 'card':
+          return this.generateCardJSX(component, framework, styleString, cssFramework);
+        case 'form':
+          return this.generateFormJSX(component, framework, styleString, cssFramework);
+        default:
+          return this.generateGenericJSX(component, framework, styleString);
+      }
+    }).join('\n\n');
+  }
+
+  private static generateButtonJSX(component: Component, framework: Framework, styleString: string, cssFramework?: CSSFramework): string {
+    let buttonClass = 'btn';
+    
+    switch (cssFramework) {
+      case 'bootstrap':
+        buttonClass = `btn btn-${component.props.variant === 'primary' ? 'primary' : 'secondary'}`;
+        break;
+      case 'tailwind':
+        buttonClass = 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded';
+        break;
+      case 'bulma':
+        buttonClass = `button is-${component.props.variant === 'primary' ? 'primary' : 'info'}`;
+        break;
+      case 'chakra':
+        return `      <Button colorScheme="${component.props.variant === 'primary' ? 'blue' : 'gray'}" style={{ ${styleString} }}>
+        ${component.props.text || 'Button'}
+      </Button>`;
+      case 'antd':
+        return `      <Button type="${component.props.variant === 'primary' ? 'primary' : 'default'}" style={{ ${styleString} }}>
+        ${component.props.text || 'Button'}
+      </Button>`;
+      default:
+        buttonClass = `btn btn-${component.props.variant || 'primary'}`;
+    }
+
+    const classAttr = framework === 'vue' ? 'class' : 'className';
+    return `      <button ${classAttr}="${buttonClass}" style={{ ${styleString} }}>
+        ${component.props.text || 'Button'}
+      </button>`;
+  }
+
+  private static generateNavbarJSX(component: Component, framework: Framework, styleString: string, cssFramework?: CSSFramework): string {
+    const navItems = (component.props.items || []).map((item: string) => {
+      switch (cssFramework) {
+        case 'bootstrap':
+          return `            <a className="nav-link" href="#">${item}</a>`;
+        case 'tailwind':
+          return `            <a className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium" href="#">${item}</a>`;
+        case 'bulma':
+          return `            <a className="navbar-item" href="#">${item}</a>`;
+        default:
+          return `            <a className="navbar-item" href="#">${item}</a>`;
+      }
+    }).join('\n');
+
+    let navClass = 'navbar';
+    switch (cssFramework) {
+      case 'bootstrap':
+        navClass = 'navbar navbar-expand-lg navbar-dark';
+        break;
+      case 'tailwind':
+        navClass = 'bg-gray-800 text-white';
+        break;
+      case 'bulma':
+        navClass = 'navbar is-dark';
+        break;
+    }
+
+    const classAttr = framework === 'vue' ? 'class' : 'className';
+    return `      <nav ${classAttr}="${navClass}" style={{ ${styleString} }}>
+        <div ${classAttr}="navbar-brand">${component.props.title || 'Logo'}</div>
+        <div ${classAttr}="navbar-menu">
+${navItems}
+        </div>
+      </nav>`;
+  }
+
+  private static generateCardJSX(component: Component, framework: Framework, styleString: string, cssFramework?: CSSFramework): string {
+    let cardClass = 'card';
+    
+    switch (cssFramework) {
+      case 'bootstrap':
+        cardClass = 'card';
+        break;
+      case 'tailwind':
+        cardClass = 'bg-white shadow-lg rounded-lg overflow-hidden';
+        break;
+      case 'bulma':
+        cardClass = 'card';
+        break;
+    }
+
+    const classAttr = framework === 'vue' ? 'class' : 'className';
+    return `      <div ${classAttr}="${cardClass}" style={{ ${styleString} }}>
+        <div ${classAttr}="card-title">${component.props.title || 'Card Title'}</div>
+        <div ${classAttr}="card-content">${component.props.content || 'Card content'}</div>
+      </div>`;
+  }
+
+  private static generateFormJSX(component: Component, framework: Framework, styleString: string, cssFramework?: CSSFramework): string {
+    const fields = (component.props.fields || []).map((field: string) => {
+      const inputType = field === 'email' ? 'email' : field === 'password' ? 'password' : 'text';
+      let inputClass = 'form-input';
+      
+      switch (cssFramework) {
+        case 'bootstrap':
+          inputClass = 'form-control';
+          break;
+        case 'tailwind':
+          inputClass = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500';
+          break;
+        case 'bulma':
+          inputClass = 'input';
+          break;
+      }
+
+      const classAttr = framework === 'vue' ? 'class' : 'className';
+      return `          <div ${classAttr}="form-group">
+            <label ${classAttr}="form-label">${field.charAt(0).toUpperCase() + field.slice(1)}</label>
+            <input type="${inputType}" ${classAttr}="${inputClass}" />
+          </div>`;
+    }).join('\n');
+
+    let formClass = 'form';
+    switch (cssFramework) {
+      case 'bootstrap':
+        formClass = 'form';
+        break;
+      case 'tailwind':
+        formClass = 'bg-white p-6 rounded-lg shadow-lg';
+        break;
+      case 'bulma':
+        formClass = 'box';
+        break;
+    }
+
+    const classAttr = framework === 'vue' ? 'class' : 'className';
+    return `      <form ${classAttr}="${formClass}" style={{ ${styleString} }}>
+        <h2 ${classAttr}="form-title">${component.props.title || 'Formulaire'}</h2>
+${fields}
+        <button type="submit" ${classAttr}="btn btn-primary">
+          ${component.props.submitText || 'Envoyer'}
+        </button>
+      </form>`;
+  }
+
+  private static generateGenericJSX(component: Component, framework: Framework, styleString: string): string {
+    const classAttr = framework === 'vue' ? 'class' : 'className';
+    return `      <div ${classAttr}="${component.type}" style={{ ${styleString} }}>
+        ${component.type} component
+      </div>`;
+  }
+
+  // Générateurs pour frameworks mobiles
+  private static generateFlutterCode(components: Component[], theme: Theme): string {
+    const widgets = this.generateFlutterWidgets(components, theme);
+
+    return `import 'package:flutter/material.dart';
+
+class FutureUIScreen extends StatelessWidget {
+  const FutureUIScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(${this.hexToFlutterColor(theme.colors.background)}),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+${widgets}
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Future UI',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      fontFamily: '${theme.typography.fontFamily.replace(/'/g, '')}',
+      scaffoldBackgroundColor: Color(${this.hexToFlutterColor(theme.colors.background)}),
+    ),
+    home: const FutureUIScreen(),
+  ));
+}`;
+  }
+
+  private static generateFlutterWidgets(components: Component[], theme: Theme): string {
+    return components.map(component => {
+      switch (component.type) {
+        case 'button':
+          return `              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(${this.hexToFlutterColor(theme.colors.primary)}),
+                  foregroundColor: Color(${this.hexToFlutterColor(theme.colors.text)}),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text('${component.props.text || 'Button'}'),
+              ),`;
+
+        case 'navbar':
+          const navItems = (component.props.items || []).map((item: string) => 
+            `                  TextButton(
+                    onPressed: () {},
+                    child: Text('${item}', style: TextStyle(color: Color(${this.hexToFlutterColor(theme.colors.text)}))),
+                  ),`
+          ).join('\n');
+          
+          return `              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(${this.hexToFlutterColor(theme.colors.surface)}),
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${component.props.title || 'Logo'}', style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(${this.hexToFlutterColor(theme.colors.text)}),
+                    )),
+                    Row(
+                      children: [
+${navItems}
+                      ],
+                    ),
+                  ],
+                ),
+              ),`;
+
+        case 'hero':
+          return `              Container(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    Text(
+                      '${component.props.title || 'Titre Principal'}',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Color(${this.hexToFlutterColor(theme.colors.text)}),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '${component.props.subtitle || 'Sous-titre'}',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color(${this.hexToFlutterColor(theme.colors.textSecondary)}),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    ${component.props.hasButton ? `const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text('${component.props.buttonText || 'Action'}'),
+                    ),` : ''}
+                  ],
+                ),
+              ),`;
+
+        case 'card':
+          return `              Card(
+                margin: const EdgeInsets.all(16),
+                elevation: 4,
+                color: Color(${this.hexToFlutterColor(theme.colors.surface)}),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${component.props.title || 'Card Title'}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(${this.hexToFlutterColor(theme.colors.text)}),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${component.props.content || 'Card content'}',
+                        style: TextStyle(
+                          color: Color(${this.hexToFlutterColor(theme.colors.textSecondary)}),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),`;
+
+        case 'form':
+          const formFields = (component.props.fields || []).map((field: string) => {
+            const inputType = field === 'email' ? 'TextInputType.emailAddress' : 
+                             field === 'password' ? 'null' : 'TextInputType.text';
+            const isPassword = field === 'password';
+            
+            return `                    TextField(
+                      decoration: InputDecoration(
+                        labelText: '${field.charAt(0).toUpperCase() + field.slice(1)}',
+                        border: const OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Color(${this.hexToFlutterColor(theme.colors.surface)}),
+                      ),
+                      keyboardType: ${inputType},
+                      ${isPassword ? 'obscureText: true,' : ''}
+                    ),
+                    const SizedBox(height: 16),`;
+          }).join('\n');
+
+          return `              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(${this.hexToFlutterColor(theme.colors.surface)}),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      '${component.props.title || 'Formulaire'}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(${this.hexToFlutterColor(theme.colors.text)}),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+${formFields}
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: Text('${component.props.submitText || 'Envoyer'}'),
+                    ),
+                  ],
+                ),
+              ),`;
+
+        default:
+          return `              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Color(${this.hexToFlutterColor(theme.colors.surface)}),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text('${component.type} widget'),
+              ),`;
+      }
+    }).join('\n');
+  }
+
+  private static hexToFlutterColor(hex: string): string {
+    // Convertit les couleurs hex en format Flutter (0xFFRRGGBB)
+    const cleanHex = hex.replace('#', '');
+    return `0xFF${cleanHex}`;
+  }
+
+  private static generateReactNativeCode(components: Component[], theme: Theme): string {
+    const jsxComponents = this.generateReactNativeComponents(components, theme);
+
+    return `import React from 'react';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native';
+
+const FutureUIScreen = () => {
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+${jsxComponents}
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '${theme.colors.background}',
+  },
+  content: {
+    flex: 1,
+  },
+  button: {
+    backgroundColor: '${theme.colors.primary}',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    margin: 16,
+  },
+  buttonText: {
+    color: '${theme.colors.text}',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  card: {
+    backgroundColor: '${theme.colors.surface}',
+    padding: 16,
+    margin: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  text: {
+    color: '${theme.colors.text}',
+    fontSize: 16,
+  },
+  title: {
+    color: '${theme.colors.text}',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+});
+
+export default FutureUIScreen;`;
+  }
+
+  private static generateReactNativeComponents(components: Component[], theme: Theme): string {
+    return components.map(component => {
+      switch (component.type) {
+        case 'button':
+          return `        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>${component.props.text || 'Button'}</Text>
+        </TouchableOpacity>`;
+
+        case 'card':
+          return `        <View style={styles.card}>
+          <Text style={styles.title}>${component.props.title || 'Card Title'}</Text>
+          <Text style={styles.text}>${component.props.content || 'Card content'}</Text>
+        </View>`;
+
+        case 'hero':
+          return `        <View style={{ padding: 32, alignItems: 'center' }}>
+          <Text style={{ fontSize: 32, fontWeight: 'bold', color: '${theme.colors.text}', textAlign: 'center' }}>
+            ${component.props.title || 'Titre Principal'}
+          </Text>
+          <Text style={{ fontSize: 18, color: '${theme.colors.textSecondary}', textAlign: 'center', marginTop: 16 }}>
+            ${component.props.subtitle || 'Sous-titre'}
+          </Text>
+          ${component.props.hasButton ? `<TouchableOpacity style={[styles.button, { marginTop: 24 }]}>
+            <Text style={styles.buttonText}>${component.props.buttonText || 'Action'}</Text>
+          </TouchableOpacity>` : ''}
+        </View>`;
+
+        default:
+          return `        <View style={styles.card}>
+          <Text style={styles.text}>${component.type} component</Text>
+        </View>`;
+      }
+    }).join('\n');
+  }
+
+  // Générateurs pour les autres frameworks mobiles (versions simplifiées)
+  private static generateIonicCode(components: Component[], theme: Theme, cssFramework?: CSSFramework): string {
+    return `<ion-content [fullscreen]="true">
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-title>Future UI</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <div class="container">
+${components.map(component => this.generateIonicComponent(component)).join('\n')}
+  </div>
+</ion-content>`;
+  }
+
+  private static generateIonicComponent(component: Component): string {
+    switch (component.type) {
+      case 'button':
+        return `    <ion-button expand="block">${component.props.text || 'Button'}</ion-button>`;
+      case 'card':
+        return `    <ion-card>
+      <ion-card-header>
+        <ion-card-title>${component.props.title || 'Card Title'}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>${component.props.content || 'Card content'}</ion-card-content>
+    </ion-card>`;
+      default:
+        return `    <ion-item>${component.type} component</ion-item>`;
+    }
+  }
+
+  private static generateXamarinCode(components: Component[], theme: Theme): string {
+    return `using Microsoft.Maui.Controls;
+
+namespace FutureUI;
+
+public partial class MainPage : ContentPage
+{
+    public MainPage()
+    {
+        InitializeComponent();
+        
+        Content = new ScrollView
+        {
+            BackgroundColor = Color.FromArgb("${theme.colors.background}"),
+            Content = new StackLayout
+            {
+                Children = {
+${components.map(component => this.generateXamarinComponent(component, theme)).join(',\n')}
+                }
+            }
+        };
+    }
+}`;
+  }
+
+  private static generateXamarinComponent(component: Component, theme: Theme): string {
+    switch (component.type) {
+      case 'button':
+        return `                    new Button
+                    {
+                        Text = "${component.props.text || 'Button'}",
+                        BackgroundColor = Color.FromArgb("${theme.colors.primary}"),
+                        TextColor = Color.FromArgb("${theme.colors.text}")
+                    }`;
+      case 'card':
+        return `                    new Frame
+                    {
+                        BackgroundColor = Color.FromArgb("${theme.colors.surface}"),
+                        Content = new StackLayout
+                        {
+                            Children = {
+                                new Label { Text = "${component.props.title || 'Card Title'}", FontSize = 18, FontAttributes = FontAttributes.Bold },
+                                new Label { Text = "${component.props.content || 'Card content'}" }
+                            }
+                        }
+                    }`;
+      default:
+        return `                    new Label { Text = "${component.type} component" }`;
+    }
+  }
+
+  private static generateKotlinCode(components: Component[], theme: Theme): string {
+    return `package com.example.futureui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun FutureUIScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(${this.hexToAndroidColor(theme.colors.background)}))
+            .verticalScroll(rememberScrollState())
+    ) {
+${components.map(component => this.generateKotlinComponent(component, theme)).join('\n')}
+    }
+}
+
+@Composable
+fun MainActivity() {
+    MaterialTheme {
+        FutureUIScreen()
+    }
+}`;
+  }
+
+  private static generateKotlinComponent(component: Component, theme: Theme): string {
+    switch (component.type) {
+      case 'button':
+        return `        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(${this.hexToAndroidColor(theme.colors.primary)})
+            ),
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("${component.props.text || 'Button'}")
+        }`;
+      case 'card':
+        return `        Card(
+            modifier = Modifier.padding(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(${this.hexToAndroidColor(theme.colors.surface)})
+            )
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "${component.props.title || 'Card Title'}",
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = "${component.props.content || 'Card content'}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }`;
+      default:
+        return `        Text(
+            text = "${component.type} component",
+            modifier = Modifier.padding(16.dp)
+        )`;
+    }
+  }
+
+  private static hexToAndroidColor(hex: string): string {
+    const cleanHex = hex.replace('#', '');
+    return `0xFF${cleanHex}`;
+  }
+
+  private static generateSwiftUICode(components: Component[], theme: Theme): string {
+    return `import SwiftUI
+
+struct FutureUIScreen: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+${components.map(component => this.generateSwiftUIComponent(component, theme)).join('\n')}
+            }
+            .padding()
+        }
+        .background(Color(hex: "${theme.colors.background}"))
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        FutureUIScreen()
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+}`;
+  }
+
+  private static generateSwiftUIComponent(component: Component, theme: Theme): string {
+    switch (component.type) {
+      case 'button':
+        return `                Button("${component.props.text || 'Button'}") {
+                    // Action
+                }
+                .padding()
+                .background(Color(hex: "${theme.colors.primary}"))
+                .foregroundColor(Color(hex: "${theme.colors.text}"))
+                .cornerRadius(8)`;
+      case 'card':
+        return `                VStack(alignment: .leading) {
+                    Text("${component.props.title || 'Card Title'}")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    Text("${component.props.content || 'Card content'}")
+                        .font(.body)
+                }
+                .padding()
+                .background(Color(hex: "${theme.colors.surface}"))
+                .cornerRadius(8)
+                .shadow(radius: 2)`;
+      default:
+        return `                Text("${component.type} component")
+                    .padding()`;
+    }
+  }
+
+  private static generateNativeScriptCode(components: Component[], theme: Theme): string {
+    return `<Page>
+    <ScrollView>
+        <StackLayout backgroundColor="${theme.colors.background}">
+${components.map(component => this.generateNativeScriptComponent(component, theme)).join('\n')}
+        </StackLayout>
+    </ScrollView>
+</Page>`;
+  }
+
+  private static generateNativeScriptComponent(component: Component, theme: Theme): string {
+    switch (component.type) {
+      case 'button':
+        return `            <Button 
+                text="${component.props.text || 'Button'}"
+                backgroundColor="${theme.colors.primary}"
+                color="${theme.colors.text}"
+                borderRadius="8"
+                margin="16" />`;
+      case 'card':
+        return `            <StackLayout 
+                backgroundColor="${theme.colors.surface}"
+                borderRadius="8"
+                margin="16"
+                padding="16">
+                <Label 
+                    text="${component.props.title || 'Card Title'}"
+                    fontSize="18"
+                    fontWeight="bold"
+                    color="${theme.colors.text}" />
+                <Label 
+                    text="${component.props.content || 'Card content'}"
+                    color="${theme.colors.textSecondary}"
+                    marginTop="8" />
+            </StackLayout>`;
+      default:
+        return `            <Label 
+                text="${component.type} component"
+                backgroundColor="${theme.colors.surface}"
+                padding="16"
+                margin="16" />`;
+    }
   }
 }

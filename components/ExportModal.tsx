@@ -15,7 +15,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExp
     fileName: 'my-ui-project',
     includeAssets: true,
     minify: false,
-    format: 'modular',
+    format: 'single',
   });
 
   if (!isOpen) return null;
@@ -58,43 +58,15 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExp
             />
           </div>
 
-          {/* Format */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-3">
-              Format d'export
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer hover:bg-gray-700/30 transition-colors">
-                <input
-                  type="radio"
-                  name="format"
-                  value="single"
-                  checked={options.format === 'single'}
-                  onChange={(e) => setOptions(prev => ({ ...prev, format: e.target.value as 'single' | 'modular' }))}
-                  className="w-4 h-4 text-cyan-500"
-                />
-                <FileCode className="w-5 h-5 text-gray-400" />
-                <div>
-                  <div className="text-sm font-medium text-gray-300">Fichier unique</div>
-                  <div className="text-xs text-gray-500">Tout le code dans un seul fichier</div>
-                </div>
-              </label>
-              <label className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer hover:bg-gray-700/30 transition-colors">
-                <input
-                  type="radio"
-                  name="format"
-                  value="modular"
-                  checked={options.format === 'modular'}
-                  onChange={(e) => setOptions(prev => ({ ...prev, format: e.target.value as 'single' | 'modular' }))}
-                  className="w-4 h-4 text-cyan-500"
-                />
-                <Package className="w-5 h-5 text-gray-400" />
-                <div>
-                  <div className="text-sm font-medium text-gray-300">Projet modulaire</div>
-                  <div className="text-xs text-gray-500">Structure de projet complète avec composants séparés</div>
-                </div>
-              </label>
+          {/* Info Export */}
+          <div className="p-4 bg-cyan-500/10 rounded-lg border border-cyan-500/30">
+            <div className="flex items-center gap-2 mb-2">
+              <FileCode className="w-5 h-5 text-cyan-400" />
+              <span className="text-sm font-medium text-cyan-300">Export fichier unique</span>
             </div>
+            <p className="text-xs text-cyan-200/80">
+              Votre interface sera exportée dans un fichier complet avec tout le code nécessaire selon le framework choisi.
+            </p>
           </div>
 
           {/* Options */}
@@ -124,27 +96,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({ isOpen, onClose, onExp
             </div>
           </div>
 
-          {/* Preview */}
-          <div className="p-4 bg-gray-800/30 rounded-lg border border-gray-700">
-            <div className="flex items-center gap-2 mb-2">
-              <Settings className="w-4 h-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-300">Aperçu de l'export</span>
-            </div>
-            <div className="text-xs text-gray-500 space-y-1">
-              <div>📁 {options.fileName}/</div>
-              {options.format === 'modular' ? (
-                <>
-                  <div>├── 📄 index.html</div>
-                  <div>├── 📁 components/</div>
-                  <div>├── 📁 styles/</div>
-                  {options.includeAssets && <div>├── 📁 assets/</div>}
-                  <div>└── 📄 README.md</div>
-                </>
-              ) : (
-                <div>└── 📄 {options.fileName}.html</div>
-              )}
-            </div>
-          </div>
         </div>
 
         <div className="flex gap-3 mt-8">

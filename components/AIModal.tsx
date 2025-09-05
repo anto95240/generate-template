@@ -7,13 +7,14 @@ import { AIToken } from '@/types';
 interface AIModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onGenerate: (prompt: string, generateFullCanvas?: boolean) => void;
+  onGenerate: (prompt: string, generateFullCanvas?: boolean, generateMultiple?: boolean) => void;
 }
 
 export const AIModal: React.FC<AIModalProps> = ({ isOpen, onClose, onGenerate }) => {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generateFullCanvas, setGenerateFullCanvas] = useState(false);
+  const [generateMultiple, setGenerateMultiple] = useState(true);
   const [tokens, setTokens] = useState<AIToken>({
     remaining: 45,
     total: 50,
@@ -40,9 +41,10 @@ export const AIModal: React.FC<AIModalProps> = ({ isOpen, onClose, onGenerate })
     
     setIsGenerating(true);
     try {
-      await onGenerate(prompt, generateFullCanvas);
+      await onGenerate(prompt, generateFullCanvas, generateMultiple && !generateFullCanvas);
       setPrompt('');
-      setTokens(prev => ({ ...prev, remaining: Math.max(0, prev.remaining - 1) }));
+      const tokenCost = generateMultiple && !generateFullCanvas ? 3 : generateFullCanvas ? 3 : 1;
+      setTokens(prev => ({ ...prev, remaining: Math.max(0, prev.remaining - tokenCost) }));
       onClose();
     } catch (error) {
       console.error('Erreur lors de la génération:', error);
@@ -178,6 +180,24 @@ export const AIModal: React.FC<AIModalProps> = ({ isOpen, onClose, onGenerate })
             </button>
           </div>
         </div>
+
+        {/* Generate Multiple Option */}
+        {!generateFullCanvas && (
+          <div className="mb-6">
+            <label className="flex items-center gap-3 p-4 bg-gray-800/30 rounded-lg border border-gray-700 cursor-pointer hover:bg-gray-700/30 transition-colors">
+              <input
+                type="checkbox"
+                checked={generateMultiple}
+                onChange={(e) => setGenerateMultiple(e.target.checked)}
+                className="w-4 h-4 text-cyan-500 bg-gray-800 border-gray-600 rounded focus:ring-cyan-500"
+              />
+              <div>
+                <div className="text-sm font-medium text-gray-300">Générer plusieurs variantes</div>
+                <div className="text-xs text-gray-500">Crée 3 versions différentes du même composant (coûte 3 tokens)</div>
+              </div>
+            </label>
+          </div>
+        )}
 
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-300 mb-3">
