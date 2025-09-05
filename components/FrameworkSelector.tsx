@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Framework, CSSFramework } from '@/types';
 import { frameworks, getFrameworksByCategory, cssFrameworks } from '@/data/frameworks';
 import { ChevronDown, Search, AlertCircle } from 'lucide-react';
+import * as Icons from "lucide-react";
 
 interface FrameworkSelectorProps {
   selectedFramework: Framework;
@@ -104,12 +105,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
             {expandedCategories.includes(category) && (
               <div className="mt-2 space-y-1 pl-2">
                 {categoryFrameworks.map((framework) => {
-                  let IconComponent;
-                  try {
-                    IconComponent = require('lucide-react')[framework.icon];
-                  } catch {
-                    IconComponent = require('lucide-react')['Code'];
-                  }
+                  const IconComponent = (Icons as any)[framework.icon] || Icons.Code;
                   
                   return (
                     <button

@@ -180,7 +180,7 @@ Utilise des valeurs réalistes et cohérentes.`;
           {
             components: [
               {
-                type: 'aside',
+                type: 'aside' as ComponentType,
                 props: { 
                   title: 'Admin Panel', 
                   items: ['Dashboard', 'Utilisateurs', 'Commandes', 'Produits', 'Analytics', 'Paramètres', 'Déconnexion'],
@@ -190,13 +190,13 @@ Utilise des valeurs réalistes et cohérentes.`;
                 position: { x: 0, y: 0, width: 280, height: 600 },
               },
               {
-                type: 'navbar',
+                type: 'navbar' as ComponentType,
                 props: { title: 'Admin Dashboard', items: ['Notifications', 'Profil'] },
                 style: { padding: '16px 32px', backdropFilter: 'blur(20px)', marginLeft: '280px' },
                 position: { x: 280, y: 0, width: 520, height: 60 },
               },
               {
-                type: 'grid',
+                type: 'grid' as ComponentType,
                 props: { 
                   columns: 4, 
                   items: ['1,234 Utilisateurs', '567 Commandes', '89,012€ CA', '45 Nouveaux'] 
@@ -205,7 +205,7 @@ Utilise des valeurs réalistes et cohérentes.`;
                 position: { x: 300, y: 80, width: 480, height: 150 },
               },
               {
-                type: 'table',
+                type: 'table' as ComponentType,
                 props: { 
                   headers: ['Utilisateur', 'Email', 'Rôle', 'Statut'], 
                   rows: [
@@ -221,13 +221,13 @@ Utilise des valeurs réalistes et cohérentes.`;
           {
             components: [
               {
-                type: 'navbar',
+                type: 'navbar' as ComponentType,
                 props: { title: 'Analytics Dashboard', items: ['Export', 'Settings', 'Help'] },
                 style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
                 position: { x: 0, y: 0, width: 800, height: 60 },
               },
               {
-                type: 'grid',
+                type: 'grid' as ComponentType,
                 props: { 
                   columns: 3, 
                   items: ['📊 Ventes: 12,345€', '👥 Visiteurs: 8,901', '📈 Conversion: 3.2%', '⭐ Satisfaction: 4.8/5', '📦 Commandes: 234', '🚀 Croissance: +15%'] 
@@ -236,13 +236,13 @@ Utilise des valeurs réalistes et cohérentes.`;
                 position: { x: 50, y: 80, width: 700, height: 200 },
               },
               {
-                type: 'card',
+                type: 'card' as ComponentType,
                 props: { title: 'Graphique des ventes', content: 'Évolution des ventes sur les 30 derniers jours', hasButton: false },
                 style: { padding: '24px', borderRadius: '16px' },
                 position: { x: 50, y: 300, width: 350, height: 250 },
               },
               {
-                type: 'card',
+                type: 'card' as ComponentType,
                 props: { title: 'Top Produits', content: 'Les produits les plus vendus ce mois', hasButton: true },
                 style: { padding: '24px', borderRadius: '16px' },
                 position: { x: 420, y: 300, width: 330, height: 250 },
@@ -265,13 +265,13 @@ Utilise des valeurs réalistes et cohérentes.`;
           style: {},
           components: [
             {
-              type: 'navbar',
+              type: 'navbar' as ComponentType,
               props: { title: 'SaaS Platform', items: ['Features', 'Pricing', 'About', 'Contact', 'Login'] },
               style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
               position: { x: 0, y: 0, width: 800, height: 60 },
             },
             {
-              type: 'hero',
+              type: 'hero' as ComponentType,
               props: { 
                 title: 'Révolutionnez votre workflow', 
                 subtitle: 'La plateforme SaaS qui transforme votre productivité avec des outils IA avancés', 
@@ -282,7 +282,7 @@ Utilise des valeurs réalistes et cohérentes.`;
               position: { x: 0, y: 80, width: 800, height: 400 },
             },
             {
-              type: 'grid',
+              type: 'grid' as ComponentType,
               props: { 
                 columns: 3, 
                 items: ['🚀 Performance', '🔒 Sécurité', '📊 Analytics', '🤖 IA Intégrée', '☁️ Cloud', '📱 Mobile'] 
@@ -291,7 +291,7 @@ Utilise des valeurs réalistes et cohérentes.`;
               position: { x: 50, y: 500, width: 700, height: 200 },
             },
             {
-              type: 'footer',
+              type: 'footer' as ComponentType,
               props: { 
                 title: 'SaaS Platform', 
                 links: ['Privacy', 'Terms', 'Support', 'API', 'Status'], 
@@ -309,19 +309,19 @@ Utilise des valeurs réalistes et cohérentes.`;
           style: {},
           components: [
             {
-              type: 'navbar',
+              type: 'navbar' as ComponentType,
               props: { title: 'ShopFuture', items: ['Produits', 'Catégories', 'Offres', 'Panier', 'Compte'] },
               style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
               position: { x: 0, y: 0, width: 800, height: 60 },
             },
             {
-              type: 'aside',
+              type: 'aside' as ComponentType,
               props: { title: 'Filtres', items: ['Prix', 'Marque', 'Catégorie', 'Note', 'Disponibilité'], position: 'left' },
               style: { padding: '20px', width: '220px' },
               position: { x: 0, y: 60, width: 220, height: 500 },
             },
             {
-              type: 'grid',
+              type: 'grid' as ComponentType,
               props: { 
                 columns: 3, 
                 items: ['Produit 1 - 299€', 'Produit 2 - 199€', 'Produit 3 - 399€', 'Produit 4 - 149€', 'Produit 5 - 249€', 'Produit 6 - 179€'] 
@@ -330,7 +330,7 @@ Utilise des valeurs réalistes et cohérentes.`;
               position: { x: 240, y: 80, width: 540, height: 400 },
             },
             {
-              type: 'footer',
+              type: 'footer' as ComponentType,
               props: { title: 'ShopFuture', links: ['Support', 'Livraison', 'Retours', 'CGV'], copyright: '© 2025 ShopFuture' },
               style: { padding: '40px 32px', textAlign: 'center' },
               position: { x: 0, y: 500, width: 800, height: 120 },
@@ -343,7 +343,7 @@ Utilise des valeurs réalistes et cohérentes.`;
     // Génération de composant unique basée sur les mots-clés
     if (lowerPrompt.includes('navbar') || lowerPrompt.includes('navigation') || lowerPrompt.includes('menu')) {
       return {
-        componentType: 'navbar',
+        componentType: 'navbar' as ComponentType,
         props: { 
           title: 'Navigation', 
           items: lowerPrompt.includes('admin') ? ['Dashboard', 'Users', 'Settings'] : ['Accueil', 'Services', 'Contact']
@@ -356,7 +356,7 @@ Utilise des valeurs réalistes et cohérentes.`;
       };
     } else if (lowerPrompt.includes('bouton') || lowerPrompt.includes('button') || lowerPrompt.includes('cta')) {
       return {
-        componentType: 'button',
+        componentType: 'button' as ComponentType,
         props: { 
           text: lowerPrompt.includes('cta') ? 'Commencer maintenant' : 'Cliquez ici',
           variant: lowerPrompt.includes('néon') || lowerPrompt.includes('neon') ? 'neon' : 
@@ -370,7 +370,7 @@ Utilise des valeurs réalistes et cohérentes.`;
       };
     } else if (lowerPrompt.includes('carte') || lowerPrompt.includes('card')) {
       return {
-        componentType: 'card',
+        componentType: 'card' as ComponentType,
         props: { 
           title: lowerPrompt.includes('produit') ? 'Produit Premium' : 'Titre de carte',
           content: lowerPrompt.includes('produit') ? 'Description du produit avec ses avantages' : 'Contenu de la carte',
@@ -384,7 +384,7 @@ Utilise des valeurs réalistes et cohérentes.`;
       };
     } else if (lowerPrompt.includes('formulaire') || lowerPrompt.includes('form')) {
       return {
-        componentType: 'form',
+        componentType: 'form' as ComponentType,
         props: { 
           title: lowerPrompt.includes('contact') ? 'Contactez-nous' : 'Formulaire',
           fields: lowerPrompt.includes('contact') ? ['nom', 'email', 'message'] : ['nom', 'email'],
@@ -397,7 +397,7 @@ Utilise des valeurs réalistes et cohérentes.`;
       };
     } else if (lowerPrompt.includes('footer') || lowerPrompt.includes('pied')) {
       return {
-        componentType: 'footer',
+        componentType: 'footer' as ComponentType,
         props: { 
           title: 'Mon Site',
           links: ['Accueil', 'À propos', 'Contact', 'Mentions légales'],
@@ -412,7 +412,7 @@ Utilise des valeurs réalistes et cohérentes.`;
 
     // Par défaut, retourner un bouton
     return {
-      componentType: 'button',
+      componentType: 'button' as ComponentType,
       props: { text: 'Généré par IA', variant: 'primary' },
       style: { padding: '12px 24px', borderRadius: '8px' },
     };

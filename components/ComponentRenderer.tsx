@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component, Theme } from '@/types';
 import * as LucideIcons from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 
 interface ComponentRendererProps {
   component: Component;

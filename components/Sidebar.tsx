@@ -5,6 +5,8 @@ import { templates, getTemplatesByCategory, getRandomTemplateByCategory } from '
 import { FrameworkSelector } from './FrameworkSelector';
 import { Framework, Template, CSSFramework } from '@/types';
 import { Palette, Code, Wand2, Download, Settings, Layers, Shuffle, BookTemplate as FileTemplate, ChevronDown, Search, Dice6 } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { LucideProps } from 'lucide-react';
 
 interface SidebarProps {
   selectedFramework: Framework;
@@ -180,12 +182,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-8">
             <div className="grid grid-cols-2 gap-2">
               {componentTemplates.map((template) => {
-                let IconComponent;
-                try {
-                  IconComponent = require('lucide-react')[template.icon];
-                } catch {
-                  IconComponent = require('lucide-react')['Square'];
-                }
+                const IconComponent = (LucideIcons[template.icon as keyof typeof LucideIcons] || LucideIcons.Square) as React.ComponentType<LucideProps>;
                 return (
                   <button
                     key={template.type}
