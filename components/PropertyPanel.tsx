@@ -464,24 +464,59 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
       {/* Colors */}
       <div>
         <h4 className="text-sm font-medium text-gray-300 mb-3">Couleurs</h4>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
           <div>
             <label className="block text-xs text-gray-400 mb-1">Arrière-plan</label>
-            <input
-              type="color"
-              value={selectedComponent.style.backgroundColor || '#000000'}
-              onChange={(e) => updateStyle('backgroundColor', e.target.value)}
-              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
-            />
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={selectedComponent.style.backgroundColor || '#000000'}
+                onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+                className="w-12 h-8 bg-gray-800 border border-gray-600 rounded"
+              />
+              <input
+                type="text"
+                value={selectedComponent.style.backgroundColor || ''}
+                onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+                placeholder="#000000"
+                className="flex-1 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
           </div>
           <div>
             <label className="block text-xs text-gray-400 mb-1">Texte</label>
-            <input
-              type="color"
-              value={selectedComponent.style.color || '#ffffff'}
-              onChange={(e) => updateStyle('color', e.target.value)}
-              className="w-full h-8 bg-gray-800 border border-gray-600 rounded"
-            />
+            <div className="flex gap-2">
+              <input
+                type="color"
+                value={selectedComponent.style.color || '#ffffff'}
+                onChange={(e) => updateStyle('color', e.target.value)}
+                className="w-12 h-8 bg-gray-800 border border-gray-600 rounded"
+              />
+              <input
+                type="text"
+                value={selectedComponent.style.color || ''}
+                onChange={(e) => updateStyle('color', e.target.value)}
+                placeholder="#ffffff"
+                className="flex-1 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Dégradé</label>
+            <select
+              value={selectedComponent.style.backgroundImage?.includes('gradient') ? 'gradient' : 'none'}
+              onChange={(e) => {
+                if (e.target.value === 'gradient') {
+                  updateStyle('backgroundImage', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+                } else {
+                  updateStyle('backgroundImage', '');
+                }
+              }}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+            >
+              <option value="none">Aucun</option>
+              <option value="gradient">Dégradé</option>
+            </select>
           </div>
         </div>
       </div>
@@ -569,24 +604,48 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
         <h4 className="text-sm font-medium text-gray-300 mb-3">Ombres</h4>
         <div className="space-y-2">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Box Shadow</label>
-            <input
-              type="text"
-              value={selectedComponent.style.boxShadow || ''}
-              onChange={(e) => updateStyle('boxShadow', e.target.value)}
-              placeholder="0 4px 8px rgba(0, 0, 0, 0.1)"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <label className="block text-xs text-gray-400 mb-1">Ombre</label>
+            <select
+              value={selectedComponent.style.boxShadow ? 'custom' : 'none'}
+              onChange={(e) => {
+                const shadows = {
+                  none: '',
+                  small: '0 1px 3px rgba(0, 0, 0, 0.12)',
+                  medium: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  large: '0 10px 15px rgba(0, 0, 0, 0.1)',
+                  xl: '0 20px 25px rgba(0, 0, 0, 0.1)',
+                  glow: '0 0 20px rgba(59, 130, 246, 0.5)',
+                };
+                updateStyle('boxShadow', shadows[e.target.value as keyof typeof shadows] || e.target.value);
+              }}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+            >
+              <option value="none">Aucune</option>
+              <option value="small">Petite</option>
+              <option value="medium">Moyenne</option>
+              <option value="large">Grande</option>
+              <option value="xl">Très grande</option>
+              <option value="glow">Lueur</option>
+            </select>
           </div>
           <div>
             <label className="block text-xs text-gray-400 mb-1">Text Shadow</label>
-            <input
-              type="text"
-              value={selectedComponent.style.textShadow || ''}
-              onChange={(e) => updateStyle('textShadow', e.target.value)}
-              placeholder="0 0 10px currentColor"
-              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            />
+            <select
+              value={selectedComponent.style.textShadow ? 'glow' : 'none'}
+              onChange={(e) => {
+                const textShadows = {
+                  none: '',
+                  glow: '0 0 10px currentColor',
+                  strong: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                };
+                updateStyle('textShadow', textShadows[e.target.value as keyof typeof textShadows] || '');
+              }}
+              className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs focus:border-cyan-500 focus:outline-none"
+            >
+              <option value="none">Aucune</option>
+              <option value="glow">Lueur</option>
+              <option value="strong">Forte</option>
+            </select>
           </div>
         </div>
       </div>

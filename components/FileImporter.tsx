@@ -72,9 +72,15 @@ export const FileImporter: React.FC<FileImporterProps> = ({ onImport, onClose })
     if (filename.endsWith('.dart') || content.includes('import \'package:flutter/')) {
       framework = 'flutter';
       confidence = 95;
+    } else if (filename.endsWith('.tsx') && content.includes('react-native')) {
+      framework = 'react-native';
+      confidence = 90;
     } else if (filename.endsWith('.tsx') || filename.endsWith('.jsx')) {
       if (content.includes('import Head from \'next/head\'') || content.includes('next/')) {
         framework = 'nextjs';
+        confidence = 90;
+      } else if (content.includes('@remix-run') || content.includes('remix')) {
+        framework = 'remix';
         confidence = 90;
       } else {
         framework = 'react';
@@ -88,27 +94,15 @@ export const FileImporter: React.FC<FileImporterProps> = ({ onImport, onClose })
         framework = 'vue';
         confidence = 85;
       }
+    } else if (filename.endsWith('.astro')) {
+      framework = 'astro';
+      confidence = 95;
     } else if (filename.endsWith('.component.ts') || content.includes('@Component')) {
       framework = 'angular';
       confidence = 90;
     } else if (filename.endsWith('.svelte')) {
       framework = 'svelte';
       confidence = 90;
-    } else if (filename.endsWith('.twig')) {
-      framework = 'symfony';
-      confidence = 90;
-    } else if (filename.endsWith('.blade.php')) {
-      framework = 'laravel';
-      confidence = 90;
-    } else if (content.includes('{% extends') || content.includes('{{ ')) {
-      framework = 'django';
-      confidence = 80;
-    } else if (filename.endsWith('.erb')) {
-      framework = 'rails';
-      confidence = 90;
-    } else if (filename.endsWith('.ejs')) {
-      framework = 'express';
-      confidence = 85;
     } else if (content.includes('<!DOCTYPE html>')) {
       framework = 'html';
       confidence = 70;

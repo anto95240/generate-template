@@ -37,6 +37,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [selectedComponentType, setSelectedComponentType] = useState<any>(null);
   const [showImporter, setShowImporter] = useState(false);
 
+  const [showRandomOptions, setShowRandomOptions] = useState(false);
+
   const templateCategories = getTemplatesByCategory();
   
   const filteredTemplates = Object.entries(templateCategories).reduce((acc, [category, categoryTemplates]) => {
@@ -59,8 +61,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleRandomTemplate = () => {
-    const randomTemplate = getRandomTemplate();
+    setShowRandomOptions(true);
+  };
+
+  const handleRandomByCategory = (category?: string) => {
+    const randomTemplate = category ? 
+      getRandomTemplateByCategory(category) : 
+      getRandomTemplate();
     onLoadTemplate(randomTemplate);
+    setShowRandomOptions(false);
   };
 
   const handleComponentClick = (template: any) => {
@@ -73,12 +82,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const handleVariantSelect = (variant: any) => {
     if (selectedComponentType) {
-      onAddComponent({
-      type: selectedComponentType.type,
-      props: variant.props,
-      style: variant.style,
-      animations: variant.animations || [],
-    });
+      onAddComponent(variant.type, {
+        props: variant.props,
+        style: variant.style,
+        animations: variant.animations || [],
+      });
     }
   };
 
@@ -240,13 +248,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* Random Template Button */}
-            <button
-              onClick={handleRandomTemplate}
-              className="w-full p-3 mb-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              <Shuffle className="w-4 h-4" />
-              Template Aléatoire
-            </button>
+            <div className="mb-4">
+              <button
+                onClick={handleRandomTemplate}
+                className="w-full p-3 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 rounded-lg text-white font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Shuffle className="w-4 h-4" />
+                Template Aléatoire
+              </button>
+              
+              {showRandomOptions && (
+                <div className="mt-2 p-3 bg-gray-800/50 rounded-lg border border-gray-700">
+                  <div className="text-xs text-gray-400 mb-2">Choisir une catégorie :</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => handleRandomByCategory()}
+                      className="px-2 py-1 bg-orange-600 hover:bg-orange-500 text-white text-xs rounded transition-colors"
+                    >
+                      Toutes
+                    </button>
+                    {Object.keys(templateCategories).map(category => (
+                      <button
+                        key={category}
+                        onClick={() => handleRandomByCategory(category)}
+                        className="px-2 py-1 bg-gray-700 hover:bg-gray-600 text-white text-xs rounded transition-colors"
+                      >
+                        {getCategoryName(category)}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowRandomOptions(false)}
+                    className="w-full mt-2 px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white text-xs rounded transition-colors"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Template Categories */}
             <div className="space-y-3">

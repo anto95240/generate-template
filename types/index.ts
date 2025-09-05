@@ -87,16 +87,13 @@ export type Framework =
   | 'vue' 
   | 'angular' 
   | 'svelte'
-  | 'flutter'
   | 'nextjs'
   | 'nuxtjs'
+  | 'remix'
+  | 'astro'
   | 'html'
-  | 'symfony'
-  | 'laravel'
-  | 'django'
-  | 'rails'
-  | 'express'
-  | 'fastapi';
+  | 'flutter'
+  | 'react-native';
 
 export interface Theme {
   id: string;

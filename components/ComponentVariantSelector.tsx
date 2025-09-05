@@ -38,7 +38,12 @@ export const ComponentVariantSelector: React.FC<ComponentVariantSelectorProps> =
             <button
               key={index}
               onClick={() => {
-                onSelectVariant(preset);
+                onSelectVariant({
+                  type: componentType,
+                  props: preset.props,
+                  style: preset.style,
+                  animations: preset.animations || [],
+                });
                 onClose();
               }}
               className="p-4 bg-gray-800/30 hover:bg-gray-700/50 rounded-lg border border-gray-700 hover:border-cyan-500/50 transition-all duration-200 group text-left"

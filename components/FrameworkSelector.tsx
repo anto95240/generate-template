@@ -43,7 +43,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
     switch (category) {
       case 'frontend': return '🎨';
       case 'fullstack': return '⚡';
-      case 'backend': return '🔧';
+      case 'mobile': return '📱';
       default: return '📦';
     }
   };
@@ -51,15 +51,15 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
   const getCategoryDescription = (category: string) => {
     switch (category) {
       case 'frontend': return 'Interfaces utilisateur';
-      case 'backend': return 'Serveurs et APIs';
+      case 'fullstack': return 'Applications complètes';
       case 'mobile': return 'Applications mobiles';
       default: return '';
     }
   };
 
-  const isBackendFramework = (frameworkId: Framework) => {
+  const isMobileFramework = (frameworkId: Framework) => {
     const framework = frameworks.find(f => f.id === frameworkId);
-    return framework?.category === 'backend';
+    return framework?.category === 'mobile';
   };
 
   return (
@@ -76,14 +76,14 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
         />
       </div>
 
-      {/* Backend Warning */}
-      {isBackendFramework(selectedFramework) && (
-        <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded-lg">
+      {/* Mobile Warning */}
+      {isMobileFramework(selectedFramework) && (
+        <div className="p-3 bg-blue-900/30 border border-blue-500/50 rounded-lg">
           <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-yellow-200">
-              <p className="font-medium mb-1">Framework Backend</p>
-              <p>Les frameworks backend génèrent des templates HTML. Certaines fonctionnalités interactives peuvent être limitées.</p>
+            <AlertCircle className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+            <div className="text-xs text-blue-200">
+              <p className="font-medium mb-1">Framework Mobile</p>
+              <p>Les frameworks mobiles ont des composants spécifiques. L'aperçu peut différer de l'application finale.</p>
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export const FrameworkSelector: React.FC<FrameworkSelectorProps> = ({
                 <div className="text-left">
                   <div className="text-sm font-medium text-gray-300 capitalize">
                     {category === 'frontend' ? 'Frontend' : 
-                     category === 'backend' ? 'Backend' : 'Mobile'}
+                     category === 'fullstack' ? 'Full-Stack' : 'Mobile'}
                   </div>
                   <div className="text-xs text-gray-500">
                     {getCategoryDescription(category)}

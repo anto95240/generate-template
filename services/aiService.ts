@@ -174,51 +174,89 @@ Utilise des valeurs réalistes et cohérentes.`;
     const lowerPrompt = prompt.toLowerCase();
 
     if (isFullCanvas) {
-      if (lowerPrompt.includes('dashboard') && lowerPrompt.includes('admin')) {
+      if (lowerPrompt.includes('dashboard') || lowerPrompt.includes('admin')) {
+        // Générer plusieurs variantes de dashboard
+        const dashboardVariants = [
+          {
+            components: [
+              {
+                type: 'aside',
+                props: { 
+                  title: 'Admin Panel', 
+                  items: ['Dashboard', 'Utilisateurs', 'Commandes', 'Produits', 'Analytics', 'Paramètres', 'Déconnexion'],
+                  position: 'left' 
+                },
+                style: { padding: '24px', width: '280px', height: '100vh', background: 'rgba(255, 255, 255, 0.05)' },
+                position: { x: 0, y: 0, width: 280, height: 600 },
+              },
+              {
+                type: 'navbar',
+                props: { title: 'Admin Dashboard', items: ['Notifications', 'Profil'] },
+                style: { padding: '16px 32px', backdropFilter: 'blur(20px)', marginLeft: '280px' },
+                position: { x: 280, y: 0, width: 520, height: 60 },
+              },
+              {
+                type: 'grid',
+                props: { 
+                  columns: 4, 
+                  items: ['1,234 Utilisateurs', '567 Commandes', '89,012€ CA', '45 Nouveaux'] 
+                },
+                style: { gap: '20px', padding: '20px', marginLeft: '280px' },
+                position: { x: 300, y: 80, width: 480, height: 150 },
+              },
+              {
+                type: 'table',
+                props: { 
+                  headers: ['Utilisateur', 'Email', 'Rôle', 'Statut'], 
+                  rows: [
+                    ['John Doe', 'john@example.com', 'Admin', 'Actif'],
+                    ['Jane Smith', 'jane@example.com', 'User', 'Actif'],
+                  ]
+                },
+                style: { borderRadius: '12px', marginLeft: '280px' },
+                position: { x: 300, y: 250, width: 480, height: 200 },
+              },
+            ]
+          },
+          {
+            components: [
+              {
+                type: 'navbar',
+                props: { title: 'Analytics Dashboard', items: ['Export', 'Settings', 'Help'] },
+                style: { padding: '16px 32px', backdropFilter: 'blur(20px)' },
+                position: { x: 0, y: 0, width: 800, height: 60 },
+              },
+              {
+                type: 'grid',
+                props: { 
+                  columns: 3, 
+                  items: ['📊 Ventes: 12,345€', '👥 Visiteurs: 8,901', '📈 Conversion: 3.2%', '⭐ Satisfaction: 4.8/5', '📦 Commandes: 234', '🚀 Croissance: +15%'] 
+                },
+                style: { gap: '24px', padding: '32px' },
+                position: { x: 50, y: 80, width: 700, height: 200 },
+              },
+              {
+                type: 'card',
+                props: { title: 'Graphique des ventes', content: 'Évolution des ventes sur les 30 derniers jours', hasButton: false },
+                style: { padding: '24px', borderRadius: '16px' },
+                position: { x: 50, y: 300, width: 350, height: 250 },
+              },
+              {
+                type: 'card',
+                props: { title: 'Top Produits', content: 'Les produits les plus vendus ce mois', hasButton: true },
+                style: { padding: '24px', borderRadius: '16px' },
+                position: { x: 420, y: 300, width: 330, height: 250 },
+              },
+            ]
+          }
+        ];
+        
+        const randomVariant = dashboardVariants[Math.floor(Math.random() * dashboardVariants.length)];
         return {
           componentType: 'container' as ComponentType,
           props: {},
           style: {},
-          components: [
-            {
-              type: 'aside',
-              props: { 
-                title: 'Admin Panel', 
-                items: ['Dashboard', 'Utilisateurs', 'Commandes', 'Produits', 'Analytics', 'Paramètres', 'Déconnexion'],
-                position: 'left' 
-              },
-              style: { padding: '24px', width: '280px', height: '100vh', background: 'rgba(255, 255, 255, 0.05)' },
-              position: { x: 0, y: 0, width: 280, height: 600 },
-            },
-            {
-              type: 'navbar',
-              props: { title: 'Admin Dashboard', items: ['Notifications', 'Profil'] },
-              style: { padding: '16px 32px', backdropFilter: 'blur(20px)', marginLeft: '280px' },
-              position: { x: 280, y: 0, width: 520, height: 60 },
-            },
-            {
-              type: 'grid',
-              props: { 
-                columns: 3, 
-                items: ['1,234 Utilisateurs', '567 Commandes', '89,012€ CA', '45 Nouveaux', '23 En attente', '98% Satisfaction'] 
-              },
-              style: { gap: '20px', padding: '20px', marginLeft: '280px' },
-              position: { x: 300, y: 80, width: 480, height: 200 },
-            },
-            {
-              type: 'table',
-              props: { 
-                headers: ['Utilisateur', 'Email', 'Rôle', 'Dernière connexion', 'Statut'], 
-                rows: [
-                  ['John Doe', 'john@example.com', 'Admin', '15/01/2025', 'Actif'],
-                  ['Jane Smith', 'jane@example.com', 'User', '14/01/2025', 'Actif'],
-                  ['Bob Wilson', 'bob@example.com', 'Moderator', '13/01/2025', 'Inactif'],
-                ]
-              },
-              style: { borderRadius: '12px', marginLeft: '280px' },
-              position: { x: 300, y: 300, width: 480, height: 250 },
-            },
-          ],
+          components: randomVariant.components,
         };
       } else if (lowerPrompt.includes('landing') || lowerPrompt.includes('saas')) {
         return {

@@ -53,16 +53,6 @@ export const frameworks: FrameworkInfo[] = [
     fileExtension: 'svelte',
     templateType: 'component',
   },
-  {
-    id: 'flutter',
-    name: 'Flutter',
-    category: 'frontend',
-    language: 'Dart',
-    description: 'Framework UI pour applications mobiles et web',
-    icon: 'Smartphone',
-    fileExtension: 'dart',
-    templateType: 'component',
-  },
 
   // Fullstack Frameworks
   {
@@ -85,68 +75,27 @@ export const frameworks: FrameworkInfo[] = [
     fileExtension: 'vue',
     templateType: 'component',
   },
-
-  // Backend Frameworks
   {
-    id: 'symfony',
-    name: 'Symfony',
-    category: 'backend',
-    language: 'PHP',
-    description: 'Framework PHP pour applications web',
-    icon: 'Code2',
-    fileExtension: 'twig',
-    templateType: 'template',
-  },
-  {
-    id: 'laravel',
-    name: 'Laravel',
-    category: 'backend',
-    language: 'PHP',
-    description: 'Framework PHP élégant',
-    icon: 'Gem',
-    fileExtension: 'blade.php',
-    templateType: 'template',
-  },
-  {
-    id: 'django',
-    name: 'Django',
-    category: 'backend',
-    language: 'Python',
-    description: 'Framework web Python de haut niveau',
-    icon: 'Snake',
-    fileExtension: 'html',
-    templateType: 'template',
-  },
-  {
-    id: 'rails',
-    name: 'Ruby on Rails',
-    category: 'backend',
-    language: 'Ruby',
-    description: 'Framework web Ruby',
-    icon: 'Ruby',
-    fileExtension: 'erb',
-    templateType: 'template',
-  },
-  {
-    id: 'express',
-    name: 'Express.js',
-    category: 'backend',
+    id: 'remix',
+    name: 'Remix',
+    category: 'fullstack',
     language: 'JavaScript/TypeScript',
-    description: 'Framework web minimaliste pour Node.js',
-    icon: 'Server',
-    fileExtension: 'ejs',
-    templateType: 'template',
+    description: 'Framework full-stack centré sur les standards web',
+    icon: 'Disc',
+    fileExtension: 'tsx',
+    templateType: 'component',
   },
   {
-    id: 'fastapi',
-    name: 'FastAPI',
-    category: 'backend',
-    language: 'Python',
-    description: 'Framework web moderne et rapide pour Python',
+    id: 'astro',
+    name: 'Astro',
+    category: 'frontend',
+    language: 'JavaScript/TypeScript',
+    description: 'Framework moderne pour sites statiques rapides',
     icon: 'Rocket',
-    fileExtension: 'html',
-    templateType: 'template',
+    fileExtension: 'astro',
+    templateType: 'component',
   },
+
 
   // Static HTML
   {
@@ -159,12 +108,34 @@ export const frameworks: FrameworkInfo[] = [
     fileExtension: 'html',
     templateType: 'template',
   },
+
+  // Mobile Frameworks
+  {
+    id: 'flutter',
+    name: 'Flutter',
+    category: 'mobile',
+    language: 'Dart',
+    description: 'Framework UI pour applications mobiles et web',
+    icon: 'Smartphone',
+    fileExtension: 'dart',
+    templateType: 'component',
+  },
+  {
+    id: 'react-native',
+    name: 'React Native',
+    category: 'mobile',
+    language: 'JavaScript/TypeScript',
+    description: 'Framework pour applications mobiles natives',
+    icon: 'Smartphone',
+    fileExtension: 'tsx',
+    templateType: 'component',
+  },
 ];
 
 export const getFrameworksByCategory = () => {
   return {
     frontend: frameworks.filter(f => f.category === 'frontend'),
     fullstack: frameworks.filter(f => f.category === 'fullstack'),
-    backend: frameworks.filter(f => f.category === 'backend'),
+    mobile: frameworks.filter(f => f.category === 'mobile'),
   };
 };

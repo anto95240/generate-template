@@ -1,5 +1,7 @@
 import { Template } from '@/types';
 
+import { getRandomTemplateByCategory } from './templates';
+
 export const templates: Template[] = [
   // Landing Pages
   {
@@ -536,5 +538,50 @@ export const getTemplatesByCategory = () => {
 };
 
 export const getRandomTemplate = (): Template => {
-  return templates[Math.floor(Math.random() * templates.length)];
+  const randomIndex = Math.floor(Math.random() * templates.length);
+  const baseTemplate = templates[randomIndex];
+  
+  // Créer des variations aléatoires du template
+  const variations = generateTemplateVariations(baseTemplate);
+  return variations[Math.floor(Math.random() * variations.length)];
+};
+
+export const getRandomTemplateByCategory = (category: string): Template => {
+  const categoryTemplates = templates.filter(t => t.category === category);
+  if (categoryTemplates.length === 0) return getRandomTemplate();
+  
+  const randomIndex = Math.floor(Math.random() * categoryTemplates.length);
+  const baseTemplate = categoryTemplates[randomIndex];
+  
+  const variations = generateTemplateVariations(baseTemplate);
+  return variations[Math.floor(Math.random() * variations.length)];
+};
+
+const generateTemplateVariations = (baseTemplate: Template): Template[] => {
+  const variations = [baseTemplate];
+  
+  // Générer 2-3 variations du template de base
+  for (let i = 0; i < 3; i++) {
+    const variation = {
+      ...baseTemplate,
+      id: `${baseTemplate.id}-var-${i}`,
+      name: `${baseTemplate.name} (Variante ${i + 1})`,
+      components: baseTemplate.components.map(comp => ({
+        ...comp,
+        id: `${comp.id}-var-${i}`,
+        position: {
+          ...comp.position,
+          x: comp.position.x + (Math.random() - 0.5) * 20,
+          y: comp.position.y + (Math.random() - 0.5) * 20,
+        },
+        style: {
+          ...comp.style,
+          borderRadius: `${Math.floor(Math.random() * 20) + 8}px`,
+        },
+      })),
+    };
+    variations.push(variation);
+  }
+  
+  return variations;
 };

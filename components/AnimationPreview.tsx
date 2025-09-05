@@ -49,6 +49,19 @@ export const AnimationPreview: React.FC<AnimationPreviewProps> = ({
 
   const playPreview = () => {
     setIsPlaying(true);
+    // Appliquer l'animation à l'élément de prévisualisation
+    const previewElement = document.querySelector(`[data-component-id="${selectedAnimation}"]`);
+    if (previewElement) {
+      animations.forEach(animation => {
+        previewElement.classList.add(`animate-${animation.name}`);
+      });
+      
+      setTimeout(() => {
+        animations.forEach(animation => {
+          previewElement.classList.remove(`animate-${animation.name}`);
+        });
+      }, 2000);
+    }
     setTimeout(() => setIsPlaying(false), 2000);
   };
 
