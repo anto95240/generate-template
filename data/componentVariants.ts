@@ -26,7 +26,8 @@ export const componentVariants: ComponentVariants = {
         color: '#ffffff',
         padding: '12px 24px',
         borderRadius: '8px',
-        border: 'none',
+        borderWidth: '0',
+        borderStyle: 'none',
         fontWeight: '600',
         cursor: 'pointer',
         transition: 'all 0.3s ease'
@@ -42,7 +43,9 @@ export const componentVariants: ComponentVariants = {
         color: '#3b82f6',
         padding: '12px 24px',
         borderRadius: '8px',
-        border: '2px solid #3b82f6',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#3b82f6',
         fontWeight: '600',
         cursor: 'pointer',
         transition: 'all 0.3s ease'
@@ -58,7 +61,9 @@ export const componentVariants: ComponentVariants = {
         color: '#00ffff',
         padding: '12px 24px',
         borderRadius: '8px',
-        border: '2px solid #00ffff',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#00ffff',
         fontWeight: '600',
         cursor: 'pointer',
         boxShadow: '0 0 20px #00ffff40, inset 0 0 20px #00ffff10',
@@ -76,7 +81,9 @@ export const componentVariants: ComponentVariants = {
         color: '#ffffff',
         padding: '12px 24px',
         borderRadius: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
         fontWeight: '600',
         cursor: 'pointer',
         backdropFilter: 'blur(10px)',
@@ -116,7 +123,9 @@ export const componentVariants: ComponentVariants = {
         color: '#ff0080',
         padding: '12px 24px',
         borderRadius: '0',
-        border: '1px solid #ff0080',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: '#ff0080',
         fontWeight: '700',
         cursor: 'pointer',
         textTransform: 'uppercase',
@@ -137,7 +146,9 @@ export const componentVariants: ComponentVariants = {
         color: '#00ffff',
         padding: '12px 24px',
         borderRadius: '10px',
-        border: '1px solid rgba(0,255,255,0.3)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(0,255,255,0.3)',
         fontWeight: '600',
         cursor: 'pointer',
         backdropFilter: 'blur(5px)',
@@ -156,7 +167,9 @@ export const componentVariants: ComponentVariants = {
       style: {
         backgroundColor: 'rgba(17, 24, 39, 0.95)',
         backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        borderBottomWidth: '1px',
+        borderBottomStyle: 'solid',
+        borderBottomColor: 'rgba(55, 65, 81, 0.5)',
         padding: '16px 24px',
         display: 'flex',
         alignItems: 'center',
@@ -170,7 +183,9 @@ export const componentVariants: ComponentVariants = {
       category: 'theme',
       style: {
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
-        borderBottom: '2px solid #00ffff',
+        borderBottomWidth: '2px',
+        borderBottomStyle: 'solid',
+        borderBottomColor: '#00ffff',
         padding: '16px 24px',
         display: 'flex',
         alignItems: 'center',
@@ -186,7 +201,9 @@ export const componentVariants: ComponentVariants = {
       style: {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
         borderRadius: '0 0 16px 16px',
         padding: '16px 24px',
         display: 'flex',
@@ -207,7 +224,9 @@ export const componentVariants: ComponentVariants = {
         borderRadius: '12px',
         padding: '24px',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(0, 0, 0, 0.1)'
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(0, 0, 0, 0.1)'
       }
     },
     {
@@ -220,7 +239,8 @@ export const componentVariants: ComponentVariants = {
         borderRadius: '16px',
         padding: '24px',
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        border: 'none',
+        borderWidth: '0',
+        borderStyle: 'none',
         transform: 'translateY(-2px)'
       }
     },
@@ -233,7 +253,9 @@ export const componentVariants: ComponentVariants = {
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         borderRadius: '12px',
         padding: '24px',
-        border: '2px solid #ff00ff',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#ff00ff',
         boxShadow: '0 0 20px #ff00ff40, inset 0 0 20px #ff00ff10',
         color: '#ffffff'
       }
@@ -247,7 +269,9 @@ export const componentVariants: ComponentVariants = {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: '16px',
         padding: '24px',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
         backdropFilter: 'blur(10px)',
         color: '#ffffff'
       }
@@ -263,7 +287,9 @@ export const componentVariants: ComponentVariants = {
       style: {
         padding: '12px 16px',
         borderRadius: '8px',
-        border: '2px solid #e5e7eb',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#e5e7eb',
         backgroundColor: '#ffffff',
         fontSize: '16px',
         transition: 'border-color 0.3s ease'
@@ -277,7 +303,9 @@ export const componentVariants: ComponentVariants = {
       style: {
         padding: '16px 16px 8px 16px',
         borderRadius: '8px',
-        border: '2px solid #e5e7eb',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#e5e7eb',
         backgroundColor: '#ffffff',
         fontSize: '16px',
         transition: 'all 0.3s ease',
@@ -292,7 +320,9 @@ export const componentVariants: ComponentVariants = {
       style: {
         padding: '12px 16px',
         borderRadius: '8px',
-        border: '2px solid #00ffff',
+        borderWidth: '2px',
+        borderStyle: 'solid',
+        borderColor: '#00ffff',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         color: '#ffffff',
         fontSize: '16px',
@@ -307,8 +337,9 @@ export const componentVariants: ComponentVariants = {
       category: 'style',
       style: {
         padding: '12px 0',
-        border: 'none',
-        borderBottom: '2px solid #e5e7eb',
+        borderWidth: '0 0 2px 0',
+        borderStyle: 'none none solid none',
+        borderColor: 'transparent transparent #e5e7eb transparent',
         backgroundColor: 'transparent',
         fontSize: '16px',
         borderRadius: '0',

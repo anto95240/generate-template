@@ -18,17 +18,23 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({ component,
 
     // Apply theme effects
     if (theme.effects.glow && (component.type === 'button' || component.props.variant === 'neon')) {
-      baseStyles.boxShadow = `0 0 20px ${theme.colors.primary}40`;
+      if (!baseStyles.boxShadow) {
+        baseStyles.boxShadow = `0 0 20px ${theme.colors.primary}40`;
+      }
     }
 
     if (theme.effects.glassmorphism && component.props.variant === 'glass') {
       baseStyles.backdropFilter = 'blur(20px)';
-      baseStyles.background = `${theme.colors.surface}80`;
+      if (!baseStyles.background && !baseStyles.backgroundColor) {
+        baseStyles.background = `${theme.colors.surface}80`;
+      }
     }
 
     // Apply gradients from theme
     if (component.props.variant === 'gradient' && theme.gradients) {
-      baseStyles.background = theme.gradients.primary;
+      if (!baseStyles.background && !baseStyles.backgroundColor) {
+        baseStyles.background = theme.gradients.primary;
+      }
     }
     // Apply animations
     if (component.animations && component.animations.length > 0) {
