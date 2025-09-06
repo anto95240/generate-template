@@ -596,8 +596,18 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               <label className="block text-xs text-gray-400 mb-1">Largeur</label>
               <input
                 type="text"
-                value={selectedComponent.style.borderWidth || ''}
-                onChange={(e) => updateStyle('borderWidth', e.target.value)}
+                value={selectedComponent.style.borderWidth || selectedComponent.style.border?.split(' ')[0] || ''}
+                onChange={(e) => {
+                  // Si on a une propriété border, la supprimer pour éviter les conflits
+                  if (selectedComponent.style.border) {
+                    const newStyle = { ...selectedComponent.style };
+                    delete newStyle.border;
+                    updateStyle('borderWidth', e.target.value);
+                    onComponentUpdate(selectedComponent.id, { style: newStyle });
+                  } else {
+                    updateStyle('borderWidth', e.target.value);
+                  }
+                }}
                 placeholder="1px"
                 className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
               />
@@ -605,8 +615,18 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
             <div>
               <label className="block text-xs text-gray-400 mb-1">Style</label>
               <select
-                value={selectedComponent.style.borderStyle || 'solid'}
-                onChange={(e) => updateStyle('borderStyle', e.target.value)}
+                value={selectedComponent.style.borderStyle || selectedComponent.style.border?.split(' ')[1] || 'solid'}
+                onChange={(e) => {
+                  // Si on a une propriété border, la supprimer pour éviter les conflits
+                  if (selectedComponent.style.border) {
+                    const newStyle = { ...selectedComponent.style };
+                    delete newStyle.border;
+                    updateStyle('borderStyle', e.target.value);
+                    onComponentUpdate(selectedComponent.id, { style: newStyle });
+                  } else {
+                    updateStyle('borderStyle', e.target.value);
+                  }
+                }}
                 className="w-full px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
               >
                 <option value="solid">Solide</option>
@@ -619,8 +639,18 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
               <label className="block text-xs text-gray-400 mb-1">Couleur</label>
               <input
                 type="color"
-                value={selectedComponent.style.borderColor || '#ffffff'}
-                onChange={(e) => updateStyle('borderColor', e.target.value)}
+                value={selectedComponent.style.borderColor || selectedComponent.style.border?.split(' ')[2] || '#ffffff'}
+                onChange={(e) => {
+                  // Si on a une propriété border, la supprimer pour éviter les conflits
+                  if (selectedComponent.style.border) {
+                    const newStyle = { ...selectedComponent.style };
+                    delete newStyle.border;
+                    updateStyle('borderColor', e.target.value);
+                    onComponentUpdate(selectedComponent.id, { style: newStyle });
+                  } else {
+                    updateStyle('borderColor', e.target.value);
+                  }
+                }}
                 className="w-full h-7 bg-gray-800 border border-gray-600 rounded"
               />
             </div>

@@ -21,13 +21,34 @@ interface AIResponse {
 }
 
 export class AIService {
-  private static tokenCount = 50;
-  private static lastReset = Date.now();
+  private static getStorageKey(key: string): string {
+    return `futureui_${key}_${window.location.hostname}`;
+  }
+
+  private static getTokenCount(): number {
+    const stored = localStorage.getItem(this.getStorageKey('tokens'));
+    return stored ? parseInt(stored) : 50;
+  }
+
+  private static setTokenCount(count: number): void {
+    localStorage.setItem(this.getStorageKey('tokens'), count.toString());
+  }
+
+  private static getLastReset(): number {
+    const stored = localStorage.getItem(this.getStorageKey('lastReset'));
+    return stored ? parseInt(stored) : Date.now();
+  }
+
+  private static setLastReset(time: number): void {
+    localStorage.setItem(this.getStorageKey('lastReset'), time.toString());
+  }
+
   private static readonly RESET_INTERVAL = 3600000; // 1 heure
   private static generatedVariants: Record<string, ComponentVariant[]> = {};
 
   static async generateComponent(prompt: string): Promise<AIResponse> {
-    if (this.tokenCount <= 0 && !this.shouldResetTokens()) {
+    const tokenCount = this.getTokenCount();
+    if (tokenCount <= 0 && !this.shouldResetTokens()) {
       throw new Error('Tokens épuisés. Attendez la réinitialisation.');
     }
 
@@ -35,7 +56,7 @@ export class AIService {
       this.resetTokens();
     }
 
-    this.tokenCount--;
+    this.setTokenCount(this.getTokenCount() - 1);
 
     if (USE_MOCK_AI) {
       return this.mockAIGeneration(prompt, false);
@@ -70,7 +91,8 @@ export class AIService {
   }
 
   static async generateFullCanvas(prompt: string): Promise<AIResponse> {
-    if (this.tokenCount <= 2 && !this.shouldResetTokens()) {
+    const tokenCount = this.getTokenCount();
+    if (tokenCount <= 2 && !this.shouldResetTokens()) {
       throw new Error('Tokens insuffisants pour générer un canvas complet.');
     }
 
@@ -78,7 +100,7 @@ export class AIService {
       this.resetTokens();
     }
 
-    this.tokenCount -= 3; // Canvas complet coûte plus de tokens
+    this.setTokenCount(this.getTokenCount() - 3); // Canvas complet coûte plus de tokens
 
     if (USE_MOCK_AI) {
       return this.mockAIGeneration(prompt, true);
@@ -289,12 +311,12 @@ Utilise des valeurs réalistes et cohérentes.`;
   }
 
   private static shouldResetTokens(): boolean {
-    return Date.now() - this.lastReset >= this.RESET_INTERVAL;
+    return Date.now() - this.getLastReset() >= this.RESET_INTERVAL;
   }
 
   private static resetTokens(): void {
-    this.tokenCount = 50;
-    this.lastReset = Date.now();
+    this.setTokenCount(50);
+    this.setLastReset(Date.now());
   }
 
   // Nouvelles méthodes pour générer des designs créatifs et uniques
@@ -533,9 +555,9 @@ Utilise des valeurs réalistes et cohérentes.`;
     }
 
     return {
-      remaining: this.tokenCount,
+      remaining: this.getTokenCount(),
       total: 50,
-      resetTime: new Date(this.lastReset + this.RESET_INTERVAL),
+      resetTime: new Date(this.getLastReset() + this.RESET_INTERVAL),
       model: GOOGLE_AI_API_KEY ? 'Gemini Pro' : 'Mock AI (Dev)',
     };
   }
